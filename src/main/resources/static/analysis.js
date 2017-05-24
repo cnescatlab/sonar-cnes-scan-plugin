@@ -70,7 +70,7 @@ window.registerExtension('cnes/analysis', function (options) {
                             class="login-input"\
                             rows="25"\
                             required="true"\
-                            ># Required metadata\nsonar.projectKey=genius-test\nsonar.projectName=GENIUS\nsonar.projectDescription=This an example based on GENIUS project.\nsonar.projectVersion=1.2\nsonar.language=java\n\n# Path to files\nsonar.sources=src/main/java\nsonar.tests=src/test/java\nsonar.java.binaries=target/classes\n\n# Encoding of the source files\nsonar.sourceEncoding=UTF-8\n\n# Coverage\n#sonar.genericcoverage.reportPaths=report/coverage.xml\n#sonar.genericcoverage.itReportPaths=report/itcoverage.xml\n#sonar.genericcoverage.unitTestReportPaths=report/unittest.xml\n</textarea>\
+                            ># Required metadata\nsonar.projectKey=<<TO REPLACE>>\nsonar.projectName=<<TO REPLACE>>\nsonar.projectDescription=<<TO REPLACE>>\nsonar.projectVersion=<<TO REPLACE>>\nsonar.language=<<TO REPLACE>>\n\n# Path to files\nsonar.sources=<<TO REPLACE>>\nsonar.tests=<<TO REPLACE>>\nsonar.java.binaries=<<TO REPLACE>>\n\n# Encoding of the source files\nsonar.sourceEncoding=UTF-8\n\n# Coverage\n#sonar.genericcoverage.reportPaths=report/coverage.xml\n#sonar.genericcoverage.itReportPaths=report/itcoverage.xml\n#sonar.genericcoverage.unitTestReportPaths=report/unittest.xml</textarea>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <div class="text-center overflow-hidden">\
@@ -117,6 +117,14 @@ window.registerExtension('cnes/analysis', function (options) {
         var qprofile = document.forms["analyze-form"]["quality-profile"].value;
         if (qprofile == "") {
             alert("Quality profile must be filled out.");
+            return false;
+        }
+        var spp = document.forms["analyze-form"]["spp"].value;
+        if (spp == "") {
+            alert("sonar-project.properties must be filled out.");
+            return false;
+        } else if(spp.indexOf("<<TO REPLACE>>")!=-1) {
+            alert("sonar-project.properties was not correctly filled out. Replace all '<<TO REPLACE>>' fields.");
             return false;
         }
         return true;
@@ -212,7 +220,7 @@ window.registerExtension('cnes/analysis', function (options) {
             '/api/cnes/analyze',
             { key: key, name: name, folder: folder, qualitygate: qualitygate, qualityprofile: qualityprofile, sonarProjectProperties: spp }
         ).then(function (response) {
-            log("[INFO] Project analysis response: " + response.logs);
+            log("[INFO] Project analysis response: \n" + response.logs);
             produceReport(key, name, qualitygate, qualityprofile, author);
         }).catch(function (error) {
             log("[ERROR] Project analysis failed.");
@@ -232,7 +240,7 @@ window.registerExtension('cnes/analysis', function (options) {
             '/api/cnes/report',
             { key: key, name: name, qualitygate: qualitygate, qualityprofile: qualityprofile, author: author }
         ).then(function (response) {
-            log("[INFO] Project report generation response: " + response.logs);
+            log("[INFO] Project report generation response: \n" + response.logs);
             log("############################################################\n\tAnalysis finished with success!\n############################################################\n")
         }).catch(function (error) {
             log("[ERROR] Project report generation failed.");

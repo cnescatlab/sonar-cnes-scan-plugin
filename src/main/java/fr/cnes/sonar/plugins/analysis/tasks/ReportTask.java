@@ -26,14 +26,14 @@ public class ReportTask extends AbstractTask {
                          String projectName, String reportAuthor, String reportDate, String reportPath, String reportTemplate) throws IOException, InterruptedException {
         String command = "java -jar " + "/opt/sonar/extensions/cnes/sonar-report-cnes.jar " +
                 "--sonar.url http://localhost:9000 " +
-                "--sonar.project.id " + projectId + " " +
-                "--sonar.project.quality.profile " + projectQualityProfile + " " +
-                "--sonar.project.quality.gate " + projectQualityGate + " " +
-                "--project.name " + projectName + " " +
-                "--report.author " + reportAuthor + " " +
-                "--report.date " + reportDate + " " +
-                "--report.path " + reportPath + " " +
-                "--report.template " + reportTemplate + " " ;
+                "--sonar.project.id \"" + projectId + "\" " +
+                "--sonar.project.quality.profile \"" + projectQualityProfile + "\" " +
+                "--sonar.project.quality.gate \"" + projectQualityGate + "\" " +
+                "--project.name \"" + projectName + "\" " +
+                "--report.author \"" + reportAuthor + "\" " +
+                "--report.date \"" + reportDate + "\" " +
+                "--report.path \"" + reportPath + "\" " +
+                "--report.template \"" + reportTemplate + "\" " ;
         log(command);
         log(executeCommand(command));
 

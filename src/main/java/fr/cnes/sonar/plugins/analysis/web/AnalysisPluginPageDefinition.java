@@ -14,7 +14,7 @@ public class AnalysisPluginPageDefinition implements PageDefinition {
   @Override
   public void define(Context context) {
     context
-      .addPage(Page.builder("org/sonar/l10n/analysis")
+      .addPage(Page.builder("cnes/analysis")
         .setName("Analysis")
         .setScope(Scope.GLOBAL).build());
   }
