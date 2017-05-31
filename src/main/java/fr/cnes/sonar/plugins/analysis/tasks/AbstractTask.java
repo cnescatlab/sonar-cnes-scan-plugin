@@ -12,12 +12,16 @@ import java.io.InputStreamReader;
  * Execute the analysis of a project
  * @author garconb
  */
-public class AbstractTask {
+public abstract class AbstractTask {
 
-    // logger for all tasks
+    /**
+     * logger for all tasks
+     */
     private static final Logger LOGGER = Loggers.get(AbstractTask.class);
 
-    // contain all the task's logs
+    /**
+     * contain all the task's logs
+     */
     private StringBuilder logs = new StringBuilder();
 
     /**
@@ -28,34 +32,70 @@ public class AbstractTask {
      * @throws InterruptedException when a command is not finished
      */
     String executeCommand(String command) throws IOException, InterruptedException {
-
+        // log the command to execute
         LOGGER.info(command);
 
+        // prepare a string builder for the output gathering
         StringBuilder output = new StringBuilder();
 
+        // create a new process
         Process p;
+        // execute the process on the runtime
         p = Runtime.getRuntime().exec(command);
+        // wait for the end of the process
         p.waitFor();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        BufferedReader reader2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-        String line;
-        while ((line = reader.readLine())!= null) {
-            output.append(line).append("\n");
+
+        // collect input stream
+        BufferedReader reader = null;
+        // collect error stream
+        BufferedReader reader2 = null;
+
+        try {
+            // instantiate the readers
+            reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            reader2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+            // append input stream to output
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append('\n');
+            }
+            // append error stream to output
+            while ((line = reader2.readLine()) != null) {
+                output.append(line).append('\n');
+            }
+        } finally {
+            // close the input reader
+            if (reader != null) {
+                reader.close();
+            }
+            // close the output reader
+            if (reader2 != null) {
+                reader2.close();
+            }
         }
-        while ((line = reader2.readLine())!= null) {
-            output.append(line).append("\n");
-        }
 
-        LOGGER.info(output.toString());
+        // log output
+        String result = output.toString();
+        LOGGER.info(result);
 
-        return output.toString();
+        // return the output logs
+        return result;
     }
 
+    /**
+     * Getter of logs
+     * @return the string contained in the StringBuilder
+     */
     String getLogs() {
         return logs.toString();
     }
 
+    /**
+     * Setter of logs
+     * @param logs string to put in a new StringBuilder
+     */
     public void setLogs(String logs) {
         this.logs = new StringBuilder().append(logs);
     }

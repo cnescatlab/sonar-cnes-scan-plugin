@@ -23,7 +23,9 @@ public class ReportTask extends AbstractTask {
      * @throws InterruptedException when a command is not finished
      */
     public String report(String projectId, String projectQualityProfile, String projectQualityGate,
-                         String projectName, String reportAuthor, String reportDate, String reportPath, String reportTemplate) throws IOException, InterruptedException {
+                         String projectName, String reportAuthor, String reportDate, String reportPath,
+                         String reportTemplate) throws IOException, InterruptedException {
+        // construct the command string to run analysis
         String command = "java -jar " + "/opt/sonar/extensions/cnes/sonar-report-cnes.jar " +
                 "--sonar.url http://localhost:9000 " +
                 "--sonar.project.id \"" + projectId + "\" " +
@@ -34,9 +36,12 @@ public class ReportTask extends AbstractTask {
                 "--report.date \"" + reportDate + "\" " +
                 "--report.path \"" + reportPath + "\" " +
                 "--report.template \"" + reportTemplate + "\" " ;
+        // log the command used
         log(command);
+        // log the execution result
         log(executeCommand(command));
 
+        // return the log
         return getLogs();
     }
 

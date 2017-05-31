@@ -1,8 +1,8 @@
 window.registerExtension('cnes/analysis', function (options) {
     // let's create a flag telling if the page is still displayed
-    var isDisplayed = true;
-    var qualityprofiles = [];
-    var qualitygates = [];
+    var isDisplayedAnalysis = true;
+
+    // contain the template of the page
     var htmlTemplate = '\
     <div id="bd" class="page-wrapper-simple">\
         <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">\
@@ -89,53 +89,68 @@ window.registerExtension('cnes/analysis', function (options) {
      * @returns {boolean} true if all is good
      */
     var checkForm = function () {
+        // check the field key
+        // get it
         var key = document.forms["analyze-form"]["key"].value;
-        if (key == "") {
-            alert("Key must be filled out.");
+        // check if void
+        if (key === "") {
+            // log error
+            log("Key must be filled out.");
+            // abort the process
             return false;
         }
+        // check the field name (project)
+        // get it
         var name = document.forms["analyze-form"]["name"].value;
-        if (name == "") {
-            alert("Name must be filled out.");
+        // check if void
+        if (name === "") {
+            log("Name must be filled out.");
+            // abort the process
             return false;
         }
+        // check the field author (report)
+        // get it
         var author = document.forms["analyze-form"]["author"].value;
-        if (author == "") {
-            alert("Author must be filled out.");
+        // check if void
+        if (author === "") {
+            log("Author must be filled out.");
+            // abort the process
             return false;
         }
+        // check the field folder (project)
+        // get it
         var folder = document.forms["analyze-form"]["folder"].value;
-        if (folder == "") {
-            alert("Folder must be filled out.");
+        // check if void
+        if (folder === "") {
+            log("Folder must be filled out.");
+            // abort the process
             return false;
         }
-        var qgate = document.forms["analyze-form"]["quality-gate"].value;
-        if (qgate == "") {
-            alert("Quality gate must be filled out.");
-            return false;
-        }
-        var qprofile = document.forms["analyze-form"]["quality-profile"].value;
-        if (qprofile == "") {
-            alert("Quality profile must be filled out.");
-            return false;
-        }
+        // check the field spp (sonar-project.properties)
+        // get it
         var spp = document.forms["analyze-form"]["spp"].value;
-        if (spp == "") {
-            alert("sonar-project.properties must be filled out.");
+        // check if void
+        if (spp === "") {
+            log("sonar-project.properties must be filled out.");
+            // abort the process
             return false;
-        } else if(spp.indexOf("<<TO REPLACE>>")!=-1) {
-            alert("sonar-project.properties was not correctly filled out. Replace all '<<TO REPLACE>>' fields.");
+        // check if it contains <<TO REPLACE>>
+        } else if(spp.indexOf("<<TO REPLACE>>")!==-1) {
+            log("sonar-project.properties was not correctly filled out. Replace all '<<TO REPLACE>>' fields.");
+            // abort the process
             return false;
         }
         return true;
     };
 
     /**
-     * Log information in the bottom textarea
+     * Log information in the bottom text area
      * @param string Text to log
      */
     var log = function (string) {
+        // get the logging element
         var logging = document.querySelector('#logging');
+        // append text to log
         logging.innerHTML = logging.innerHTML + "\n" + string;
     };
 
@@ -150,12 +165,16 @@ window.registerExtension('cnes/analysis', function (options) {
             // Quality gate setting Basic YWRtaW46YWRtaW4=
             window.SonarRequest.getJSON(    // get the id from the name
                 '/api/qualitygates/show?name='+qualityGate
-            ).then(function (response) { // it exists
-                window.SonarRequest.request(    // request the setting with the id
+            ).then(function (response) {
+            // it exists
+            // request the setting of the quality gate
+                window.SonarRequest.request(
                     '/api/qualitygates/select'
                 ).setHeader(
+                // need admin permissions
                     "Authorization", "Basic YWRtaW46YWRtaW4="
                 ).setMethod(
+                // use post method
                     "POST"
                 ).setData(
                     { projectKey: projectKey, gateId: response.id }
@@ -165,20 +184,25 @@ window.registerExtension('cnes/analysis', function (options) {
                     log("[WARNING] There were a problem during quality gate's setting.");
                 });
             }).catch(function (error) {
+            // on error log it
                 log("[WARNING] The quality gate does not exist.");
             }).then(function () {
 
-
                 // Quality profile setting Basic YWRtaW46YWRtaW4=
-                window.SonarRequest.getJSON(    // get the id from the name
+                window.SonarRequest.getJSON(
+                // get the id from the name
                     '/api/qualityprofiles/search?profileName='+qualityProfile
-                ).then(function (response) { // it exists
-                    if(response.profiles != undefined && response.profiles.length >= 1) {
+                ).then(function (response) {
+                // if it exists
+                    if(response.profiles !== undefined && response.profiles.length >= 1) {
+                        // filter profile with the good name
                         var filteredProfiles = response.profiles.filter(function (profile) {
-                            return profile.name == qualityProfile;
+                            return profile.name === qualityProfile;
                         });
+                        // if there is at means one profile
                         if(filteredProfiles.length >= 1) {
-                            window.SonarRequest.request(    // request the setting with the id
+                            // request to set the profile
+                            window.SonarRequest.request(
                                 '/api/qualityprofiles/add_project'
                             ).setHeader(
                                 "Authorization", "Basic YWRtaW46YWRtaW4="
@@ -193,13 +217,16 @@ window.registerExtension('cnes/analysis', function (options) {
                                 log("[WARNING] There were a problem during quality profile's setting.");
                             });
                         } else {
+                            // log error
                             log("[WARNING] The quality profile does not exists.");
                         }
 
                     } else {
+                        // log error
                         log("[WARNING] The quality profile does not exists.");
                     }
                 }).catch(function (error) {
+                    // log error
                     log("[WARNING] The quality profile does not exist.");
                 });
 
@@ -216,13 +243,18 @@ window.registerExtension('cnes/analysis', function (options) {
      * @param spp
      */
     var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp, author) {
+        // send post request to the cnes web service
         window.SonarRequest.postJSON(
             '/api/cnes/analyze',
             { key: key, name: name, folder: folder, qualitygate: qualitygate, qualityprofile: qualityprofile, sonarProjectProperties: spp }
         ).then(function (response) {
+            // on success
+            // log output
             log("[INFO] Project analysis response: \n" + response.logs);
+            // produce the report
             produceReport(key, name, qualitygate, qualityprofile, author);
         }).catch(function (error) {
+            // log error
             log("[ERROR] Project analysis failed.");
         });
     };
@@ -236,19 +268,22 @@ window.registerExtension('cnes/analysis', function (options) {
      * @param author
      */
     var produceReport = function (key, name, qualitygate, qualityprofile, author) {
+        // http GET request to the cnes web service
         window.SonarRequest.getJSON(
             '/api/cnes/report',
             { key: key, name: name, qualitygate: qualitygate, qualityprofile: qualityprofile, author: author }
         ).then(function (response) {
+            // on success log generation
             log("[INFO] Project report generation response: \n" + response.logs);
             log("############################################################\n\tAnalysis finished with success!\n############################################################\n")
         }).catch(function (error) {
+            // log error
             log("[ERROR] Project report generation failed.");
         });
     };
 
     // once the request is done, and the page is still displayed (not closed already)
-    if (isDisplayed) {
+    if (isDisplayedAnalysis) {
 
         // Add html template
         var template = document.createElement("template");
@@ -258,9 +293,11 @@ window.registerExtension('cnes/analysis', function (options) {
 
         // set analyze button action
         var analyzeButton = document.querySelector('#analyze');
+        // set its action on click
         analyzeButton.onclick = function () {
 
-            if(checkForm()) {   // validation of the form
+            // validation of the form
+            if(checkForm()) {
 
                 // Get form values
                 var key = document.forms["analyze-form"]["key"].value;
@@ -271,13 +308,16 @@ window.registerExtension('cnes/analysis', function (options) {
                 var author = document.forms["analyze-form"]["author"].value;
                 var spp = document.forms["analyze-form"]["spp"].value;
 
+                // request the creation of the project
                 window.SonarRequest.post(
                     '/api/projects/create',
                     { project: key, name: name }
                 ).then(function (response) {
+                    // on success log and set quality params
                     log("[INFO] Project creation response: " + response.status);
                     setQualityParams(key, name, folder, qgate, qprofile, spp, author);
                 }).catch(function (error) {
+                    // on failure log and set quality params too
                     log("[WARNING] This project was not created. Maybe, it was already created.");
                     setQualityParams(key, name, folder, qgate, qprofile, spp, author);
                 });
@@ -288,7 +328,8 @@ window.registerExtension('cnes/analysis', function (options) {
 
     // return a function, which is called when the page is being closed
     return function () {
-        // we unset the `isDisplayed` flag to ignore to Web API calls finished after the page is closed
-        isDisplayed = false;
+        // we unset the `isDisplayedAnalysis` flag to ignore to Web API calls finished after the page is closed
+        isDisplayedAnalysis = false;
+        options.el.textContent = '';
     };
 });

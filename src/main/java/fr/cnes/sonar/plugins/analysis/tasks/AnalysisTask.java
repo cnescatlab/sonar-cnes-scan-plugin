@@ -27,6 +27,7 @@ public class AnalysisTask extends AbstractTask {
         log(executeCommand("/opt/sonar-scanner/bin/sonar-scanner -D project.settings=/media/sf_Shared/" + projectFolder
                 + "/sonar-project.properties -D sonar.projectBaseDir=/media/sf_Shared/" + projectFolder));
 
+        // return the complete logs
         return getLogs();
     }
 
@@ -37,11 +38,26 @@ public class AnalysisTask extends AbstractTask {
      * @throws IOException when a file writing goes wrong
      */
     private void writeSonarProjectProperties(String folder, String data) throws IOException {
+        // construct the path of the spp
         String filePath = "/media/sf_Shared" + "/" + folder + "/" + "sonar-project.properties";
-        File spp = new File(filePath);
-        FileWriter fileWriter = new FileWriter(spp, false); // true to append; false to overwrite.
-        fileWriter.write(data);
-        fileWriter.close();
+
+        // create the writer
+        FileWriter fileWriter = null;
+
+        try {
+            // create a new file
+            File spp = new File(filePath);
+            // create the writer
+            fileWriter = new FileWriter(spp, false); // true to append; false to overwrite.
+            // write the data
+            fileWriter.write(data);
+        } finally {
+            // if the writer still exists
+            if(fileWriter != null) {
+                // close it
+                fileWriter.close();
+            }
+        }
     }
 
 }

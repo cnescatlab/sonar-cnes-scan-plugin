@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.cnes.sonar.plugins.analysis</groupId>
-  <artifactId>sonar-analysis-cnes-plugin</artifactId>
+  <artifactId>sonar-cnes-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>1.0</version>
+  <version>1.1</version>
 
-  <name>SonarQube Analysis CNES Plugin</name>
-  <description>Analysis plugin for SonarQube: launch analysis directly from the web interface and export reports.</description>
+  <name>SonarQube CNES Plugin</name>
+  <description>CNES plugin for SonarQube: launch analysis directly from the web interface and export reports.</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,7 +57,7 @@
         <extensions>true</extensions>
         <configuration>
           <pluginKey>cnes</pluginKey>
-          <pluginClass>fr.cnes.sonar.plugins.analysis.AnalysisPlugin</pluginClass>
+          <pluginClass>fr.cnes.sonar.plugins.analysis.CnesPlugin</pluginClass>
         </configuration>
       </plugin>
       <plugin>
