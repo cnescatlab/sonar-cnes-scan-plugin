@@ -10,31 +10,31 @@ window.registerExtension('cnes/analysis', function (options) {
                 <h1 class="maintenance-title text-center">Analyze a project</h1>\
                 <form id="analyze-form"><!-- react-empty: 33 -->\
                     <div class="big-spacer-bottom">\
-                        <label for="key" class="login-label">Project key</label><input type="text"\
+                        <label for="key" class="login-label">Project key<em style="color:red;">*</em></label><input required type="text"\
                             id="key"\
                             name="key"\
                             class="login-input"\
                             maxlength="255"\
                             required="true"\
-                            placeholder="Project key">\
+                            placeholder="Project key"><em style="color:red;">* This field is mandatory.</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
-                        <label for="name" class="login-label">Project name</label><input type="text"\
+                        <label for="name" class="login-label" >Project name<em style="color:red;">*</em></label><input required type="text"\
                             id="name"\
                             name="name"\
                             class="login-input"\
                             maxlength="255"\
                             required="true"\
-                            placeholder="Project name">\
+                            placeholder="Project name"><em style="color:red;">* This field is mandatory.</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
-                        <label for="folder" class="login-label">Project folder</label><input type="text"\
+                        <label for="folder" class="login-label">Project folder<em style="color:red;">*</em></label><input required type="text"\
                             id="folder"\
                             name="folder"\
                             class="login-input"\
                             maxlength="255"\
                             required="true"\
-                            placeholder="Project folder">\
+                            placeholder="Project folder"><em style="color:red;">* This field is mandatory.</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <label for="author" class="login-label">Author</label><input type="text"\
@@ -44,6 +44,7 @@ window.registerExtension('cnes/analysis', function (options) {
                             maxlength="255"\
                             required="true"\
                             placeholder="Report author">\
+                            <em style="color:grey;">Default value: default</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <label for="quality-gate" class="login-label">Project quality gate</label><input type="text"\
@@ -53,6 +54,7 @@ window.registerExtension('cnes/analysis', function (options) {
                             maxlength="255"\
                             required="true"\
                             placeholder="Project quality gate">\
+                            <em style="color:grey;">Default value: CNES</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <label for="quality-profile" class="login-label">Project quality profile</label><input type="text"\
@@ -62,15 +64,16 @@ window.registerExtension('cnes/analysis', function (options) {
                             maxlength="255"\
                             required="true"\
                             placeholder="Project quality profile">\
+                            <em style="color:grey;">Default value: default quality profiles</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
-                        <label for="spp" class="login-label">sonar-project.properties</label><textarea type="text"\
+                        <label for="spp" class="login-label">sonar-project.properties<em style="color:red;">*</em></label><textarea required type="text"\
                             id="spp"\
                             name="spp"\
                             class="login-input"\
                             rows="25"\
                             required="true"\
-                            ># Required metadata\nsonar.projectKey=<<TO REPLACE>>\nsonar.projectName=<<TO REPLACE>>\nsonar.projectDescription=<<TO REPLACE>>\nsonar.projectVersion=<<TO REPLACE>>\nsonar.language=<<TO REPLACE>>\n\n# Path to files\nsonar.sources=<<TO REPLACE>>\nsonar.tests=<<TO REPLACE>>\nsonar.java.binaries=<<TO REPLACE>>\n\n# Encoding of the source files\nsonar.sourceEncoding=UTF-8\n\n# Coverage\n#sonar.genericcoverage.reportPaths=report/coverage.xml\n#sonar.genericcoverage.itReportPaths=report/itcoverage.xml\n#sonar.genericcoverage.unitTestReportPaths=report/unittest.xml</textarea>\
+                            ># Required metadata\nsonar.projectKey=<<TO REPLACE>>\nsonar.projectName=<<TO REPLACE>>\nsonar.projectDescription=<<TO REPLACE>>\nsonar.projectVersion=<<TO REPLACE>>\nsonar.language=<<TO REPLACE>>\n\n# Path to files\nsonar.sources=<<TO REPLACE>>\nsonar.tests=<<TO REPLACE>>\nsonar.java.binaries=<<TO REPLACE>>\n\n# Encoding of the source files\nsonar.sourceEncoding=UTF-8\n</textarea><em style="color:red;">* This field is mandatory.</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <div class="text-center overflow-hidden">\
@@ -105,15 +108,6 @@ window.registerExtension('cnes/analysis', function (options) {
         // check if void
         if (name === "") {
             log("Name must be filled out.");
-            // abort the process
-            return false;
-        }
-        // check the field author (report)
-        // get it
-        var author = document.forms["analyze-form"]["author"].value;
-        // check if void
-        if (author === "") {
-            log("Author must be filled out.");
             // abort the process
             return false;
         }
@@ -162,32 +156,36 @@ window.registerExtension('cnes/analysis', function (options) {
      */
     var setQualityParams = function (projectKey, name, folder, qualityGate, qualityProfile, spp, author) {
 
-            // Quality gate setting Basic YWRtaW46YWRtaW4=
-            window.SonarRequest.getJSON(    // get the id from the name
-                '/api/qualitygates/show?name='+qualityGate
-            ).then(function (response) {
-            // it exists
-            // request the setting of the quality gate
-                window.SonarRequest.request(
-                    '/api/qualitygates/select'
-                ).setHeader(
-                // need admin permissions
-                    "Authorization", "Basic YWRtaW46YWRtaW4="
-                ).setMethod(
-                // use post method
-                    "POST"
-                ).setData(
-                    { projectKey: projectKey, gateId: response.id }
-                ).submit().then(function (response) {
-                    log("[INFO] Quality gate selection response: " + response.status);
-                }).catch(function (error) {
-                    log("[WARNING] There were a problem during quality gate's setting.");
-                });
-            }).catch(function (error) {
-            // on error log it
-                log("[WARNING] The quality gate does not exist.");
-            }).then(function () {
+        // check if the quality gate field is filled out
+        qualityGate = qualityGate === "" ? "CNES" : qualityGate;
 
+        // Quality gate setting Basic YWRtaW46YWRtaW4=
+        window.SonarRequest.getJSON(    // get the id from the name
+            '/api/qualitygates/show?name='+qualityGate
+        ).then(function (response) {
+        // it exists
+        // request the setting of the quality gate
+            window.SonarRequest.request(
+                '/api/qualitygates/select'
+            ).setHeader(
+            // need admin permissions
+                "Authorization", "Basic YWRtaW46YWRtaW4="
+            ).setMethod(
+            // use post method
+                "POST"
+            ).setData(
+                { projectKey: projectKey, gateId: response.id }
+            ).submit().then(function (response) {
+                log("[INFO] Quality gate selection response: " + response.status);
+            }).catch(function (error) {
+                log("[WARNING] There were a problem during quality gate's setting.");
+            });
+        }).catch(function (error) {
+        // on error log it
+            log("[WARNING] The quality gate does not exist.");
+        }).then(function () {
+            // set the quality profile if the field is not empty
+            if(qualityProfile!=="") {
                 // Quality profile setting Basic YWRtaW46YWRtaW4=
                 window.SonarRequest.getJSON(
                 // get the id from the name
@@ -229,8 +227,12 @@ window.registerExtension('cnes/analysis', function (options) {
                     // log error
                     log("[WARNING] The quality profile does not exist.");
                 });
+            } else {
+                // if there is no need to set a profile we just launch the analysis
+                runAnalysis(projectKey, name, folder, qualityGate, qualityProfile, spp, author);
+            }
 
-            });
+        });
     };
 
     /**

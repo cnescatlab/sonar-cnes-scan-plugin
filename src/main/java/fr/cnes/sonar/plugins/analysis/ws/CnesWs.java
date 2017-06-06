@@ -4,9 +4,6 @@ import fr.cnes.sonar.plugins.analysis.tasks.AnalysisTask;
 import fr.cnes.sonar.plugins.analysis.tasks.ReportTask;
 import org.sonar.api.server.ws.WebService;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * Expose CNES plugin api
  * @author garconb
@@ -86,10 +83,6 @@ public class CnesWs implements WebService {
 
             // concrete analysis
             String result = analysisWorker.analyze(
-                    request.mandatoryParam(KEY),
-                    request.mandatoryParam(NAME),
-                    request.mandatoryParam(QUALITY_PROFILE),
-                    request.mandatoryParam(QUALITY_GATE),
                     request.mandatoryParam(FOLDER),
                     request.mandatoryParam(SONAR_PROJECT_PROPERTIES)
             );
@@ -136,7 +129,6 @@ public class CnesWs implements WebService {
                             request.mandatoryParam(QUALITY_GATE),
                             request.mandatoryParam(NAME),
                             request.mandatoryParam(AUTHOR),
-                            new SimpleDateFormat("dd-MM-yyyy").format(new Date()),
                             REPORT_PATH,
                             TEMPLATE_PATH
                             );

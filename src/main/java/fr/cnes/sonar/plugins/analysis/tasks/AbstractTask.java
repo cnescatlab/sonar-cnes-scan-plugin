@@ -46,15 +46,11 @@ public abstract class AbstractTask {
         p.waitFor();
 
 
-        // collect input stream
-        BufferedReader reader = null;
-        // collect error stream
-        BufferedReader reader2 = null;
-
-        try {
-            // instantiate the readers
-            reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            reader2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+        try (
+                // collect input
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                // collect errors
+                BufferedReader reader2 = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
 
             // append input stream to output
             String line;
@@ -64,15 +60,6 @@ public abstract class AbstractTask {
             // append error stream to output
             while ((line = reader2.readLine()) != null) {
                 output.append(line).append('\n');
-            }
-        } finally {
-            // close the input reader
-            if (reader != null) {
-                reader.close();
-            }
-            // close the output reader
-            if (reader2 != null) {
-                reader2.close();
             }
         }
 

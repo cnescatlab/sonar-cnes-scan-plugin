@@ -1,6 +1,8 @@
 package fr.cnes.sonar.plugins.analysis.tasks;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Execute element to produce the report
@@ -15,7 +17,6 @@ public class ReportTask extends AbstractTask {
      * @param projectQualityGate Quality Gate of the project to report
      * @param projectName  Name of the project to report
      * @param reportAuthor Author of the report
-     * @param reportDate Date for the report
      * @param reportPath Output folder
      * @param reportTemplate template to use for the processing
      * @return logs of the task
@@ -23,7 +24,7 @@ public class ReportTask extends AbstractTask {
      * @throws InterruptedException when a command is not finished
      */
     public String report(String projectId, String projectQualityProfile, String projectQualityGate,
-                         String projectName, String reportAuthor, String reportDate, String reportPath,
+                         String projectName, String reportAuthor, String reportPath,
                          String reportTemplate) throws IOException, InterruptedException {
         // construct the command string to run analysis
         String command = "java -jar " + "/opt/sonar/extensions/cnes/sonar-report-cnes.jar " +
@@ -33,7 +34,7 @@ public class ReportTask extends AbstractTask {
                 "--sonar.project.quality.gate \"" + projectQualityGate + "\" " +
                 "--project.name \"" + projectName + "\" " +
                 "--report.author \"" + reportAuthor + "\" " +
-                "--report.date \"" + reportDate + "\" " +
+                "--report.date \"" + new SimpleDateFormat("dd-MM-yyyy").format(new Date()) + "\" " +
                 "--report.path \"" + reportPath + "\" " +
                 "--report.template \"" + reportTemplate + "\" " ;
         // log the command used

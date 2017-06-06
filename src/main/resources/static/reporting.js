@@ -17,6 +17,7 @@ window.registerExtension('cnes/reporting', function (options) {
                             maxlength="255"\
                             required="true"\
                             placeholder="Project key">\
+                            <em style="color:red;">* This field is mandatory.</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <label for="name" class="login-label">Project name</label><input type="text"\
@@ -26,6 +27,7 @@ window.registerExtension('cnes/reporting', function (options) {
                             maxlength="255"\
                             required="true"\
                             placeholder="Project name">\
+                            <em style="color:red;">* This field is mandatory.</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <label for="author" class="login-label">Author</label><input type="text"\
@@ -35,6 +37,7 @@ window.registerExtension('cnes/reporting', function (options) {
                             maxlength="255"\
                             required="true"\
                             placeholder="Report author">\
+                            <em style="color:grey;">Default value: default</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <label for="quality-gate" class="login-label">Project quality gate</label><input type="text"\
@@ -44,6 +47,7 @@ window.registerExtension('cnes/reporting', function (options) {
                             maxlength="255"\
                             required="true"\
                             placeholder="Project quality gate">\
+                            <em style="color:grey;">Default value: CNES</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <label for="quality-profile" class="login-label">Project quality profile</label><input type="text"\
@@ -53,6 +57,7 @@ window.registerExtension('cnes/reporting', function (options) {
                             maxlength="255"\
                             required="true"\
                             placeholder="Project quality profile">\
+                            <em style="color:grey;">Default value: default quality profiles</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
                         <div class="text-center overflow-hidden">\
@@ -87,15 +92,6 @@ window.registerExtension('cnes/reporting', function (options) {
         // check if void
         if (name === "") {
             log("Name must be filled out.");
-            // abort the process
-            return false;
-        }
-        // check the field author (report)
-        // get it
-        var author = document.forms["generation-form"]["author"].value;
-        // check if void
-        if (author === "") {
-            log("Author must be filled out.");
             // abort the process
             return false;
         }

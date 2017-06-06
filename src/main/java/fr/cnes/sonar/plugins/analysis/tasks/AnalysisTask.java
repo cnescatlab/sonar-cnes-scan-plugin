@@ -11,21 +11,30 @@ import java.io.IOException;
 public class AnalysisTask extends AbstractTask {
 
     /**
-     * Execute the analysis of a projec
+     * Path's pattern for the sonar-project.properties file
+     */
+    private static final String SPP_PATH_PATTERN = "/media/sf_Shared/%s/sonar-project.properties";
+    /**
+     * Command pattern to run an analysis
+     */
+    private static final String SCAN_COMMAND_PATTERN = "/opt/sonar-scanner/bin/sonar-scanner -D project.settings=/media/sf_Shared/%s/sonar-project.properties -D sonar.projectBaseDir=/media/sf_Shared/%s";
+
+    /**
+     * Execute the analysis of a project
+     * @param projectFolder url of the folder containing the project to analyze
+     * @param sonarProjectProperties the sonar-project.properties as string
      * @return logs
      * @throws IOException when a file writing goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    public String analyze(String projectKey, String projectName,
-                          String qualityProfile, String qualityGate,
-                          String projectFolder, String sonarProjectProperties) throws IOException, InterruptedException {
+    public String analyze(String projectFolder, String sonarProjectProperties)
+            throws IOException, InterruptedException {
 
         // write of sonar-project.properties
         writeSonarProjectProperties(projectFolder, sonarProjectProperties);
 
         // analysis execution
-        log(executeCommand("/opt/sonar-scanner/bin/sonar-scanner -D project.settings=/media/sf_Shared/" + projectFolder
-                + "/sonar-project.properties -D sonar.projectBaseDir=/media/sf_Shared/" + projectFolder));
+        log(executeCommand(String.format(SCAN_COMMAND_PATTERN, projectFolder, projectFolder)));
 
         // return the complete logs
         return getLogs();
@@ -39,24 +48,15 @@ public class AnalysisTask extends AbstractTask {
      */
     private void writeSonarProjectProperties(String folder, String data) throws IOException {
         // construct the path of the spp
-        String filePath = "/media/sf_Shared" + "/" + folder + "/" + "sonar-project.properties";
+        String filePath = String.format(SPP_PATH_PATTERN, folder);
+        // create a new file
+        File spp = new File(filePath);
 
         // create the writer
-        FileWriter fileWriter = null;
-
-        try {
-            // create a new file
-            File spp = new File(filePath);
-            // create the writer
-            fileWriter = new FileWriter(spp, false); // true to append; false to overwrite.
+        // true to append; false to overwrite.
+        try(FileWriter fileWriter = new FileWriter(spp, false)) {
             // write the data
             fileWriter.write(data);
-        } finally {
-            // if the writer still exists
-            if(fileWriter != null) {
-                // close it
-                fileWriter.close();
-            }
         }
     }
 
