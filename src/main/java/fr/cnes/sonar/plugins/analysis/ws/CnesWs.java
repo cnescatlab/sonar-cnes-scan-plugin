@@ -69,7 +69,21 @@ public class CnesWs implements WebService {
         // set description of the controller
         controller.setDescription("Allow to analyze and export code analysis' reports with the CNES template.");
 
-        // create the URL /api/cnes/analyze
+        // create the action for URL /api/cnes/analyze
+        analyzeAction(controller);
+
+        // create the action for URL /api/cnes/report
+        reportAction(controller);
+
+        // important to apply changes
+        controller.done();
+    }
+
+    /**
+     * Add the action corresponding to the analysis
+     * @param controller controller to which add the action
+     */
+    private void analyzeAction(NewController controller) {
         NewAction analysis = controller.createAction("analyze")
                 //set
         .setDescription("Analyze a project.")
@@ -83,6 +97,7 @@ public class CnesWs implements WebService {
 
             // concrete analysis
             String result = analysisWorker.analyze(
+                    request.mandatoryParam(NAME),
                     request.mandatoryParam(FOLDER),
                     request.mandatoryParam(SONAR_PROJECT_PROPERTIES)
             );
@@ -114,8 +129,13 @@ public class CnesWs implements WebService {
         // spp parameter
         analysis.createParam(SONAR_PROJECT_PROPERTIES)
                 .setDescription("The classical sonar-project.properties content.").setRequired(true);
+    }
 
-        // create the URL /api/cnes/analyze
+    /**
+     * Add the action corresponding to the report generation
+     * @param controller controller to which add the action
+     */
+    private void reportAction(NewController controller) {
         NewAction report = controller.createAction("report")
                 .setDescription("Generate the report of an analysis.")
                 .setSince(MIN_VERSION)
@@ -125,7 +145,6 @@ public class CnesWs implements WebService {
                     ReportTask reportWorker = new ReportTask();
                     String result = reportWorker.report(
                             request.mandatoryParam(KEY),
-                            request.mandatoryParam(QUALITY_PROFILE),
                             request.mandatoryParam(QUALITY_GATE),
                             request.mandatoryParam(NAME),
                             request.mandatoryParam(AUTHOR),
@@ -145,9 +164,6 @@ public class CnesWs implements WebService {
         // key parameter
         report.createParam(KEY)
                 .setDescription("Key of the project to report.").setRequired(true);
-        // quality profile parameter
-        report.createParam(QUALITY_PROFILE)
-                .setDescription("Name of the quality profile used to analyze the project.").setRequired(true);
         // quality gate parameter
         report.createParam(QUALITY_GATE)
                 .setDescription("Name of the quality gate used to analyze the project.").setRequired(true);
@@ -157,9 +173,6 @@ public class CnesWs implements WebService {
         // author's name parameter
         report.createParam(AUTHOR)
                 .setDescription("Author of the report.").setRequired(true);
-
-        // important to apply changes
-        controller.done();
     }
 
 }

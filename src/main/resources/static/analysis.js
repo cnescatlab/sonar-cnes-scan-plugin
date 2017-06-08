@@ -71,17 +71,22 @@ window.registerExtension('cnes/analysis', function (options) {
                             id="spp"\
                             name="spp"\
                             class="login-input"\
-                            rows="25"\
+                            rows="15"\
                             required="true"\
+                            style="resize: none;"\
                             ># Required metadata\nsonar.projectKey=<<TO REPLACE>>\nsonar.projectName=<<TO REPLACE>>\nsonar.projectDescription=<<TO REPLACE>>\nsonar.projectVersion=<<TO REPLACE>>\nsonar.language=<<TO REPLACE>>\n\n# Path to files\nsonar.sources=<<TO REPLACE>>\nsonar.tests=<<TO REPLACE>>\nsonar.java.binaries=<<TO REPLACE>>\n\n# Encoding of the source files\nsonar.sourceEncoding=UTF-8\n</textarea><em style="color:red;">* This field is mandatory.</em>\
                     </div>\
                     <div class="big-spacer-bottom">\
+                        <!--<div id="loading" class="text-center overflow-hidden">\
+                            <img src="loader.gif" alt="Working..."></img>\
+                        </div>-->\
                         <div class="text-center overflow-hidden">\
                             <input id="analyze" name="analyze" type="button" value="Analyze">\
                             <input id="clear" class="button button-red spacer-left" type="reset" value="Reset">\
+                            <input id="copy" class="button button-yellow spacer-left" type="button" value="Copy to clipboard">\
                         </div>\
                     </div>\
-                    <textarea id="logging" name="logging" class="login-input" rows="5" required="false" style="background: black; color:white;" readonly="">## Logging console ##</textarea>\
+                    <textarea id="logging" name="logging" class="login-input" rows="25" required="false" style="background: black; color:white; resize: none;" readonly="">## Logging console ##</textarea>\
                 </form>\
             </div>\
         </div>\
@@ -146,7 +151,35 @@ window.registerExtension('cnes/analysis', function (options) {
         var logging = document.querySelector('#logging');
         // append text to log
         logging.innerHTML = logging.innerHTML + "\n" + string;
+        // scroll to bottom
+        logging.scrollTop = logging.scrollHeight;
     };
+
+    /**
+     * Clear log information in text area
+     */
+    var clearLog = function () {
+        // get the logging element
+        var logging = document.querySelector('#logging');
+        // set initial text to log
+        logging.innerHTML = "## Logging console ##";
+    };
+
+    /**
+     *  Lock or unlock the form
+     *  @param isEnabled true to unlock, false to lock the form
+     */
+    var setEnabled = function (isEnabled) {
+        // retrieve the form
+        var form = document.getElementById("analyze-form");
+        // get all the components of the form
+        var elements = form.elements;
+        // change all components readOnly field to (un)lock them
+        for (var i = 0, len = elements.length; i < len; ++i) {
+            elements[i].readOnly = !isEnabled;
+            elements[i].disabled = !isEnabled;
+        }
+    }
 
     /**
      * Set the quality gate and profile of the project
@@ -179,10 +212,14 @@ window.registerExtension('cnes/analysis', function (options) {
                 log("[INFO] Quality gate selection response: " + response.status);
             }).catch(function (error) {
                 log("[WARNING] There were a problem during quality gate's setting.");
+                // unlock form
+                setEnabled(true);
             });
         }).catch(function (error) {
         // on error log it
             log("[WARNING] The quality gate does not exist.");
+            // unlock form
+            setEnabled(true);
         }).then(function () {
             // set the quality profile if the field is not empty
             if(qualityProfile!=="") {
@@ -213,19 +250,27 @@ window.registerExtension('cnes/analysis', function (options) {
                                 runAnalysis(projectKey, name, folder, qualityGate, qualityProfile, spp, author);
                             }).catch(function (error) {
                                 log("[WARNING] There were a problem during quality profile's setting.");
+                                // unlock form
+                                setEnabled(true);
                             });
                         } else {
                             // log error
                             log("[WARNING] The quality profile does not exists.");
+                            // unlock form
+                            setEnabled(true);
                         }
 
                     } else {
                         // log error
                         log("[WARNING] The quality profile does not exists.");
+                        // unlock form
+                        setEnabled(true);
                     }
                 }).catch(function (error) {
                     // log error
                     log("[WARNING] The quality profile does not exist.");
+                    // unlock form
+                    setEnabled(true);
                 });
             } else {
                 // if there is no need to set a profile we just launch the analysis
@@ -258,6 +303,8 @@ window.registerExtension('cnes/analysis', function (options) {
         }).catch(function (error) {
             // log error
             log("[ERROR] Project analysis failed.");
+            // unlock form
+            setEnabled(true);
         });
     };
 
@@ -269,18 +316,22 @@ window.registerExtension('cnes/analysis', function (options) {
      * @param qualityprofile
      * @param author
      */
-    var produceReport = function (key, name, qualitygate, qualityprofile, author) {
+    var produceReport = function (key, name, qualitygate, author) {
         // http GET request to the cnes web service
         window.SonarRequest.getJSON(
             '/api/cnes/report',
-            { key: key, name: name, qualitygate: qualitygate, qualityprofile: qualityprofile, author: author }
+            { key: key, name: name, qualitygate: qualitygate, author: author }
         ).then(function (response) {
             // on success log generation
             log("[INFO] Project report generation response: \n" + response.logs);
-            log("############################################################\n\tAnalysis finished with success!\n############################################################\n")
+            log("############################################################\n\tAnalysis finished with success!\n############################################################\n");
+            // unlock form
+            setEnabled(true);
         }).catch(function (error) {
             // log error
             log("[ERROR] Project report generation failed.");
+            // unlock form
+            setEnabled(true);
         });
     };
 
@@ -298,6 +349,9 @@ window.registerExtension('cnes/analysis', function (options) {
         // set its action on click
         analyzeButton.onclick = function () {
 
+            // clear logs
+            clearLog();
+
             // validation of the form
             if(checkForm()) {
 
@@ -309,6 +363,9 @@ window.registerExtension('cnes/analysis', function (options) {
                 var qprofile = document.forms["analyze-form"]["quality-profile"].value;
                 var author = document.forms["analyze-form"]["author"].value;
                 var spp = document.forms["analyze-form"]["spp"].value;
+
+                // lock the form
+                setEnabled(false);
 
                 // request the creation of the project
                 window.SonarRequest.post(
@@ -326,12 +383,24 @@ window.registerExtension('cnes/analysis', function (options) {
             }
         }
 
+        // get copy button in the DOM
+        var copyButton = document.querySelector('#copy');
+        // set copy button action
+        copyButton.onclick = function () {
+            // get logging text area
+            var toCopy  = document.getElementById( 'logging' );
+            // select the text area to copy it in the clipboard
+            toCopy.select();
+            document.execCommand( 'copy' );
+            return false;
+        }
     }
 
     // return a function, which is called when the page is being closed
     return function () {
         // we unset the `isDisplayedAnalysis` flag to ignore to Web API calls finished after the page is closed
         isDisplayedAnalysis = false;
+        // clear elements of this page
         options.el.textContent = '';
     };
 });

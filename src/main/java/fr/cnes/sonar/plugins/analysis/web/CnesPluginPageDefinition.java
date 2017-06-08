@@ -18,17 +18,23 @@ public class CnesPluginPageDefinition implements PageDefinition {
     @Override
     public void define(Context context) {
         context
-                // add a new page for analysis + reporting
+            // add a new page for analysis + reporting
             .addPage(Page.builder("cnes/analysis")
                     // set its name
-                .setName("Analysis")
+                .setName("CNES Analysis")
                     // set its scope (where it is displayed)
                 .setScope(Scope.GLOBAL).build())
-                // add a new page for reporting
+            // add a new page for reporting
             .addPage(Page.builder("cnes/reporting")
-                // set its name
-                .setName("Reporting")
-                // set its scope (where it is displayed)
-                .setScope(Scope.GLOBAL).build());
+                    // set its name
+                    .setName("CNES Reporting")
+                    // set its scope (where it is displayed)
+                    .setScope(Scope.GLOBAL).build())
+            // add a new page for help
+            .addPage(Page.builder("cnes/help")
+                    // set its name
+                    .setName("CNES Help")
+                    // set its scope (where it is displayed)
+                    .setScope(Scope.GLOBAL).build());
     }
 }

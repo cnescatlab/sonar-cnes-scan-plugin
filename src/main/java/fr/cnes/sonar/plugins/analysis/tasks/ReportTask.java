@@ -13,7 +13,6 @@ public class ReportTask extends AbstractTask {
     /**
      * Product the report
      * @param projectId Key of the project to report
-     * @param projectQualityProfile Quality profile of the project to report
      * @param projectQualityGate Quality Gate of the project to report
      * @param projectName  Name of the project to report
      * @param reportAuthor Author of the report
@@ -23,14 +22,13 @@ public class ReportTask extends AbstractTask {
      * @throws IOException when a file writing goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    public String report(String projectId, String projectQualityProfile, String projectQualityGate,
+    public String report(String projectId, String projectQualityGate,
                          String projectName, String reportAuthor, String reportPath,
                          String reportTemplate) throws IOException, InterruptedException {
         // construct the command string to run analysis
         String command = "java -jar " + "/opt/sonar/extensions/cnes/sonar-report-cnes.jar " +
                 "--sonar.url http://localhost:9000 " +
                 "--sonar.project.id \"" + projectId + "\" " +
-                "--sonar.project.quality.profile \"" + projectQualityProfile + "\" " +
                 "--sonar.project.quality.gate \"" + projectQualityGate + "\" " +
                 "--project.name \"" + projectName + "\" " +
                 "--report.author \"" + reportAuthor + "\" " +
