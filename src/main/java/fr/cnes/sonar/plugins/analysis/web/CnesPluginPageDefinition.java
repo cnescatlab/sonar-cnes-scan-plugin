@@ -5,6 +5,8 @@ import org.sonar.api.web.page.Page;
 import org.sonar.api.web.page.Page.Scope;
 import org.sonar.api.web.page.PageDefinition;
 
+import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
+
 /**
  * Define web pages of the plugin
  * @author garconb
@@ -19,21 +21,21 @@ public class CnesPluginPageDefinition implements PageDefinition {
     public void define(Context context) {
         context
             // add a new page for analysis + reporting
-            .addPage(Page.builder("cnes/analysis")
+            .addPage(Page.builder(string(CNES_PAGE_ANALYSIS_KEY))
                     // set its name
-                .setName("CNES Analysis")
+                .setName(string(CNES_PAGE_ANALYSIS_NAME))
                     // set its scope (where it is displayed)
                 .setScope(Scope.GLOBAL).build())
             // add a new page for reporting
-            .addPage(Page.builder("cnes/reporting")
+            .addPage(Page.builder(string(CNES_PAGE_REPORT_KEY))
                     // set its name
-                    .setName("CNES Reporting")
+                    .setName(string(CNES_PAGE_REPORT_NAME))
                     // set its scope (where it is displayed)
                     .setScope(Scope.GLOBAL).build())
             // add a new page for help
-            .addPage(Page.builder("cnes/help")
+            .addPage(Page.builder(string(CNES_PAGE_HELP_KEY))
                     // set its name
-                    .setName("CNES Help")
+                    .setName(string(CNES_PAGE_HELP_NAME))
                     // set its scope (where it is displayed)
                     .setScope(Scope.GLOBAL).build());
     }

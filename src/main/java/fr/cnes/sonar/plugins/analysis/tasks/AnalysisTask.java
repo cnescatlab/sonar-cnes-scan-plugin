@@ -6,33 +6,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
+
 /**
  * Execute the analysis of a project
  * @author garconb
  */
 public class AnalysisTask extends AbstractTask {
-
-    /**
-     * Path to the shared folder between host and guest
-     */
-    private static final String SHARED_FOLDER = "/media/sf_Shared";
-    /**
-     * Path pattern for the sonar-project.properties file
-     * arg1: shared folder
-     * arg2: project folder
-     */
-    private static final String SPP_PATH_PATTERN = "%s/%s/sonar-project.properties";
-    /**
-     * Path pattern for the log file
-     * arg1: shared folder
-     * arg2: date
-     * arg3: project name
-     */
-    private static final String LOG_PATH_PATTERN = "%s/%s-%s.log";
-    /**
-     * Command pattern to run an analysis
-     */
-    private static final String SCAN_COMMAND_PATTERN = "/opt/sonar-scanner/bin/sonar-scanner -D project.settings=" + SHARED_FOLDER + "/%s/sonar-project.properties -D sonar.projectBaseDir=/media/sf_Shared/%s";
 
     /**
      * Execute the analysis of a project
@@ -46,15 +26,24 @@ public class AnalysisTask extends AbstractTask {
     public String analyze(String projectName, String projectFolder, String sonarProjectProperties)
             throws IOException, InterruptedException {
 
+        // path where spp should be written
+        String sppPath = String.format(string(CNES_SPP_PATH),
+                string(CNES_WORKSPACE), projectFolder);
         // write sonar-project.properties in the project folder
-        writeTextFile(String.format(SPP_PATH_PATTERN, SHARED_FOLDER, projectFolder), sonarProjectProperties);
+        writeTextFile(sppPath, sonarProjectProperties);
 
+        // build the analysis command
+        String analysisCommand = String.format(string(CNES_COMMAND_SCAN),
+                string(CNES_WORKSPACE), projectFolder, projectFolder);
         // analysis execution
-        log(executeCommand(String.format(SCAN_COMMAND_PATTERN, projectFolder, projectFolder)));
+        log(executeCommand(analysisCommand));
+
+        // string formatted date as string
+        String date = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
 
         // export log file
-        String logPath = String.format(LOG_PATH_PATTERN, SHARED_FOLDER,
-                new SimpleDateFormat("yyyy-MM-dd").format(new Date()), projectName);
+        String logPath = String.format(string(CNES_LOG_PATH),
+                string(CNES_WORKSPACE), date, projectName);
         writeTextFile(logPath, getLogs());
 
         // return the complete logs

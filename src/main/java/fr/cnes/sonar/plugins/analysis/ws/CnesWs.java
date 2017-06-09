@@ -4,56 +4,13 @@ import fr.cnes.sonar.plugins.analysis.tasks.AnalysisTask;
 import fr.cnes.sonar.plugins.analysis.tasks.ReportTask;
 import org.sonar.api.server.ws.WebService;
 
+import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
+
 /**
  * Expose CNES plugin api
  * @author garconb
  */
 public class CnesWs implements WebService {
-
-    /**
-     * Define the minimal version of sonarqube
-     */
-    private static final String MIN_VERSION = "6.3.1";
-    /**
-     * Define the name of the quality profile parameter
-     */
-    private static final String QUALITY_PROFILE = "qualityprofile";
-    /**
-     * Define the name of the quality gate parameter
-     */
-    private static final String QUALITY_GATE = "qualitygate";
-    /**
-     * Define the name of the author parameter
-     */
-    private static final String AUTHOR = "author";
-    /**
-     * Define the name of the project's name parameter
-     */
-    private static final String NAME = "name";
-    /**
-     * Define the name of the projects's key parameter
-     */
-    private static final String KEY = "key";
-    /**
-     * Define the name of the returned log filed
-     */
-    private static final String LOGS = "logs";
-    /**
-     * Define the name of the projects's folder's name parameter
-     */
-    private static final String FOLDER = "folder";
-    /**
-     * Define the name of the projects's sonar-project.properties parameter
-     */
-    private static final String SONAR_PROJECT_PROPERTIES = "sonarProjectProperties";
-    /**
-     * Path where the report must be exported
-     */
-    private static final String REPORT_PATH = "/media/sf_Shared";
-    /**
-     * Template to use
-     */
-    private static final String TEMPLATE_PATH = "extensions/cnes/code-analysis-template.docx";
 
     /**
      * Define the new web service
@@ -63,11 +20,11 @@ public class CnesWs implements WebService {
     @Override
     public void define(Context context) {
         // create the new controller for the cnes web service
-        NewController controller = context.createController("api/cnes");
+        NewController controller = context.createController(string(CNES_CTRL_KEY));
         // set minimal sonarqube version required
-        controller.setSince(MIN_VERSION);
+        controller.setSince(string(SONAR_VERSION));
         // set description of the controller
-        controller.setDescription("Allow to analyze and export code analysis' reports with the CNES template.");
+        controller.setDescription(string(CNES_CTRL_DESCRIPTION));
 
         // create the action for URL /api/cnes/analyze
         analyzeAction(controller);
@@ -84,10 +41,10 @@ public class CnesWs implements WebService {
      * @param controller controller to which add the action
      */
     private void analyzeAction(NewController controller) {
-        NewAction analysis = controller.createAction("analyze")
+        NewAction analysis = controller.createAction(string(CNES_ACTION_1_KEY))
                 //set
-        .setDescription("Analyze a project.")
-        .setSince(MIN_VERSION)
+        .setDescription(string(CNES_ACTION_1_DESC))
+        .setSince(string(SONAR_VERSION))
         .setPost(true)
         .setHandler((request, response) -> {
             // read request parameters and generates response output
@@ -97,38 +54,38 @@ public class CnesWs implements WebService {
 
             // concrete analysis
             String result = analysisWorker.analyze(
-                    request.mandatoryParam(NAME),
-                    request.mandatoryParam(FOLDER),
-                    request.mandatoryParam(SONAR_PROJECT_PROPERTIES)
+                    request.mandatoryParam(string(CNES_ACTION_1_PARAM_2_NAME)),
+                    request.mandatoryParam(string(CNES_ACTION_1_PARAM_5_NAME)),
+                    request.mandatoryParam(string(CNES_ACTION_1_PARAM_6_NAME))
             );
 
             // write the json response
             response.newJsonWriter()
                .beginObject()
                     // add logs to response
-               .prop(LOGS, result)
+               .prop(string(CNES_ACTION_1_FIELD_1), result)
                .endObject()
                .close();
         });
         // create parameter of the action
         // key parameter
-        analysis.createParam(KEY)
-                .setDescription("Key of the project to analyze.").setRequired(true);
+        analysis.createParam(string(CNES_ACTION_1_PARAM_1_NAME))
+                .setDescription(string(CNES_ACTION_1_PARAM_1_DESC)).setRequired(true);
         // name parameter
-        analysis.createParam(NAME)
-                .setDescription("Name of the project to analyze.").setRequired(true);
+        analysis.createParam(string(CNES_ACTION_1_PARAM_2_NAME))
+                .setDescription(string(CNES_ACTION_1_PARAM_2_DESC)).setRequired(true);
         // quality profile parameter
-        analysis.createParam(QUALITY_PROFILE)
-                .setDescription("Name of the quality profile to use to analyze the project.").setRequired(true);
+        analysis.createParam(string(CNES_ACTION_1_PARAM_3_NAME))
+                .setDescription(string(CNES_ACTION_1_PARAM_3_DESC)).setRequired(true);
         // quality gate parameter
-        analysis.createParam(QUALITY_GATE)
-                .setDescription("Name of the quality gate to use to analyze the project.").setRequired(true);
+        analysis.createParam(string(CNES_ACTION_1_PARAM_4_NAME))
+                .setDescription(string(CNES_ACTION_1_PARAM_4_DESC)).setRequired(true);
         // folder parameter
-        analysis.createParam(FOLDER)
-                .setDescription("Name of the project folder.").setRequired(true);
+        analysis.createParam(string(CNES_ACTION_1_PARAM_5_NAME))
+                .setDescription(string(CNES_ACTION_1_PARAM_5_DESC)).setRequired(true);
         // spp parameter
-        analysis.createParam(SONAR_PROJECT_PROPERTIES)
-                .setDescription("The classical sonar-project.properties content.").setRequired(true);
+        analysis.createParam(string(CNES_ACTION_1_PARAM_6_NAME))
+                .setDescription(string(CNES_ACTION_1_PARAM_6_DESC)).setRequired(true);
     }
 
     /**
@@ -136,43 +93,43 @@ public class CnesWs implements WebService {
      * @param controller controller to which add the action
      */
     private void reportAction(NewController controller) {
-        NewAction report = controller.createAction("report")
-                .setDescription("Generate the report of an analysis.")
-                .setSince(MIN_VERSION)
+        NewAction report = controller.createAction(string(CNES_ACTION_2_KEY))
+                .setDescription(string(CNES_ACTION_2_DESC))
+                .setSince(string(SONAR_VERSION))
                 .setHandler((request, response) -> {
                     // read request parameters and generates response output
                     // create the report
                     ReportTask reportWorker = new ReportTask();
                     String result = reportWorker.report(
-                            request.mandatoryParam(KEY),
-                            request.mandatoryParam(QUALITY_GATE),
-                            request.mandatoryParam(NAME),
-                            request.mandatoryParam(AUTHOR),
-                            REPORT_PATH,
-                            TEMPLATE_PATH
+                            request.mandatoryParam(string(CNES_ACTION_2_PARAM_1_NAME)),
+                            request.mandatoryParam(string(CNES_ACTION_2_PARAM_2_NAME)),
+                            request.mandatoryParam(string(CNES_ACTION_2_PARAM_3_NAME)),
+                            request.mandatoryParam(string(CNES_ACTION_2_PARAM_4_NAME)),
+                            string(CNES_REPORTER_OUTPUT),
+                            string(CNES_REPORTER_TEMPLATE)
                             );
 
                     // set the response
                     response.newJsonWriter()
                             .beginObject()
                             // add logs to response
-                            .prop(LOGS, result)
+                            .prop(string(CNES_ACTION_2_FIELD_1), result)
                             .endObject()
                             .close();
                 });
         // add the parameters of the controller
         // key parameter
-        report.createParam(KEY)
-                .setDescription("Key of the project to report.").setRequired(true);
+        report.createParam(string(CNES_ACTION_2_PARAM_1_NAME))
+                .setDescription(string(CNES_ACTION_2_PARAM_1_DESC)).setRequired(true);
         // quality gate parameter
-        report.createParam(QUALITY_GATE)
-                .setDescription("Name of the quality gate used to analyze the project.").setRequired(true);
+        report.createParam(string(CNES_ACTION_2_PARAM_2_NAME))
+                .setDescription(string(CNES_ACTION_2_PARAM_2_DESC)).setRequired(true);
         // name of the project parameter
-        report.createParam(NAME)
-                .setDescription("Name of the report.").setRequired(true);
+        report.createParam(string(CNES_ACTION_2_PARAM_3_NAME))
+                .setDescription(string(CNES_ACTION_2_PARAM_3_DESC)).setRequired(true);
         // author's name parameter
-        report.createParam(AUTHOR)
-                .setDescription("Author of the report.").setRequired(true);
+        report.createParam(string(CNES_ACTION_2_PARAM_4_NAME))
+                .setDescription(string(CNES_ACTION_2_PARAM_4_DESC)).setRequired(true);
     }
 
 }

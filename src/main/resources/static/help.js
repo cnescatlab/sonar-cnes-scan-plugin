@@ -18,17 +18,6 @@ window.registerExtension('cnes/help', function (options) {
         </div>\
     </div>';
 
-    /**
-     * Log information in the bottom text area
-     * @param string Text to log
-     */
-    var log = function (string) {
-        // get the logging element
-        var logging = document.querySelector('#logging');
-        // append text to log
-        logging.innerHTML = logging.innerHTML + "\n" + string;
-    };
-
     // once the request is done, and the page is still displayed (not closed already)
     if (isDisplayedHelp) {
 

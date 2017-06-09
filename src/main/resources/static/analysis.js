@@ -299,7 +299,7 @@ window.registerExtension('cnes/analysis', function (options) {
             // log output
             log("[INFO] Project analysis response: \n" + response.logs);
             // produce the report
-            produceReport(key, name, qualitygate, qualityprofile, author);
+            produceReport(key, name, qualitygate, author);
         }).catch(function (error) {
             // log error
             log("[ERROR] Project analysis failed.");
