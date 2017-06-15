@@ -5,7 +5,7 @@
   <groupId>fr.cnes.sonar.plugins.analysis</groupId>
   <artifactId>sonar-cnes-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>1.1</version>
+  <version>1.2</version>
 
   <name>SonarQube CNES Plugin</name>
   <description>CNES plugin for SonarQube: launch analysis directly from the web interface and export reports.</description>
@@ -26,10 +26,22 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.sonarsource.sonarqube</groupId>
+      <artifactId>sonar-ws</artifactId>
+      <version>${sonar.apiVersion}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <!-- packaged with the plugin -->
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.6</version>
+    </dependency>
+    <dependency>
+      <!-- json parsing -->
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.0</version>
     </dependency>
 
 

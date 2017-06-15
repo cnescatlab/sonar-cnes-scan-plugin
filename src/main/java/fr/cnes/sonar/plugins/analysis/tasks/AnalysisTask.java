@@ -1,6 +1,10 @@
 package fr.cnes.sonar.plugins.analysis.tasks;
 
+import org.sonar.api.server.ws.Request;
+import org.sonar.api.server.ws.Response;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -23,28 +27,33 @@ public class AnalysisTask extends AbstractTask {
      * @throws IOException when a file writing goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    public String analyze(String projectName, String projectFolder, String sonarProjectProperties)
+    private String analyze(String projectName, String projectFolder, String sonarProjectProperties)
             throws IOException, InterruptedException {
 
-        // path where spp should be written
-        String sppPath = String.format(string(CNES_SPP_PATH),
-                string(CNES_WORKSPACE), projectFolder);
-        // write sonar-project.properties in the project folder
-        writeTextFile(sppPath, sonarProjectProperties);
+        try {
+            // path where spp should be written
+            String sppPath = String.format(string(CNES_SPP_PATH),
+                    string(CNES_WORKSPACE), projectFolder);
+            // write sonar-project.properties in the project folder
+            writeTextFile(sppPath, sonarProjectProperties);
+            // build the analysis command
+            String analysisCommand = String.format(string(CNES_COMMAND_SCAN),
+                    string(CNES_WORKSPACE), projectFolder, projectFolder);
+            // analysis execution
+            log(executeCommand(analysisCommand));
 
-        // build the analysis command
-        String analysisCommand = String.format(string(CNES_COMMAND_SCAN),
-                string(CNES_WORKSPACE), projectFolder, projectFolder);
-        // analysis execution
-        log(executeCommand(analysisCommand));
+            // string formatted date as string
+            String date = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
 
-        // string formatted date as string
-        String date = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
-
-        // export log file
-        String logPath = String.format(string(CNES_LOG_PATH),
-                string(CNES_WORKSPACE), date, projectName);
-        writeTextFile(logPath, getLogs());
+            // export log file
+            String logPath = String.format(string(CNES_LOG_PATH),
+                    string(CNES_WORKSPACE), date, projectName);
+            writeTextFile(logPath, getLogs());
+        } catch (FileNotFoundException e) {
+            // the spp file or the log file could not be written
+            // so we log the problem and return logs
+            log(e.getMessage());
+        }
 
         // return the complete logs
         return getLogs();
@@ -68,4 +77,30 @@ public class AnalysisTask extends AbstractTask {
         }
     }
 
+    /**
+     * Use the user's request to launch an analysis
+     * @param request request coming from the user
+     * @param response response to send to the user
+     * @throws IOException when communicating with the client
+     * @throws InterruptedException ...
+     */
+    @Override
+    public void handle(Request request, Response response)
+            throws IOException, InterruptedException {
+
+        // concrete analysis
+        String result = analyze(
+                request.mandatoryParam(string(CNES_ACTION_1_PARAM_2_NAME)),
+                request.mandatoryParam(string(CNES_ACTION_1_PARAM_5_NAME)),
+                request.mandatoryParam(string(CNES_ACTION_1_PARAM_6_NAME))
+        );
+
+        // write the json response
+        response.newJsonWriter()
+                .beginObject()
+                // add logs to response
+                .prop(string(CNES_ACTION_1_FIELD_1), result)
+                .endObject()
+                .close();
+    }
 }

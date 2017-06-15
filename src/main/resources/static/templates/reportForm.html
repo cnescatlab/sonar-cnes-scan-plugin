@@ -1,0 +1,59 @@
+<div id="bd" class="page-wrapper-simple">
+    <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">
+        <div>
+            <h1 class="maintenance-title text-center">Generate a report</h1>
+            <form id="generation-form">
+                <div class="big-spacer-bottom">
+                    <label for="key" class="login-label">Project key</label><input type="text"
+                                                                                   id="key"
+                                                                                   name="key"
+                                                                                   class="login-input"
+                                                                                   maxlength="255"
+                                                                                   required="true"
+                                                                                   placeholder="Project key">
+                    <em style="color:red;">* mandatory field</em>
+                </div>
+                <div class="big-spacer-bottom">
+                    <label for="name" class="login-label">Project name</label><input type="text"
+                                                                                     id="name"
+                                                                                     name="name"
+                                                                                     class="login-input"
+                                                                                     maxlength="255"
+                                                                                     required="true"
+                                                                                     placeholder="Project name">
+                    <em style="color:red;">* mandatory field</em>
+                </div>
+                <div class="big-spacer-bottom">
+                    <label for="author" class="login-label">Author</label><input type="text"
+                                                                                 id="author"
+                                                                                 name="author"
+                                                                                 class="login-input"
+                                                                                 maxlength="255"
+                                                                                 required="true"
+                                                                                 placeholder="Report author">
+                    <em style="color:grey;">Default value: default</em>
+                </div>
+                <div class="big-spacer-bottom">
+                    <label for="quality-gate" class="login-label">Project quality gate</label><input type="text"
+                                                                                                     id="quality-gate"
+                                                                                                     name="quality-gate"
+                                                                                                     class="login-input"
+                                                                                                     maxlength="255"
+                                                                                                     required="true"
+                                                                                                     placeholder="Project quality gate">
+                    <em style="color:grey;">Default value: CNES</em>
+                </div>
+                <div class="big-spacer-bottom">
+                    <div id="loading" class="text-center overflow-hidden" style="margin-bottom: 1em; display: none;">
+                        <img src="../../static/cnes/images/loader.gif" alt="Working..."/>
+                    </div>
+                    <div class="text-center overflow-hidden">
+                        <input id="generation" name="generation" type="button" value="Generate">
+                        <input id="clear" class="button button-red spacer-left" type="reset" value="Reset">
+                    </div>
+                </div>
+                <textarea id="logging" name="logging" class="login-input" rows="25" required="false" style="background: black; color:white; resize: none;" readonly="">## Logging console ##</textarea>
+            </form>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,7 @@ package fr.cnes.sonar.plugins.analysis.ws;
 
 import fr.cnes.sonar.plugins.analysis.tasks.AnalysisTask;
 import fr.cnes.sonar.plugins.analysis.tasks.ReportTask;
+import fr.cnes.sonar.plugins.analysis.tasks.project.ProjectTask;
 import org.sonar.api.server.ws.WebService;
 
 import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
@@ -32,6 +33,9 @@ public class CnesWs implements WebService {
         // create the action for URL /api/cnes/report
         reportAction(controller);
 
+        // create the action for URL /api/cnes/create_project
+        projectAction(controller);
+
         // important to apply changes
         controller.done();
     }
@@ -46,27 +50,8 @@ public class CnesWs implements WebService {
         .setDescription(string(CNES_ACTION_1_DESC))
         .setSince(string(SONAR_VERSION))
         .setPost(true)
-        .setHandler((request, response) -> {
-            // read request parameters and generates response output
-
-            // create the task to analyze the project
-            AnalysisTask analysisWorker = new AnalysisTask();
-
-            // concrete analysis
-            String result = analysisWorker.analyze(
-                    request.mandatoryParam(string(CNES_ACTION_1_PARAM_2_NAME)),
-                    request.mandatoryParam(string(CNES_ACTION_1_PARAM_5_NAME)),
-                    request.mandatoryParam(string(CNES_ACTION_1_PARAM_6_NAME))
-            );
-
-            // write the json response
-            response.newJsonWriter()
-               .beginObject()
-                    // add logs to response
-               .prop(string(CNES_ACTION_1_FIELD_1), result)
-               .endObject()
-               .close();
-        });
+        // new analysis task to handle the request and work on the code
+        .setHandler(new AnalysisTask());
         // create parameter of the action
         // key parameter
         analysis.createParam(string(CNES_ACTION_1_PARAM_1_NAME))
@@ -96,27 +81,7 @@ public class CnesWs implements WebService {
         NewAction report = controller.createAction(string(CNES_ACTION_2_KEY))
                 .setDescription(string(CNES_ACTION_2_DESC))
                 .setSince(string(SONAR_VERSION))
-                .setHandler((request, response) -> {
-                    // read request parameters and generates response output
-                    // create the report
-                    ReportTask reportWorker = new ReportTask();
-                    String result = reportWorker.report(
-                            request.mandatoryParam(string(CNES_ACTION_2_PARAM_1_NAME)),
-                            request.mandatoryParam(string(CNES_ACTION_2_PARAM_2_NAME)),
-                            request.mandatoryParam(string(CNES_ACTION_2_PARAM_3_NAME)),
-                            request.mandatoryParam(string(CNES_ACTION_2_PARAM_4_NAME)),
-                            string(CNES_REPORTER_OUTPUT),
-                            string(CNES_REPORTER_TEMPLATE)
-                            );
-
-                    // set the response
-                    response.newJsonWriter()
-                            .beginObject()
-                            // add logs to response
-                            .prop(string(CNES_ACTION_2_FIELD_1), result)
-                            .endObject()
-                            .close();
-                });
+                .setHandler(new ReportTask());
         // add the parameters of the controller
         // key parameter
         report.createParam(string(CNES_ACTION_2_PARAM_1_NAME))
@@ -130,6 +95,30 @@ public class CnesWs implements WebService {
         // author's name parameter
         report.createParam(string(CNES_ACTION_2_PARAM_4_NAME))
                 .setDescription(string(CNES_ACTION_2_PARAM_4_DESC)).setRequired(true);
+    }
+
+    /**
+     * Add the action corresponding to the project creation
+     * @param controller controller to which add the action
+     */
+    private void projectAction(NewController controller) {
+        NewAction project = controller.createAction(string(CNES_ACTION_3_KEY))
+                .setDescription(string(CNES_ACTION_3_DESC))
+                .setSince(string(SONAR_VERSION))
+                .setHandler(new ProjectTask());
+        // add the parameters of the controller
+        // key parameter
+        project.createParam(string(CNES_ACTION_3_PARAM_1_NAME))
+                .setDescription(string(CNES_ACTION_3_PARAM_1_DESC)).setRequired(true);
+        // name of the project parameter
+        project.createParam(string(CNES_ACTION_3_PARAM_2_NAME))
+                .setDescription(string(CNES_ACTION_3_PARAM_2_DESC)).setRequired(true);
+        // quality profiles parameter
+        project.createParam(string(CNES_ACTION_3_PARAM_3_NAME))
+                .setDescription(string(CNES_ACTION_3_PARAM_3_DESC)).setRequired(true);
+        // quality gate parameter
+        project.createParam(string(CNES_ACTION_3_PARAM_4_NAME))
+                .setDescription(string(CNES_ACTION_3_PARAM_4_DESC)).setRequired(true);
     }
 
 }

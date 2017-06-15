@@ -1,6 +1,7 @@
 package fr.cnes.sonar.plugins.analysis.tasks;
 
 
+import org.sonar.api.server.ws.RequestHandler;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
@@ -12,7 +13,7 @@ import java.io.InputStreamReader;
  * Execute the analysis of a project
  * @author garconb
  */
-public abstract class AbstractTask {
+public abstract class AbstractTask implements RequestHandler {
 
     /**
      * logger for all tasks
@@ -91,7 +92,7 @@ public abstract class AbstractTask {
      * Add logs
      * @param logs string to add
      */
-    void log(String logs) {
+    protected void log(String logs) {
         this.logs.append(logs);
     }
 }

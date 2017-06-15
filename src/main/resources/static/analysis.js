@@ -2,95 +2,16 @@ window.registerExtension('cnes/analysis', function (options) {
     // let's create a flag telling if the page is still displayed
     var isDisplayedAnalysis = true;
 
-    // contain the template of the page
-    var htmlTemplate = '\
-    <div id="bd" class="page-wrapper-simple">\
-        <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">\
-            <div>\
-                <h1 class="maintenance-title text-center">Analyze a project</h1>\
-                <form id="analyze-form"><!-- react-empty: 33 -->\
-                    <div class="big-spacer-bottom">\
-                        <label for="key" class="login-label">Project key<em style="color:red;">*</em></label><input required type="text"\
-                            id="key"\
-                            name="key"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Project key"><em style="color:red;">* This field is mandatory.</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="name" class="login-label" >Project name<em style="color:red;">*</em></label><input required type="text"\
-                            id="name"\
-                            name="name"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Project name"><em style="color:red;">* This field is mandatory.</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="folder" class="login-label">Project folder<em style="color:red;">*</em></label><input required type="text"\
-                            id="folder"\
-                            name="folder"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Project folder"><em style="color:red;">* This field is mandatory.</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="author" class="login-label">Author</label><input type="text"\
-                            id="author"\
-                            name="author"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Report author">\
-                            <em style="color:grey;">Default value: default</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="quality-gate" class="login-label">Project quality gate</label><input type="text"\
-                            id="quality-gate"\
-                            name="quality-gate"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Project quality gate">\
-                            <em style="color:grey;">Default value: CNES</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="quality-profile" class="login-label">Project quality profile</label><input type="text"\
-                            id="quality-profile"\
-                            name="quality-profile"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Project quality profile">\
-                            <em style="color:grey;">Default value: default quality profiles</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="spp" class="login-label">sonar-project.properties<em style="color:red;">*</em></label><textarea required type="text"\
-                            id="spp"\
-                            name="spp"\
-                            class="login-input"\
-                            rows="15"\
-                            required="true"\
-                            style="resize: none;"\
-                            ># Required metadata\nsonar.projectKey=<<TO REPLACE>>\nsonar.projectName=<<TO REPLACE>>\nsonar.projectDescription=<<TO REPLACE>>\nsonar.projectVersion=<<TO REPLACE>>\nsonar.language=<<TO REPLACE>>\n\n# Path to files\nsonar.sources=<<TO REPLACE>>\nsonar.tests=<<TO REPLACE>>\nsonar.java.binaries=<<TO REPLACE>>\n\n# Encoding of the source files\nsonar.sourceEncoding=UTF-8\n</textarea><em style="color:red;">* This field is mandatory.</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <!--<div id="loading" class="text-center overflow-hidden">\
-                            <img src="loader.gif" alt="Working..."></img>\
-                        </div>-->\
-                        <div class="text-center overflow-hidden">\
-                            <input id="analyze" name="analyze" type="button" value="Analyze">\
-                            <input id="clear" class="button button-red spacer-left" type="reset" value="Reset">\
-                            <input id="copy" class="button button-yellow spacer-left" type="button" value="Copy to clipboard">\
-                        </div>\
-                    </div>\
-                    <textarea id="logging" name="logging" class="login-input" rows="25" required="false" style="background: black; color:white; resize: none;" readonly="">## Logging console ##</textarea>\
-                </form>\
-            </div>\
-        </div>\
-    </div>';
+    /**
+     * Verify that the permissions are good.
+     * @returns {boolean} true if all is good
+     */
+    var checkPermissions = function () {
+        // get permissions of the current user
+        var perm = options.currentUser.permissions.global;
+        // check that scna gateadmin and provisioning rights are in the permission array
+        return options.currentUser.isLoggedIn && perm.indexOf("gateadmin")!==-1 && perm.indexOf("scan")!==-1 && perm.indexOf("provisioning")!==-1;
+    };
 
     /**
      * Verify that the fields are correct.
@@ -179,104 +100,51 @@ window.registerExtension('cnes/analysis', function (options) {
             elements[i].readOnly = !isEnabled;
             elements[i].disabled = !isEnabled;
         }
-    }
+
+        if(isEnabled) {
+            // hide loading when button are enabled
+            $('#loading').hide();
+        } else {
+            // show loading otherwise
+            $('#loading').show();
+        }
+    };
 
     /**
-     * Set the quality gate and profile of the project
+     * Create a project and set the quality gate and profiles of the project
      * @param projectKey Key of the project
+     * @param name
+     * @param folder
      * @param qualityGate value for the quality gate
      * @param qualityProfile value for the quality profile
+     * @param spp
+     * @param author
+     * @param callback
      */
-    var setQualityParams = function (projectKey, name, folder, qualityGate, qualityProfile, spp, author) {
+    var createProject = function (projectKey, name, folder, qualityGate, qualityProfile, spp, author, callback) {
 
         // check if the quality gate field is filled out
         qualityGate = qualityGate === "" ? "CNES" : qualityGate;
 
-        // Quality gate setting Basic YWRtaW46YWRtaW4=
-        window.SonarRequest.getJSON(    // get the id from the name
-            '/api/qualitygates/show?name='+qualityGate
+        // Request to create a project with quality parameters
+        window.SonarRequest.getJSON(
+            '/api/cnes/create_project?key='+projectKey+'&name='+name+'&gate='+qualityGate+'&profiles='+qualityProfile
         ).then(function (response) {
-        // it exists
-        // request the setting of the quality gate
-            window.SonarRequest.request(
-                '/api/qualitygates/select'
-            ).setHeader(
-            // need admin permissions
-                "Authorization", "Basic YWRtaW46YWRtaW4="
-            ).setMethod(
-            // use post method
-                "POST"
-            ).setData(
-                { projectKey: projectKey, gateId: response.id }
-            ).submit().then(function (response) {
-                log("[INFO] Quality gate selection response: " + response.status);
-            }).catch(function (error) {
-                log("[WARNING] There were a problem during quality gate's setting.");
+            // log response
+            log('[INFO] Project created successfully: ' + response.success);
+            log('[INFO] Project creation log:\n' + response.logs);
+            // if success we call the next function (analysis)
+            if(response.success) {
+                callback(projectKey, name, folder, qualityGate, qualityProfile, spp, author, produceReport);
+            } else {
                 // unlock form
                 setEnabled(true);
-            });
+            }
         }).catch(function (error) {
-        // on error log it
-            log("[WARNING] The quality gate does not exist.");
+            // log error
+            log(error);
             // unlock form
             setEnabled(true);
-        }).then(function () {
-            // set the quality profile if the field is not empty
-            if(qualityProfile!=="") {
-                // Quality profile setting Basic YWRtaW46YWRtaW4=
-                window.SonarRequest.getJSON(
-                // get the id from the name
-                    '/api/qualityprofiles/search?profileName='+qualityProfile
-                ).then(function (response) {
-                // if it exists
-                    if(response.profiles !== undefined && response.profiles.length >= 1) {
-                        // filter profile with the good name
-                        var filteredProfiles = response.profiles.filter(function (profile) {
-                            return profile.name === qualityProfile;
-                        });
-                        // if there is at means one profile
-                        if(filteredProfiles.length >= 1) {
-                            // request to set the profile
-                            window.SonarRequest.request(
-                                '/api/qualityprofiles/add_project'
-                            ).setHeader(
-                                "Authorization", "Basic YWRtaW46YWRtaW4="
-                            ).setMethod(
-                                "POST"
-                            ).setData(
-                                { projectKey: projectKey, profileKey: filteredProfiles[0].key }
-                            ).submit().then(function (response) {
-                                log("[INFO] Quality profile selection response: " + response.status);
-                                runAnalysis(projectKey, name, folder, qualityGate, qualityProfile, spp, author);
-                            }).catch(function (error) {
-                                log("[WARNING] There were a problem during quality profile's setting.");
-                                // unlock form
-                                setEnabled(true);
-                            });
-                        } else {
-                            // log error
-                            log("[WARNING] The quality profile does not exists.");
-                            // unlock form
-                            setEnabled(true);
-                        }
-
-                    } else {
-                        // log error
-                        log("[WARNING] The quality profile does not exists.");
-                        // unlock form
-                        setEnabled(true);
-                    }
-                }).catch(function (error) {
-                    // log error
-                    log("[WARNING] The quality profile does not exist.");
-                    // unlock form
-                    setEnabled(true);
-                });
-            } else {
-                // if there is no need to set a profile we just launch the analysis
-                runAnalysis(projectKey, name, folder, qualityGate, qualityProfile, spp, author);
-            }
-
         });
     };
 
@@ -288,8 +156,10 @@ window.registerExtension('cnes/analysis', function (options) {
      * @param qualitygate
      * @param qualityprofile
      * @param spp
+     * @param author
+     * @param callback
      */
-    var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp, author) {
+    var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp, author, callback) {
         // send post request to the cnes web service
         window.SonarRequest.postJSON(
             '/api/cnes/analyze',
@@ -299,7 +169,7 @@ window.registerExtension('cnes/analysis', function (options) {
             // log output
             log("[INFO] Project analysis response: \n" + response.logs);
             // produce the report
-            produceReport(key, name, qualitygate, author);
+            callback(key, name, qualitygate, author);
         }).catch(function (error) {
             // log error
             log("[ERROR] Project analysis failed.");
@@ -313,7 +183,6 @@ window.registerExtension('cnes/analysis', function (options) {
      * @param key
      * @param name
      * @param qualitygate
-     * @param qualityprofile
      * @param author
      */
     var produceReport = function (key, name, qualitygate, author) {
@@ -339,61 +208,62 @@ window.registerExtension('cnes/analysis', function (options) {
     if (isDisplayedAnalysis) {
 
         // Add html template
-        var template = document.createElement("template");
-        template.innerHTML = htmlTemplate;
+        var template = document.createElement("div");
+        template.setAttribute("id", "template");
         options.el.appendChild(template);
-        options.el.appendChild(document.importNode(template.content, true));
 
-        // set analyze button action
-        var analyzeButton = document.querySelector('#analyze');
-        // set its action on click
-        analyzeButton.onclick = function () {
+        // url of the template to load
+        var urlTemplate = checkPermissions() ? '../../static/cnes/templates/analysisForm.html' : '../../static/cnes/templates/denied.html';
 
-            // clear logs
-            clearLog();
+        // add the form if user has permission otherwise the denied access page
+        $('#template').load(urlTemplate, function () {
 
-            // validation of the form
-            if(checkForm()) {
+            // set analyze button action
+            var analyzeButton = document.querySelector('#analyze');
+            // set its action on click
+            analyzeButton.onclick = function () {
 
-                // Get form values
-                var key = document.forms["analyze-form"]["key"].value;
-                var name = document.forms["analyze-form"]["name"].value;
-                var folder = document.forms["analyze-form"]["folder"].value;
-                var qgate = document.forms["analyze-form"]["quality-gate"].value;
-                var qprofile = document.forms["analyze-form"]["quality-profile"].value;
-                var author = document.forms["analyze-form"]["author"].value;
-                var spp = document.forms["analyze-form"]["spp"].value;
+                // clear logs
+                clearLog();
 
-                // lock the form
-                setEnabled(false);
+                // hide loading
+                $('#loading').hide();
 
-                // request the creation of the project
-                window.SonarRequest.post(
-                    '/api/projects/create',
-                    { project: key, name: name }
-                ).then(function (response) {
-                    // on success log and set quality params
-                    log("[INFO] Project creation response: " + response.status);
-                    setQualityParams(key, name, folder, qgate, qprofile, spp, author);
-                }).catch(function (error) {
-                    // on failure log and set quality params too
-                    log("[WARNING] This project was not created. Maybe, it was already created.");
-                    setQualityParams(key, name, folder, qgate, qprofile, spp, author);
-                });
+                // validation of the form
+                if (checkForm()) {
+
+                    // Get form values
+                    var key = document.forms["analyze-form"]["key"].value;
+                    var name = document.forms["analyze-form"]["name"].value;
+                    var folder = document.forms["analyze-form"]["folder"].value;
+                    var qgate = document.forms["analyze-form"]["quality-gate"].value;
+                    var qprofile = document.forms["analyze-form"]["quality-profile"].value;
+                    var author = document.forms["analyze-form"]["author"].value;
+                    var spp = document.forms["analyze-form"]["spp"].value;
+
+                    // lock the form
+                    setEnabled(false);
+
+                    // show loading
+                    $('#loading').show();
+
+                    // request the creation of the project
+                    createProject(key, name, folder, qgate, qprofile, spp, author, runAnalysis);
+                }
+            };
+
+            // get copy button in the DOM
+            var copyButton = document.querySelector('#copy');
+            // set copy button action
+            copyButton.onclick = function () {
+                // get logging text area
+                var toCopy = document.getElementById('logging');
+                // select the text area to copy it in the clipboard
+                toCopy.select();
+                document.execCommand('copy');
+                return false;
             }
-        }
-
-        // get copy button in the DOM
-        var copyButton = document.querySelector('#copy');
-        // set copy button action
-        copyButton.onclick = function () {
-            // get logging text area
-            var toCopy  = document.getElementById( 'logging' );
-            // select the text area to copy it in the clipboard
-            toCopy.select();
-            document.execCommand( 'copy' );
-            return false;
-        }
+        });
     }
 
     // return a function, which is called when the page is being closed

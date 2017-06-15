@@ -2,68 +2,6 @@ window.registerExtension('cnes/reporting', function (options) {
     // let's create a flag telling if the page is still displayed
     var isDisplayedReporting = true;
 
-    // contain the template of the page
-    var htmlTemplate = '\
-    <div id="bd" class="page-wrapper-simple">\
-        <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">\
-            <div>\
-                <h1 class="maintenance-title text-center">Generate a report</h1>\
-                <form id="generation-form">\
-                    <div class="big-spacer-bottom">\
-                        <label for="key" class="login-label">Project key</label><input type="text"\
-                            id="key"\
-                            name="key"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Project key">\
-                            <em style="color:red;">* This field is mandatory.</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="name" class="login-label">Project name</label><input type="text"\
-                            id="name"\
-                            name="name"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Project name">\
-                            <em style="color:red;">* This field is mandatory.</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="author" class="login-label">Author</label><input type="text"\
-                            id="author"\
-                            name="author"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Report author">\
-                            <em style="color:grey;">Default value: default</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <label for="quality-gate" class="login-label">Project quality gate</label><input type="text"\
-                            id="quality-gate"\
-                            name="quality-gate"\
-                            class="login-input"\
-                            maxlength="255"\
-                            required="true"\
-                            placeholder="Project quality gate">\
-                            <em style="color:grey;">Default value: CNES</em>\
-                    </div>\
-                    <div class="big-spacer-bottom">\
-                        <!--<div id="loading" class="text-center overflow-hidden">\
-                            <img src="loader.gif" alt="Working..."></img>\
-                        </div>-->\
-                        <div class="text-center overflow-hidden">\
-                            <input id="generation" name="generation" type="button" value="Generate">\
-                            <input id="clear" class="button button-red spacer-left" type="reset" value="Reset">\
-                        </div>\
-                    </div>\
-                    <textarea id="logging" name="logging" class="login-input" rows="5" required="false" style="background: black; color:white; resize: none;" readonly="">## Logging console ##</textarea>\
-                </form>\
-            </div>\
-        </div>\
-    </div>';
-
     /**
      * Verify that the fields are correct.
      * @returns {boolean} true if all is good
@@ -128,7 +66,15 @@ window.registerExtension('cnes/reporting', function (options) {
             elements[i].readOnly = !isEnabled;
             elements[i].disabled = !isEnabled;
         }
-    }
+
+        if(isEnabled) {
+            // hide loading when button are enabled
+            $('#loading').hide();
+        } else {
+            // show loading otherwise
+            $('#loading').show();
+        }
+    };
 
     /**
      * Generate the report
@@ -158,35 +104,41 @@ window.registerExtension('cnes/reporting', function (options) {
     if (isDisplayedReporting) {
 
         // Add html template
-        var template = document.createElement("template");
-        template.innerHTML = htmlTemplate;
+        var template = document.createElement("div");
+        template.setAttribute("id", "template");
         options.el.appendChild(template);
-        options.el.appendChild(document.importNode(template.content, true));
+        // retrieve template from html
+        $('#template').load('../../static/cnes/templates/reportForm.html', function(){
+            // set generation button action
+            // set its action on click
+            document.querySelector('#generation').onclick = function () {
 
-        // set generation button action
-        var generation = document.querySelector('#generation');
-        // set its action on click
-        generation.onclick = function () {
+                // clear logs
+                clearLog();
 
-            // clear logs
-            clearLog();
+                // hide loading
+                $('#loading').hide();
 
-            // validation of the form
-            if(checkForm()) {
+                // validation of the form
+                if(checkForm()) {
 
-                // Get form values
-                var key = document.forms["generation-form"]["key"].value;
-                var name = document.forms["generation-form"]["name"].value;
-                var qgate = document.forms["generation-form"]["quality-gate"].value;
-                var author = document.forms["generation-form"]["author"].value;
+                    // Get form values
+                    var key = document.forms["generation-form"]["key"].value;
+                    var name = document.forms["generation-form"]["name"].value;
+                    var qgate = document.forms["generation-form"]["quality-gate"].value;
+                    var author = document.forms["generation-form"]["author"].value;
 
-                // lock the form
-                setEnabled(false);
+                    // lock the form
+                    setEnabled(false);
 
-                // request the creation of the report
-                produceReport(key, name, qgate, author);
-            }
-        }
+                    // show loading
+                    $('#loading').show();
+
+                    // request the creation of the report
+                    produceReport(key, name, qgate, author);
+                }
+            };
+        });
 
     }
 

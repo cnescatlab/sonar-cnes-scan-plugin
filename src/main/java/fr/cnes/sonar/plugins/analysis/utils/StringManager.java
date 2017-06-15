@@ -96,6 +96,10 @@ public class StringManager {
      */
     public static final String CNES_ACTION_2_DESC = "cnes.action.2.desc";
     /**
+     * Property for quality profiles separator
+     */
+    public static final String CNES_COMMAND_PROJECT_PROFILES_SEPARATOR = "cnes.command.project.profiles.separator";
+    /**
      * Logger of this class
      */
     private static final Logger LOGGER = Logger.getLogger(StringManager.class.getName());
@@ -210,11 +214,71 @@ public class StringManager {
      * Template to use
      */
     public static final String CNES_REPORTER_TEMPLATE = "cnes.reporter.template";
+    /**
+     * Template to use for xlsx
+     */
+    public static final String CNES_ISSUES_TEMPLATE = "cnes.issues.template";
 
     /**
      * Unique instance of this class (singleton)
      */
-    private static StringManager ourInstance = new StringManager();
+    private static final StringManager ourInstance = new StringManager();
+    /**
+     * Property for the action's 3 key (project creation)
+     */
+    public static final String CNES_ACTION_3_KEY = "cnes.action.3.key";
+    /**
+     * Property for the action's 3 description (project creation)
+     */
+    public static final String CNES_ACTION_3_DESC = "cnes.action.3.desc";
+    /**
+     * Property for the action 3 (project creation) parameter 1 name (project key)
+     */
+    public static final String CNES_ACTION_3_PARAM_1_NAME = "cnes.action.3.param.1.name";
+    /**
+     * Property for the action 3 (project creation) parameter 1 description (project key)
+     */
+    public static final String CNES_ACTION_3_PARAM_1_DESC = "cnes.action.3.param.1.desc";
+    /**
+     * Property for the action 3 (project creation) parameter 2 name (project name)
+     */
+    public static final String CNES_ACTION_3_PARAM_2_NAME = "cnes.action.3.param.2.name";
+    /**
+     * Property for the action 3 (project creation) parameter 2 description (project name)
+     */
+    public static final String CNES_ACTION_3_PARAM_2_DESC = "cnes.action.3.param.2.desc";
+    /**
+     * Property for the action 3 (project creation) parameter 3 name (quality profiles)
+     */
+    public static final String CNES_ACTION_3_PARAM_3_NAME = "cnes.action.3.param.3.name";
+    /**
+     * Property for the action 3 (project creation) parameter 3 description (quality profiles)
+     */
+    public static final String CNES_ACTION_3_PARAM_3_DESC = "cnes.action.3.param.3.desc";
+    /**
+     * Property for the action 3 (project creation) parameter 4 name (quality gate)
+     */
+    public static final String CNES_ACTION_3_PARAM_4_NAME = "cnes.action.3.param.4.name";
+    /**
+     * Property for the action 3 (project creation) parameter 4 description (quality gate)
+     */
+    public static final String CNES_ACTION_3_PARAM_4_DESC = "cnes.action.3.param.4.desc";
+    /**
+     *  Property for action 3 (project) response's field 1
+     */
+    public static final String CNES_ACTION_3_FIELD_1 = "cnes.action.3.field.1";
+    /**
+     *  Property for action 3 (project) response's field 2
+     */
+    public static final String CNES_ACTION_3_FIELD_2 = "cnes.action.3.field.2";
+    /**
+     *  Separator between two log entries
+     */
+    public static final String CNES_LOG_SEPARATOR = "cnes.log.separator";
+    /**
+     *  Property for the url of the list request for quality gates
+     */
+    public static final String CNES_REQUESTS_QUALITYGATES_LIST = "cnes.requests.qualitygates.list";
 
     /**
      * Gather all the properties concerning the plugin
@@ -266,6 +330,6 @@ public class StringManager {
      * @return the property as String or the DEFAULT_STRING
      */
     public static String string(String key) {
-        return ourInstance.properties.getProperty(key, DEFAULT_STRING);
+        return getInstance().properties.getProperty(key, DEFAULT_STRING);
     }
 }
