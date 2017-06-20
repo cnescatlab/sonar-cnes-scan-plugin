@@ -59,7 +59,18 @@ window.registerExtension('cnes/analysis', function (options) {
             log("sonar-project.properties was not correctly filled out. Replace all '<<TO REPLACE>>' fields.");
             // abort the process
             return false;
+        // check if the user try to set project key
+        } else if(spp.indexOf("sonar.projectKey")!==-1) {
+            log("Please do not use 'sonar.projectKey' property.");
+            // abort the process
+            return false;
+        // check if the user try to set project name
+        } else if(spp.indexOf("sonar.projectName")!==-1) {
+            log("Please do not use 'sonar.projectName' property.");
+            // abort the process
+            return false;
         }
+
         return true;
     };
 
@@ -160,6 +171,10 @@ window.registerExtension('cnes/analysis', function (options) {
      * @param callback
      */
     var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp, author, callback) {
+        // complete the spp with projectKey and projectName
+        spp = spp.concat("\nsonar.projectKey="+key);
+        spp = spp.concat("\nsonar.projectName="+name);
+
         // send post request to the cnes web service
         window.SonarRequest.postJSON(
             '/api/cnes/analyze',

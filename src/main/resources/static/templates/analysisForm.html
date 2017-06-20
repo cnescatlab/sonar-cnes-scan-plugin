@@ -1,90 +1,136 @@
+<script>
+    /**
+     *  Show/hide the given label
+     *  labelId Id of the label to hide
+     */
+    function showLabel(labelId) {
+        console.log($('#'+labelId).textContent);
+        if($('#'+labelId).textContent!==undefined) {
+            // show the label when the placeholder is no more present
+            $('#'+labelId).show();
+        } else {
+            // hide the label when the placeholder is displayed
+            $('#'+labelId).hide();
+        }
+    };
+</script>
+
 <div id="bd" class="page-wrapper-simple">
     <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">
         <div>
             <h1 class="maintenance-title text-center">Analyze a project</h1>
             <form id="analyze-form">
                 <div class="big-spacer-bottom">
-                    <label for="key" class="login-label">Project key<em style="color:red;">*</em></label><input required
-                                                                                                                type="text"
-                                                                                                                id="key"
-                                                                                                                name="key"
-                                                                                                                class="login-input"
-                                                                                                                maxlength="255"
-                                                                                                                required="true"
-                                                                                                                placeholder="Project key"><em
+                    <label for="key" id="keyLabel" class="login-label">Project key<em style="color:red;">*</em></label>
+                    <input  required
+                            type="text"
+                            id="key"
+                            name="key"
+                            class="login-input"
+                            maxlength="255"
+                            onkeyup="showLabel('keyLabel')"
+                            placeholder="Project key"><em
                         style="color:red;">* mandatory field</em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="name" class="login-label">Project name<em style="color:red;">*</em></label><input
+                    <label for="name" id="nameLabel" class="login-label">Project name<em style="color:red;">*</em></label>
+                    <input
                         required type="text"
                         id="name"
                         name="name"
                         class="login-input"
                         maxlength="255"
-                        required="true"
+                        onkeyup="showLabel('nameLabel')"
                         placeholder="Project name"><em style="color:red;">* mandatory field</em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="folder" class="login-label">Project folder<em style="color:red;">*</em></label><input
+                    <label for="folder" id="workspace" class="login-label">Workspace<em style="color:red;">*</em></label><input
                         required type="text"
                         id="folder"
                         name="folder"
                         class="login-input"
                         maxlength="255"
-                        required="true"
-                        placeholder="Project folder"><em style="color:red;">* mandatory field</em>
+                        onkeyup="showLabel('workspace')"
+                        placeholder="Workspace"><em style="color:red;">* mandatory field</em><br/>
+                    <em style="color:grey;">Tips: use a relative path from the shared folder.</em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="author" class="login-label">Author</label><input type="text"
-                                                                                 id="author"
-                                                                                 name="author"
-                                                                                 class="login-input"
-                                                                                 maxlength="255"
-                                                                                 required="true"
-                                                                                 placeholder="Report author">
-                    <em style="color:grey;">Default value: default</em>
+                    <label for="author" id="authorLabel" class="login-label">Author</label>
+                    <input   type="text"
+                             id="author"
+                             name="author"
+                             class="login-input"
+                             maxlength="255"
+                             required
+                             onkeyup="showLabel('authorLabel')"
+                             placeholder="Report author">
+                    <em style="color:grey;">Default value: default<br/>
+                    Tips: all quality profiles are available <a href="../../../profiles">here</a>.
+                    </em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="quality-gate" class="login-label">Project quality gate</label><input type="text"
-                                                                                                     id="quality-gate"
-                                                                                                     name="quality-gate"
-                                                                                                     class="login-input"
-                                                                                                     maxlength="255"
-                                                                                                     required="true"
-                                                                                                     placeholder="Project quality gate">
-                    <em style="color:grey;">Default value: CNES</em>
+                    <label for="quality-gate" id="gateLabel" class="login-label">Project quality gate</label>
+                    <input   type="text"
+                             id="quality-gate"
+                             name="quality-gate"
+                             class="login-input"
+                             maxlength="255"
+                             onkeyup="showLabel('gateLabel')"
+                             placeholder="Project quality gate">
+                    <em style="color:grey;">Default value: CNES<br/>
+                    Tips: all quality gates are available <a href="../../../quality_gates">here</a>.
+                    </em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="quality-profile" class="login-label">Project quality profile</label><input type="text"
-                                                                                                           id="quality-profile"
-                                                                                                           name="quality-profile"
-                                                                                                           class="login-input"
-                                                                                                           maxlength="255"
-                                                                                                           required="true"
-                                                                                                           placeholder="Project quality profile">
+                    <label for="quality-profile" id="profileLabel" class="login-label">Project quality profile</label>
+                    <input type="text"
+                           id="quality-profile"
+                           name="quality-profile"
+                           class="login-input"
+                           maxlength="255"
+                           onkeyup="showLabel('profileLabel')"
+                           required
+                           placeholder="Project quality profile">
                     <em style="color:grey;">Default value: default quality profiles</em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="spp" class="login-label">sonar-project.properties<em
-                            style="color:red;">*</em></label><textarea required
-                                                                       id="spp"
-                                                                       name="spp"
-                                                                       class="login-input"
-                                                                       rows="15"
-                                                                       style="resize: none;">
-# Required metadata
-sonar.projectKey=<<TO REPLACE>>
-sonar.projectName=<<TO REPLACE>>
-sonar.projectDescription=<<TO REPLACE>>
-sonar.projectVersion=<<TO REPLACE>>
-sonar.language=<<TO REPLACE>>
-# Path to files
+                    <label for="spp" class="login-label" style="display: block;"><strong>sonar-project.properties</strong><em
+                            style="color:red;">*</em></label>
+                    <em style="color:grey;">The sonar-project.properties file allows users to configure their analysis. Refer to the <a href="https://espace-collaboratif.cnes.fr/sites/DCT/LEQUAL/SONAR/Pages/vm-lequal-spp-guide.aspx">wiki</a>. </em>
+                    <textarea  required
+                               id="spp"
+                               name="spp"
+                               class="login-input"
+                               rows="30"
+                               style="resize: none;font-size: 1.2em;font-family: consolas;">
+################
+# Mandatory
+################
+# Path to the directory containing the sources (relatively to workspace)
 sonar.sources=<<TO REPLACE>>
-sonar.tests=<<TO REPLACE>>
-sonar.java.binaries=<<TO REPLACE>>
-# Encoding of the source files
+# Useful to distinguish two versions and compare them
+sonar.projectVersion=<<TO REPLACE>>
+
+################
+# Recommended
+################
+# Define the default encoding of the source code
 sonar.sourceEncoding=UTF-8
-                </textarea><em style="color:red;">* mandatory field</em>
+# Give a simple description of the project
+sonar.projectDescription=<<TO REPLACE>>
+# Uncomment if you have test files to provide (relatively to workspace)
+#sonar.tests=
+
+################
+# Optional
+################
+# Uncomment if you want to use only one specific language
+#sonar.language=
+
+################
+# Mandatory for java (uncomment when analyzing java projects)
+################
+#sonar.java.binaries=</textarea><em style="color:red;">* mandatory field</em>
                 </div>
                 <div class="big-spacer-bottom">
                     <div id="loading" class="text-center overflow-hidden" style="margin-bottom: 1em; display: none;">
@@ -97,7 +143,7 @@ sonar.sourceEncoding=UTF-8
                                value="Copy to clipboard">
                     </div>
                 </div>
-                <textarea id="logging" name="logging" class="login-input" rows="25" required
+                <textarea id="logging" name="logging" class="login-input" rows="15" required
                           style="background: black; color:white; resize: none;"
                           readonly="">## Logging console ##</textarea>
             </form>

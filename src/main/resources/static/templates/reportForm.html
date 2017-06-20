@@ -1,46 +1,70 @@
+<script>
+    /**
+     *  Show/hide the given label
+     *  labelId Id of the label to hide
+     */
+    function showLabel(labelId) {
+        if($('#'+labelId).textContent!==undefined) {
+            // show the label when the placeholder is no more present
+            $('#'+labelId).show();
+        } else {
+            // hide the label when the placeholder is displayed
+            $('#'+labelId).hide();
+        }
+    };
+</script>
+
 <div id="bd" class="page-wrapper-simple">
     <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">
         <div>
             <h1 class="maintenance-title text-center">Generate a report</h1>
             <form id="generation-form">
                 <div class="big-spacer-bottom">
-                    <label for="key" class="login-label">Project key</label><input type="text"
-                                                                                   id="key"
-                                                                                   name="key"
-                                                                                   class="login-input"
-                                                                                   maxlength="255"
-                                                                                   required="true"
-                                                                                   placeholder="Project key">
+                    <label for="key" id="keyLabel" class="login-label">Project key</label>
+                    <input type="text"
+                           id="key"
+                           name="key"
+                           class="login-input"
+                           maxlength="255"
+                           onkeyup="showLabel('keyLabel')"
+                           required
+                           placeholder="Project key">
                     <em style="color:red;">* mandatory field</em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="name" class="login-label">Project name</label><input type="text"
-                                                                                     id="name"
-                                                                                     name="name"
-                                                                                     class="login-input"
-                                                                                     maxlength="255"
-                                                                                     required="true"
-                                                                                     placeholder="Project name">
+                    <label for="name" id="nameLabel" class="login-label">Project name</label>
+                    <input   type="text"
+                             id="name"
+                             name="name"
+                             class="login-input"
+                             maxlength="255"
+                             onkeyup="showLabel('nameLabel')"
+                             required
+                             placeholder="Project name">
                     <em style="color:red;">* mandatory field</em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="author" class="login-label">Author</label><input type="text"
-                                                                                 id="author"
-                                                                                 name="author"
-                                                                                 class="login-input"
-                                                                                 maxlength="255"
-                                                                                 required="true"
-                                                                                 placeholder="Report author">
+                    <label for="author" id="authorLabel" class="login-label">Author</label>
+                    <input   type="text"
+                             id="author"
+                             name="author"
+                             class="login-input"
+                             maxlength="255"
+                             onkeyup="showLabel('authorLabel')"
+                             required
+                             placeholder="Report author">
                     <em style="color:grey;">Default value: default</em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="quality-gate" class="login-label">Project quality gate</label><input type="text"
-                                                                                                     id="quality-gate"
-                                                                                                     name="quality-gate"
-                                                                                                     class="login-input"
-                                                                                                     maxlength="255"
-                                                                                                     required="true"
-                                                                                                     placeholder="Project quality gate">
+                    <label for="quality-gate" id="gateLabel" class="login-label">Project quality gate</label>
+                    <input   type="text"
+                             id="quality-gate"
+                             name="quality-gate"
+                             class="login-input"
+                             maxlength="255"
+                             onkeyup="showLabel('gateLabel')"
+                             required
+                             placeholder="Project quality gate">
                     <em style="color:grey;">Default value: CNES</em>
                 </div>
                 <div class="big-spacer-bottom">
@@ -52,7 +76,7 @@
                         <input id="clear" class="button button-red spacer-left" type="reset" value="Reset">
                     </div>
                 </div>
-                <textarea id="logging" name="logging" class="login-input" rows="25" required="false" style="background: black; color:white; resize: none;" readonly="">## Logging console ##</textarea>
+                <textarea id="logging" name="logging" class="login-input" rows="15" required="false" style="background: black; color:white; resize: none;" readonly="">## Logging console ##</textarea>
             </form>
         </div>
     </div>
