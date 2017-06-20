@@ -47,11 +47,11 @@ public class CnesWs implements WebService {
     private void analyzeAction(NewController controller) {
         NewAction analysis = controller.createAction(string(CNES_ACTION_1_KEY))
                 //set
-        .setDescription(string(CNES_ACTION_1_DESC))
-        .setSince(string(SONAR_VERSION))
-        .setPost(true)
-        // new analysis task to handle the request and work on the code
-        .setHandler(new AnalysisTask());
+                .setDescription(string(CNES_ACTION_1_DESC))
+                .setSince(string(SONAR_VERSION))
+                .setPost(true)
+                // new analysis task to handle the request and work on the code
+                .setHandler(new AnalysisTask());
         // create parameter of the action
         // key parameter
         analysis.createParam(string(CNES_ACTION_1_PARAM_1_NAME))

@@ -73,6 +73,8 @@ public class ProjectTask extends AbstractTask {
      */
     @Override
     public void handle(Request request, Response response) throws IOException {
+        // reset logs to not stack them
+        setLogs("");
         // describe how worked the task and is returned
         Status status = new Status();
 
@@ -117,7 +119,7 @@ public class ProjectTask extends AbstractTask {
         response.newJsonWriter()
                 .beginObject()
                 // add logs to response
-                .prop(string(CNES_ACTION_3_FIELD_1), status.getMessage())
+                .prop(string(CNES_ACTION_3_FIELD_1), status.getmMessage())
                 // add success status
                 .prop(string(CNES_ACTION_3_FIELD_2), status.isSuccess())
                 .endObject()
@@ -145,12 +147,12 @@ public class ProjectTask extends AbstractTask {
             wsClient.projects().create(projectCreateRequest);
             // log success
             log(String.format(SUCCESS_PROJECT, name));
-            status.setMessage(String.format(SUCCESS_PROJECT, name));
+            status.setmMessage(String.format(SUCCESS_PROJECT, name));
 
         } else {
             // log error
             log(String.format(PROJECT_ALREADY_EXISTS, name));
-            status.setMessage(String.format(PROJECT_ALREADY_EXISTS, name));
+            status.setmMessage(String.format(PROJECT_ALREADY_EXISTS, name));
         }
 
         // set the status of the function
@@ -240,10 +242,10 @@ public class ProjectTask extends AbstractTask {
                 wsClient.qualityProfiles().addProject(addProjectRequest);
                 // log result
                 log(String.format(SUCCESS_QUALITYPROFILE, profileName));
-                status.setMessage(String.format(SUCCESS_QUALITYPROFILE, profileName));
+                status.setmMessage(String.format(SUCCESS_QUALITYPROFILE, profileName));
             } else {
                 // log warning when a profile could not be linked
-                status.setMessage(String.format(WARNING_QUALITYPROFILE_UNKNOWN, profileName));
+                status.setmMessage(String.format(WARNING_QUALITYPROFILE_UNKNOWN, profileName));
                 status.setSuccess(false);
             }
         });
@@ -292,19 +294,19 @@ public class ProjectTask extends AbstractTask {
 
             if(qg != null) {
                 // if we found the quality gate we link it to the project
-                SelectWsRequest selectWsRequest = new SelectWsRequest().setGateId(Long.valueOf(qg.getId())).setProjectKey(key);
+                SelectWsRequest selectWsRequest = new SelectWsRequest().setGateId(Long.parseLong(qg.getId())).setProjectKey(key);
                 wsClient.qualityGates().associateProject(selectWsRequest);
                 // setting is a success
                 status.setSuccess(true);
                 log(String.format(SUCCESS_QUALITYGATE, qualityGateName));
-                status.setMessage(String.format(SUCCESS_QUALITYGATE, qualityGateName));
+                status.setmMessage(String.format(SUCCESS_QUALITYGATE, qualityGateName));
             } else {
                 // setting is not a success so we register the error message
-                status.setMessage(String.format(QUALITY_GATE_UNKNOWN, qualityGateName));
+                status.setmMessage(String.format(QUALITY_GATE_UNKNOWN, qualityGateName));
             }
         } else {
             // setting is not a success so we register the error message
-            status.setMessage(String.format(QUALITY_GATE_UNKNOWN, qualityGateName));
+            status.setmMessage(String.format(QUALITY_GATE_UNKNOWN, qualityGateName));
         }
 
         // return the status of the setting

@@ -87,6 +87,8 @@ public class AnalysisTask extends AbstractTask {
     @Override
     public void handle(Request request, Response response)
             throws IOException, InterruptedException {
+        // reset logs to not stack them
+        setLogs("");
 
         // concrete analysis
         String result = analyze(

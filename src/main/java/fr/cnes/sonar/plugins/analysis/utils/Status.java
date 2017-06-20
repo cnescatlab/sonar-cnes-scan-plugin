@@ -11,11 +11,11 @@ public class Status {
     /**
      * Success describe if the task ended successfully (true) or not (false)
      */
-    private boolean success;
+    private boolean mSuccess;
     /**
      * This is a message you can associate to the status (errors or warnings)
      */
-    private String message;
+    private String mMessage;
 
     /**
      * Complete constructor
@@ -23,8 +23,8 @@ public class Status {
      * @param message Description of the status
      */
     public Status(boolean success, String message) {
-        this.setSuccess(success);
-        this.setMessage(message);
+        this.mSuccess = success;
+        this.mMessage = message;
     }
 
     /**
@@ -36,20 +36,20 @@ public class Status {
 
     /**
      * Merge a status with the current one
-     * Logic AND is used for success and message is append
-     * @param status Stattus to merge with this one
+     * Logic AND is used for mSuccess and mMessage is append
+     * @param status Status to merge with this one
      */
     public void merge(Status status) {
-        setSuccess(this.success && status.success);
-        setMessage(this.message + (this.message.isEmpty()?"":string(CNES_LOG_SEPARATOR)) + status.message);
+        setSuccess(this.mSuccess && status.mSuccess);
+        setmMessage(this.mMessage + (this.mMessage.isEmpty()?"":string(CNES_LOG_SEPARATOR)) + status.mMessage);
     }
 
     /**
-     * Getter for success
-     * @return boolean true if it is a success
+     * Getter for mSuccess
+     * @return boolean true if it is a mSuccess
      */
     public boolean isSuccess() {
-        return success;
+        return mSuccess;
     }
 
     /**
@@ -57,22 +57,22 @@ public class Status {
      * @param success boolean
      */
     public void setSuccess(boolean success) {
-        this.success = success;
+        this.mSuccess = success;
     }
 
     /**
-     * Getter for message
-     * @return message as String
+     * Getter for mMessage
+     * @return mMessage as String
      */
-    public String getMessage() {
-        return message;
+    public String getmMessage() {
+        return mMessage;
     }
 
     /**
-     * Setter for message
-     * @param message message as String
+     * Setter for mMessage
+     * @param mMessage mMessage as String
      */
-    public void setMessage(String message) {
-        this.message = message;
+    public void setmMessage(String mMessage) {
+        this.mMessage = mMessage;
     }
 }

@@ -16,6 +16,14 @@ public class QualityGate {
     private String name;
 
     /**
+     * Default constructor
+     */
+    public QualityGate() {
+        this.id = "";
+        this.name = "";
+    }
+
+    /**
      * Get id of the quality gate
      * @return id
      */

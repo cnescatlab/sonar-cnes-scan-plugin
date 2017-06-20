@@ -3,6 +3,19 @@ window.registerExtension('cnes/analysis', function (options) {
     var isDisplayedAnalysis = true;
 
     /**
+     * Log information in the bottom text area
+     * @param string Text to log
+     */
+    var log = function (string) {
+        // get the logging element
+        var logging = document.querySelector('#logging');
+        // append text to log
+        logging.innerHTML = logging.innerHTML + "\n" + string;
+        // scroll to bottom
+        logging.scrollTop = logging.scrollHeight;
+    };
+
+    /**
      * Verify that the permissions are good.
      * @returns {boolean} true if all is good
      */
@@ -75,19 +88,6 @@ window.registerExtension('cnes/analysis', function (options) {
     };
 
     /**
-     * Log information in the bottom text area
-     * @param string Text to log
-     */
-    var log = function (string) {
-        // get the logging element
-        var logging = document.querySelector('#logging');
-        // append text to log
-        logging.innerHTML = logging.innerHTML + "\n" + string;
-        // scroll to bottom
-        logging.scrollTop = logging.scrollHeight;
-    };
-
-    /**
      * Clear log information in text area
      */
     var clearLog = function () {
@@ -119,6 +119,32 @@ window.registerExtension('cnes/analysis', function (options) {
             // show loading otherwise
             $('#loading').show();
         }
+    };
+
+    /**
+     * Generate the report
+     * @param key
+     * @param name
+     * @param qualitygate
+     * @param author
+     */
+    var produceReport = function (key, name, qualitygate, author) {
+        // http GET request to the cnes web service
+        window.SonarRequest.getJSON(
+            '/api/cnes/report',
+            { key: key, name: name, qualitygate: qualitygate, author: author }
+        ).then(function (response) {
+            // on success log generation
+            log("[INFO] Project report generation response: \n" + response.logs);
+            log("############################################################\n\tAnalysis finished with success!\n############################################################\n");
+            // unlock form
+            setEnabled(true);
+        }).catch(function (error) {
+            // log error
+            log("[ERROR] Project report generation failed.");
+            // unlock form
+            setEnabled(true);
+        });
     };
 
     /**
@@ -188,32 +214,6 @@ window.registerExtension('cnes/analysis', function (options) {
         }).catch(function (error) {
             // log error
             log("[ERROR] Project analysis failed.");
-            // unlock form
-            setEnabled(true);
-        });
-    };
-
-    /**
-     * Generate the report
-     * @param key
-     * @param name
-     * @param qualitygate
-     * @param author
-     */
-    var produceReport = function (key, name, qualitygate, author) {
-        // http GET request to the cnes web service
-        window.SonarRequest.getJSON(
-            '/api/cnes/report',
-            { key: key, name: name, qualitygate: qualitygate, author: author }
-        ).then(function (response) {
-            // on success log generation
-            log("[INFO] Project report generation response: \n" + response.logs);
-            log("############################################################\n\tAnalysis finished with success!\n############################################################\n");
-            // unlock form
-            setEnabled(true);
-        }).catch(function (error) {
-            // log error
-            log("[ERROR] Project report generation failed.");
             // unlock form
             setEnabled(true);
         });

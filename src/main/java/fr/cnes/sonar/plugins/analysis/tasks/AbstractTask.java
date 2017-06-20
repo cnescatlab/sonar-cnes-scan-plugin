@@ -32,7 +32,7 @@ public abstract class AbstractTask implements RequestHandler {
      * @throws IOException when a stream use goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    String executeCommand(String command) throws IOException, InterruptedException {
+    protected String executeCommand(String command) throws IOException, InterruptedException {
         // log the command to execute
         LOGGER.info(command);
 
@@ -76,7 +76,7 @@ public abstract class AbstractTask implements RequestHandler {
      * Getter of logs
      * @return the string contained in the StringBuilder
      */
-    String getLogs() {
+    protected String getLogs() {
         return logs.toString();
     }
 
@@ -84,7 +84,7 @@ public abstract class AbstractTask implements RequestHandler {
      * Setter of logs
      * @param logs string to put in a new StringBuilder
      */
-    public void setLogs(String logs) {
+    protected void setLogs(String logs) {
         this.logs = new StringBuilder().append(logs);
     }
 

@@ -55,6 +55,8 @@ public class ReportTask extends AbstractTask {
      */
     @Override
     public void handle(Request request, Response response) throws IOException, InterruptedException {
+        // reset logs to not stack them
+        setLogs("");
         // read request parameters and generates response output
         // generate the reports and save output
         String result = report(
@@ -66,7 +68,6 @@ public class ReportTask extends AbstractTask {
                 string(CNES_REPORTER_TEMPLATE),
                 string(CNES_ISSUES_TEMPLATE)
         );
-        log(result);
 
         // set the response
         response.newJsonWriter()

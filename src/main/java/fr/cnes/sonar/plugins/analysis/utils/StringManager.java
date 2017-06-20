@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 /**
  * Centralized the management of strings
+ *
  * @author garconb
  */
 public class StringManager {
@@ -72,27 +73,27 @@ public class StringManager {
      */
     public static final String CNES_ACTION_2_FIELD_1 = "cnes.action.2.field.1";
     /**
-     *  Property for action 2 (reporting) param 1 description
+     * Property for action 2 (reporting) param 1 description
      */
     public static final String CNES_ACTION_2_PARAM_1_DESC = "cnes.action.2.param.1.desc";
     /**
-     *  Property for action 2 (reporting) param 2 description
+     * Property for action 2 (reporting) param 2 description
      */
     public static final String CNES_ACTION_2_PARAM_2_DESC = "cnes.action.2.param.2.desc";
     /**
-     *  Property for action 2 (reporting) param 3 description
+     * Property for action 2 (reporting) param 3 description
      */
     public static final String CNES_ACTION_2_PARAM_3_DESC = "cnes.action.2.param.3.desc";
     /**
-     *  Property for action 2 (reporting) param 4 description
+     * Property for action 2 (reporting) param 4 description
      */
     public static final String CNES_ACTION_2_PARAM_4_DESC = "cnes.action.2.param.4.desc";
     /**
-     *  Property for action 2 (reporting) key
+     * Property for action 2 (reporting) key
      */
     public static final String CNES_ACTION_2_KEY = "cnes.action.2.key";
     /**
-     *  Property for action 2 (reporting) description
+     * Property for action 2 (reporting) description
      */
     public static final String CNES_ACTION_2_DESC = "cnes.action.2.desc";
     /**
@@ -100,35 +101,21 @@ public class StringManager {
      */
     public static final String CNES_COMMAND_PROJECT_PROFILES_SEPARATOR = "cnes.command.project.profiles.separator";
     /**
-     * Logger of this class
-     */
-    private static final Logger LOGGER = Logger.getLogger(StringManager.class.getName());
-    /**
      * Property name of the command pattern to report an analysis
      */
     public static final String CNES_COMMAND_REPORT = "cnes.command.report";
     /**
-     *  Property name of SonarQube server url
+     * Property name of SonarQube server url
      */
     public static final String SONAR_URL = "sonar.url";
     /**
-     *  Property name of output
+     * Property name of output
      */
     public static final String CNES_REPORT_PATH = "cnes.reporter.path";
     /**
-     *  Property name of the date pattern
+     * Property name of the date pattern
      */
     public static final String DATE_PATTERN = "date.pattern";
-
-    /**
-     * Properties file for the current plugin
-     */
-    private static final String PLUGIN_PROPERTIES = "strings.properties";
-
-    /**
-     *  Default string to return when a key is unknown
-     */
-    private static final String DEFAULT_STRING = "unknown string";
     /**
      * Property name of analysis page key
      */
@@ -218,11 +205,6 @@ public class StringManager {
      * Template to use for xlsx
      */
     public static final String CNES_ISSUES_TEMPLATE = "cnes.issues.template";
-
-    /**
-     * Unique instance of this class (singleton)
-     */
-    private static final StringManager ourInstance = new StringManager();
     /**
      * Property for the action's 3 key (project creation)
      */
@@ -264,34 +246,41 @@ public class StringManager {
      */
     public static final String CNES_ACTION_3_PARAM_4_DESC = "cnes.action.3.param.4.desc";
     /**
-     *  Property for action 3 (project) response's field 1
+     * Property for action 3 (project) response's field 1
      */
     public static final String CNES_ACTION_3_FIELD_1 = "cnes.action.3.field.1";
     /**
-     *  Property for action 3 (project) response's field 2
+     * Property for action 3 (project) response's field 2
      */
     public static final String CNES_ACTION_3_FIELD_2 = "cnes.action.3.field.2";
     /**
-     *  Separator between two log entries
+     * Separator between two log entries
      */
     public static final String CNES_LOG_SEPARATOR = "cnes.log.separator";
     /**
-     *  Property for the url of the list request for quality gates
+     * Property for the url of the list request for quality gates
      */
     public static final String CNES_REQUESTS_QUALITYGATES_LIST = "cnes.requests.qualitygates.list";
-
+    /**
+     * Logger of this class
+     */
+    private static final Logger LOGGER = Logger.getLogger(StringManager.class.getName());
+    /**
+     * Properties file for the current plugin
+     */
+    private static final String PLUGIN_PROPERTIES = "strings.properties";
+    /**
+     * Default string to return when a key is unknown
+     */
+    private static final String DEFAULT_STRING = "unknown string";
+    /**
+     * Unique instance of this class (singleton)
+     */
+    private static final StringManager ourInstance = new StringManager();
     /**
      * Gather all the properties concerning the plugin
      */
     private Properties properties = new Properties();
-
-    /**
-     * Get the singleton
-     * @return unique instance of StringManager
-     */
-    public static StringManager getInstance() {
-        return ourInstance;
-    }
 
     /**
      * Private constructor to make a singleton of this class
@@ -300,14 +289,34 @@ public class StringManager {
         try {
             load();
         } catch (IOException e) {
-            for (StackTraceElement ste: e.getStackTrace()) {
+            for (StackTraceElement ste : e.getStackTrace()) {
                 LOGGER.severe(ste.toString());
             }
         }
     }
 
     /**
+     * Get the singleton
+     *
+     * @return unique instance of StringManager
+     */
+    public static StringManager getInstance() {
+        return ourInstance;
+    }
+
+    /**
+     * Get the value of a property through its key
+     *
+     * @param key Key of the string to string
+     * @return the property as String or the DEFAULT_STRING
+     */
+    public static String string(String key) {
+        return getInstance().properties.getProperty(key, DEFAULT_STRING);
+    }
+
+    /**
      * load properties from a specific file
+     *
      * @throws IOException when an error occurred during file reading
      */
     private void load() throws IOException {
@@ -316,20 +325,11 @@ public class StringManager {
 
         // read the file
         // load properties file as a stream
-        try(InputStream input = StringManager.class.getClassLoader().getResourceAsStream(PLUGIN_PROPERTIES)) {
-            if(input!=null) {
+        try (InputStream input = StringManager.class.getClassLoader().getResourceAsStream(PLUGIN_PROPERTIES)) {
+            if (input != null) {
                 // load properties from the stream in an adapted structure
                 this.properties.load(input);
             }
         }
-    }
-
-    /**
-     * Get the value of a property through its key
-     * @param key Key of the string to string
-     * @return the property as String or the DEFAULT_STRING
-     */
-    public static String string(String key) {
-        return getInstance().properties.getProperty(key, DEFAULT_STRING);
     }
 }

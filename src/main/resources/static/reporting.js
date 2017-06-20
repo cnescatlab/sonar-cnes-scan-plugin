@@ -3,6 +3,19 @@ window.registerExtension('cnes/reporting', function (options) {
     var isDisplayedReporting = true;
 
     /**
+     * Log information in the bottom text area
+     * @param string Text to log
+     */
+    var log = function (string) {
+        // get the logging element
+        var logging = document.querySelector('#logging');
+        // append text to log
+        logging.innerHTML = logging.innerHTML + "\n" + string;
+        // scroll to bottom
+        logging.scrollTop = logging.scrollHeight;
+    };
+
+    /**
      * Verify that the fields are correct.
      * @returns {boolean} true if all is good
      */
@@ -27,19 +40,6 @@ window.registerExtension('cnes/reporting', function (options) {
             return false;
         }
         return true;
-    };
-
-    /**
-     * Log information in the bottom text area
-     * @param string Text to log
-     */
-    var log = function (string) {
-        // get the logging element
-        var logging = document.querySelector('#logging');
-        // append text to log
-        logging.innerHTML = logging.innerHTML + "\n" + string;
-        // scroll to bottom
-        logging.scrollTop = logging.scrollHeight;
     };
 
     /**
