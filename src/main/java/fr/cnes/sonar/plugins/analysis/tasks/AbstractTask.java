@@ -18,7 +18,7 @@ public abstract class AbstractTask implements RequestHandler {
     /**
      * logger for all tasks
      */
-    private static final Logger LOGGER = Loggers.get(AbstractTask.class);
+    protected static final Logger LOGGER = Loggers.get(AbstractTask.class);
 
     /**
      * contain all the task's logs

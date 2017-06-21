@@ -90,12 +90,13 @@ public class AnalysisTask extends AbstractTask {
         // reset logs to not stack them
         setLogs("");
 
+        // get project's information from the request's parameters
+        final String projectName = request.mandatoryParam(string(CNES_ACTION_1_PARAM_2_NAME));
+        final String workspace = request.mandatoryParam(string(CNES_ACTION_1_PARAM_5_NAME));
+        final String sonarProjectProperties = request.mandatoryParam(string(CNES_ACTION_1_PARAM_6_NAME));
+
         // concrete analysis
-        String result = analyze(
-                request.mandatoryParam(string(CNES_ACTION_1_PARAM_2_NAME)),
-                request.mandatoryParam(string(CNES_ACTION_1_PARAM_5_NAME)),
-                request.mandatoryParam(string(CNES_ACTION_1_PARAM_6_NAME))
-        );
+        String result = analyze(projectName, workspace, sonarProjectProperties);
 
         // write the json response
         response.newJsonWriter()
@@ -105,4 +106,5 @@ public class AnalysisTask extends AbstractTask {
                 .endObject()
                 .close();
     }
+
 }

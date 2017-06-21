@@ -186,6 +186,42 @@ window.registerExtension('cnes/analysis', function (options) {
     };
 
     /**
+     * Wait that sonarqube has finished to import the report to run a callback
+     * @param key
+     * @param name
+     * @param qualitygate
+     * @param author
+     * @param callback
+     */
+    var waitSonarQube = function(key, name, qualitygate, author, callback) {
+        // send get request to the cnes web service
+        // we ask for information about task about a project
+        window.SonarRequest.getJSON(
+            '/api/ce/component',
+            { componentKey: key }
+        ).then(function (response) {
+            // on success
+
+            // if there are no queued task
+            // so it is ready to report
+            if(response.queue.length === 0) {
+                // produce the report
+                callback(key, name, qualitygate, author);
+            } else {
+                // retry later (in 2 seconds)
+                log("[INFO] SonarQube is still importing the report, please wait.");
+                window.setTimeout(waitSonarQube(key, name, qualitygate, author, callback), 2000);
+            }
+
+        }).catch(function (error) {
+            // log error
+            log("[ERROR] " + error);
+            // unlock form
+            setEnabled(true);
+        });
+    };
+
+    /**
      * Run the analysis
      * @param key
      * @param name
@@ -209,11 +245,12 @@ window.registerExtension('cnes/analysis', function (options) {
             // on success
             // log output
             log("[INFO] Project analysis response: \n" + response.logs);
-            // produce the report
-            callback(key, name, qualitygate, author);
+            // wait that sonarqube has finished to import the report to produce the report
+            waitSonarQube(key, name, qualitygate, author, callback);
         }).catch(function (error) {
             // log error
             log("[ERROR] Project analysis failed.");
+            log(error);
             // unlock form
             setEnabled(true);
         });
