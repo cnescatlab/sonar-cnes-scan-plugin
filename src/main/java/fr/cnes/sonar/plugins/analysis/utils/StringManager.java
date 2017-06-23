@@ -113,6 +113,14 @@ public class StringManager {
      */
     public static final String CNES_REPORT_PATH = "cnes.reporter.path";
     /**
+     * Property name of results' folder
+     */
+    public static final String CNES_REPORTS_FOLDER = "cnes.reports.folder";
+    /**
+     * Property for error message when it was impossible to create a directory
+     */
+    public static final String CNES_MKDIR_ERROR = "cnes.mkdir.error";
+    /**
      * Property name of the date pattern
      */
     public static final String DATE_PATTERN = "date.pattern";

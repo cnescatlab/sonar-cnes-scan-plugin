@@ -3,6 +3,7 @@ package fr.cnes.sonar.plugins.analysis.tasks;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +32,13 @@ public class ReportTask extends AbstractTask {
     public String report(String projectId, String projectQualityGate,
                          String projectName, String reportAuthor, String reportPath,
                          String reportTemplate, String issuesTemplate) throws IOException, InterruptedException {
+
+        // creation of the output directory
+        boolean success = (new File(reportPath)).mkdirs();
+        if (!success) {
+            // Directory creation failed
+            log(String.format(string(CNES_MKDIR_ERROR), reportPath));
+        }
         // formatted date
         String date = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
         // construct the command string to run analysis
@@ -57,14 +65,22 @@ public class ReportTask extends AbstractTask {
     public void handle(Request request, Response response) throws IOException, InterruptedException {
         // reset logs to not stack them
         setLogs("");
+
+        // Name of the project provided by the user through parameters
+        final String projectName = request.mandatoryParam(string(CNES_ACTION_2_PARAM_3_NAME));
+        // Date of today
+        final String today = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
+        // Construct the name of the output folder like that: sharedFolder/project-date-results
+        final String output = String.format(string(CNES_REPORTS_FOLDER),string(CNES_REPORTER_OUTPUT), projectName, today);
+
         // read request parameters and generates response output
         // generate the reports and save output
         String result = report(
                 request.mandatoryParam(string(CNES_ACTION_2_PARAM_1_NAME)),
                 request.mandatoryParam(string(CNES_ACTION_2_PARAM_2_NAME)),
-                request.mandatoryParam(string(CNES_ACTION_2_PARAM_3_NAME)),
+                projectName,
                 request.mandatoryParam(string(CNES_ACTION_2_PARAM_4_NAME)),
-                string(CNES_REPORTER_OUTPUT),
+                output,
                 string(CNES_REPORTER_TEMPLATE),
                 string(CNES_ISSUES_TEMPLATE)
         );
