@@ -209,7 +209,6 @@ window.registerExtension('cnes/analysis', function (options) {
                 callback(key, name, qualitygate, author);
             } else {
                 // retry later (in 2 seconds)
-                log("[INFO] SonarQube is still importing the report, please wait.");
                 window.setTimeout(waitSonarQube(key, name, qualitygate, author, callback), 2000);
             }
 
@@ -246,6 +245,7 @@ window.registerExtension('cnes/analysis', function (options) {
             // log output
             log("[INFO] Project analysis response: \n" + response.logs);
             // wait that sonarqube has finished to import the report to produce the report
+            log("[INFO] SonarQube is still importing the report, please wait.");
             waitSonarQube(key, name, qualitygate, author, callback);
         }).catch(function (error) {
             // log error
