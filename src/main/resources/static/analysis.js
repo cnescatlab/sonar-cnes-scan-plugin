@@ -221,6 +221,49 @@ window.registerExtension('cnes/analysis', function (options) {
     };
 
     /**
+     * Complete automatically the sonar-project.properties to add information
+     * computable from form's fields
+     * @param spp
+     * @param key
+     * @param name
+     * @param qualityprofile
+     * @return Modified spp with automatic data
+     */
+    var completeSPP = function (spp, key, name, qualityprofile) {
+        // complete the spp with projectKey and projectName
+        spp = spp.concat("\nsonar.projectKey="+key);
+        spp = spp.concat("\nsonar.projectName="+name);
+
+        // if a python quality profile is set and there are no pylintrc set
+        if(qualityprofile.indexOf("CNES_PYTHON")!==-1 && spp.indexOf("sonar.python.pylint_config")===-1) {
+            // sonar pylint configuration property
+            var pylintrcSonar = "\nsonar.python.pylint_config=";
+            // path to configuration files
+            var configurationPath = "/home/labo/Documents/VM_LEQUAL/conf/python/";
+            // name of the configuration file to use
+            var filename = "pylintrc_RNC_sonar_2017_D";
+            // we append the appropriate one
+            // check if there is a rated A or B profile and add the corresponding file
+            if(qualityprofile.indexOf("CNES_PYTHON_A") !== -1 || qualityprofile.indexOf("CNES_PYTHON_B") != -1) {
+                filename = "pylintrc_RNC_sonar_2017_A_B";
+                spp = spp.concat(pylintrcSonar+configurationPath+filename);
+                log("[INFO] Use of configuration file "+filename+" for Pylint.");
+            // check if there is a rated C profile and add the corresponding file
+            } else if(qualityprofile.indexOf("CNES_PYTHON_C") !== -1) {
+                filename = "pylintrc_RNC_sonar_2017_C";
+                spp = spp.concat(pylintrcSonar+configurationPath+filename);
+                log("[INFO] Use of configuration file "+filename+" for Pylint.");
+            // otherwise it is a D configuration to use
+            } else {
+                spp = spp.concat(pylintrcSonar+configurationPath+filename);
+                log("[INFO] Use of configuration file "+filename+" for Pylint.");
+            }
+        }
+
+        return spp;
+    };
+
+    /**
      * Run the analysis
      * @param key
      * @param name
@@ -232,9 +275,12 @@ window.registerExtension('cnes/analysis', function (options) {
      * @param callback
      */
     var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp, author, callback) {
-        // complete the spp with projectKey and projectName
-        spp = spp.concat("\nsonar.projectKey="+key);
-        spp = spp.concat("\nsonar.projectName="+name);
+
+        // auto complete the sonar-project properties
+        spp = completeSPP(spp, key, name, qualityprofile);
+
+        // log the finally used spp
+        log("[INFO] Here comes the finally used sonar-project.properties:\n" + spp);
 
         // send post request to the cnes web service
         window.SonarRequest.postJSON(

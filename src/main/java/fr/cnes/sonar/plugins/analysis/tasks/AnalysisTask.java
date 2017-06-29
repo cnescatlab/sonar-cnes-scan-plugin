@@ -53,6 +53,7 @@ public class AnalysisTask extends AbstractTask {
             // the spp file or the log file could not be written
             // so we log the problem and return logs
             log(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
         }
 
         // return the complete logs

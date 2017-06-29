@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+    <rule>
+        <key>R5101</key>
+        <name><![CDATA[More than one exit statement for this loop]]></name>
+        <configKey>R5101</configKey>
+        <description>
+            <![CDATA[More than one exit statement for this loop.
+               <p>Used when there is more than one possible exit
+               statement for a loop (either break or return
+               statements).</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5102</key>
+        <name><![CDATA[Too many decorators for this function]]></name>
+        <configKey>R5102</configKey>
+        <description>
+            <![CDATA[Too many decorators for this function (%s/%s).
+               <p>Used when too many decorators are applied on a function.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5103</key>
+        <name><![CDATA[Exit condition based on equality or difference]]></name>
+        <configKey>R5103</configKey>
+        <description>
+            <![CDATA[Exit condition based on equality or difference.
+               <p>Used when the exit condition of a loop uses an
+               equality or a difference comparison.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5104</key>
+        <name><![CDATA[An attribute is named after a built-in, consider renaming it]]></name>
+        <configKey>R5104</configKey>
+        <description>
+            <![CDATA[%s is named after a built-in, consider renaming it.
+               <p>Used when an attribute or a method is named after a
+               built-in. This makes the code more difficult to read.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5105</key>
+        <name><![CDATA[Consider not using recursion]]></name>
+        <configKey>R5105</configKey>
+        <description>
+            <![CDATA[Consider not using recursion.
+               <p>Used when direct recursion is used in a function or a
+               method. It can lead to a dangerous behaviour if the
+               depth is not known.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5106</key>
+        <name><![CDATA[Consider within a context manager]]></name>
+        <configKey>R5106</configKey>
+        <description>
+            <![CDATA[Consider %s within a context manager.
+               <p>Used when a file is opened or a lock is acquired without
+               context manager. This is error-prone because one can
+               forget closing or releasing it.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5201</key>
+        <name><![CDATA[Too few comments]]></name>
+        <configKey>R5201</configKey>
+        <description>
+            <![CDATA[Too few comments (%s/%s %%).
+               <p>Used the ratio (comments+docstrings)/code_lines is
+               insufficient for a function or a module.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5301</key>
+        <name><![CDATA[Too high cyclomatic complexity (mccabe)]]></name>
+        <configKey>R5301</configKey>
+        <description>
+            <![CDATA[Too high cyclomatic complexity (mccabe %d/%d).
+               <p>Used when the McCabe cyclomatic number is too high
+               for a function or a method.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5302</key>
+        <name><![CDATA[Too high cyclomatic complexity (simplified mccabe)]]></name>
+        <configKey>R5302</configKey>
+        <description>
+            <![CDATA[Too high cyclomatic complexity (simplified mccabe %d/%d).
+               <p>Used when the simplified McCabe cyclomatic number is
+               too high for a function or a method.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>W9095</key>
+        <name><![CDATA[Missing field from docstring]]></name>
+        <configKey>W9095</configKey>
+        <description>
+            <![CDATA["%s" field missing from %s docstring.
+               <p>Used when an expected field is not present in the
+               docstring of a module, class, function or method.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>W9096</key>
+        <name><![CDATA[Malformed field in docstring]]></name>
+        <configKey>W9096</configKey>
+        <description>
+            <![CDATA[Malformed "%s" field in %s docstring.
+            <p>Used when an expected field is not present in the
+            docstring of a module, class, function or method.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>W9097</key>
+        <name><![CDATA[Description missing in docstring]]></name>
+        <configKey>W9097</configKey>
+        <description>
+            <![CDATA[Description missing in %s docstring.
+               <p>Used when no description exists for a docstring.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R5401</key>
+        <name><![CDATA[Consider dropping use of sys.exit()]]></name>
+        <configKey>R5401</configKey>
+        <description>
+            <![CDATA[Consider dropping use of sys.exit().
+            <p>Used when a call to sys.exit() is made out of __main__ scope.</p>
+      ]]>
+        </description>
+        <priority>BLOCKER</priority>
+    </rule>
+    <rule>
+        <key>R5402</key>
+        <name><![CDATA[Consider dropping use of os.XXX]]></name>
+        <configKey>R5402</configKey>
+        <description>
+            <![CDATA[Consider dropping use of os.%s.
+            <p>Used when environment variables are accessed. A program
+            should not rely on its execution environment.</p>
+      ]]>
+        </description>
+        <priority>BLOCKER</priority>
+    </rule>
+    <rule>
+        <key>R5403</key>
+        <name><![CDATA[Consider using argparse module instead of sys.argv]]></name>
+        <configKey>R5403</configKey>
+        <description>
+            <![CDATA[Consider using argparse module instead of sys.argv.
+            <p>Used when command line arguments are read from sys.argv
+            instead of using argparse module.</p>
+      ]]>
+        </description>
+        <priority>BLOCKER</priority>
+    </rule>
+</rules>

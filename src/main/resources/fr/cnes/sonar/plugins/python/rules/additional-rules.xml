@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+    <rule>
+        <key>C0411</key>
+        <name><![CDATA[Wrong import order]]></name>
+        <configKey>C0411</configKey>
+        <description>
+            <![CDATA[Wrong import order.
+               <p>%s comes before %s Used when PEP8 import order is not respected
+               (standard imports first, then third-party libraries, then local imports).</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>C0413</key>
+        <name><![CDATA[Wrong import position]]></name>
+        <configKey>C0413</configKey>
+        <description>
+            <![CDATA[Wrong import position.
+               <p>Import “%s” should be placed at the top of the module.
+               Used when code and imports are mixed.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>C0113</key>
+        <name><![CDATA[Unneeded not]]></name>
+        <configKey>C0113</configKey>
+        <description>
+            <![CDATA[Unneeded not.
+               <p>Consider changing “%s” to “%s”.
+               Used when a boolean expression contains an unneeded negation.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>C0122</key>
+        <name><![CDATA[Misplaced constant in comparison]]></name>
+        <configKey>C0122</configKey>
+        <description>
+            <![CDATA[Misplaced constant in comparison.
+               <p>Comparison should be %s.
+               Used when the constant is placed on the left side
+               of a comparison. It is usually clearer in intent
+               to place it in the right hand side of the comparison.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R0203</key>
+        <name><![CDATA[No static method decorator]]></name>
+        <configKey>R0203</configKey>
+        <description>
+            <![CDATA[No static method decorator.
+               <p>Consider using a decorator instead of calling static method.
+               Used when a static method is defined without using the decorator syntax.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>R0204</key>
+        <name><![CDATA[Redefinition of the type of a variable]]></name>
+        <configKey>R0204</configKey>
+        <description>
+            <![CDATA[Redefinition of the type of a variable.
+               <p>Redefinition of %s type from %s to %s.
+               Used when the type of a variable changes inside
+               a method or a function.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+    <rule>
+        <key>C0412</key>
+        <name><![CDATA[Ungrouped imports]]></name>
+        <configKey>C0412</configKey>
+        <description>
+            <![CDATA[Redefinition of the type of a variable.
+               <p>Imports from package %s are not grouped.
+               Used when imports are not grouped by packages.</p>
+      ]]>
+        </description>
+        <priority>CRITICAL</priority>
+    </rule>
+</rules>

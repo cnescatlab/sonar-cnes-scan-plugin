@@ -1,5 +1,6 @@
 package fr.cnes.sonar.plugins.analysis;
 
+import fr.cnes.sonar.plugins.analysis.rules.python.CnesPythonRulesDefinition;
 import fr.cnes.sonar.plugins.analysis.web.CnesPluginPageDefinition;
 import fr.cnes.sonar.plugins.analysis.ws.CnesWs;
 import org.sonar.api.Plugin;
@@ -21,5 +22,8 @@ public class CnesPlugin implements Plugin {
 
         // analysis web extensions
         context.addExtension(CnesPluginPageDefinition.class);
+
+        // add new python rules (checker-cnes and other pylint rules)
+        context.addExtension(CnesPythonRulesDefinition.class);
     }
 }
