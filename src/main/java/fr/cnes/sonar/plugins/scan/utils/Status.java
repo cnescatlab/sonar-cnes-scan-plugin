@@ -1,11 +1,11 @@
-package fr.cnes.sonar.plugins.analysis.utils;
+package fr.cnes.sonar.plugins.scan.utils;
 
-import static fr.cnes.sonar.plugins.analysis.utils.StringManager.CNES_LOG_SEPARATOR;
-import static fr.cnes.sonar.plugins.analysis.utils.StringManager.string;
+import static fr.cnes.sonar.plugins.scan.utils.StringManager.CNES_LOG_SEPARATOR;
+import static fr.cnes.sonar.plugins.scan.utils.StringManager.string;
 
 /**
  * Contain information about a terminated task
- * @author garconb
+ * @author begarco
  */
 public class Status {
     /**
@@ -41,7 +41,7 @@ public class Status {
      */
     public void merge(Status status) {
         setSuccess(this.mSuccess && status.mSuccess);
-        setmMessage(this.mMessage + (this.mMessage.isEmpty()?"":string(CNES_LOG_SEPARATOR)) + status.mMessage);
+        setMessage(this.mMessage + (this.mMessage.isEmpty()?"":string(CNES_LOG_SEPARATOR)) + status.mMessage);
     }
 
     /**
@@ -64,7 +64,7 @@ public class Status {
      * Getter for mMessage
      * @return mMessage as String
      */
-    public String getmMessage() {
+    public String getMessage() {
         return mMessage;
     }
 
@@ -72,7 +72,7 @@ public class Status {
      * Setter for mMessage
      * @param mMessage mMessage as String
      */
-    public void setmMessage(String mMessage) {
+    public void setMessage(String mMessage) {
         this.mMessage = mMessage;
     }
 }

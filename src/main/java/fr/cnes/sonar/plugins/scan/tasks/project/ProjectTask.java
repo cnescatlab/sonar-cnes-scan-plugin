@@ -1,11 +1,11 @@
-package fr.cnes.sonar.plugins.analysis.tasks.project;
+package fr.cnes.sonar.plugins.scan.tasks.project;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import fr.cnes.sonar.plugins.analysis.tasks.AbstractTask;
-import fr.cnes.sonar.plugins.analysis.utils.Status;
-import fr.cnes.sonar.plugins.analysis.utils.StringManager;
+import fr.cnes.sonar.plugins.scan.tasks.AbstractTask;
+import fr.cnes.sonar.plugins.scan.utils.Status;
+import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonarqube.ws.QualityProfiles.SearchWsResponse.QualityProfile;
@@ -21,7 +21,7 @@ import org.sonarqube.ws.client.qualityprofile.AddProjectRequest;
 import java.io.IOException;
 import java.util.*;
 
-import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
+import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -119,7 +119,7 @@ public class ProjectTask extends AbstractTask {
         response.newJsonWriter()
                 .beginObject()
                 // add logs to response
-                .prop(string(CNES_ACTION_3_FIELD_1), status.getmMessage())
+                .prop(string(CNES_ACTION_3_FIELD_1), status.getMessage())
                 // add success status
                 .prop(string(CNES_ACTION_3_FIELD_2), status.isSuccess())
                 .endObject()
@@ -147,12 +147,12 @@ public class ProjectTask extends AbstractTask {
             wsClient.projects().create(projectCreateRequest);
             // log success
             log(String.format(SUCCESS_PROJECT, name));
-            status.setmMessage(String.format(SUCCESS_PROJECT, name));
+            status.setMessage(String.format(SUCCESS_PROJECT, name));
 
         } else {
             // log error
             log(String.format(PROJECT_ALREADY_EXISTS, name));
-            status.setmMessage(String.format(PROJECT_ALREADY_EXISTS, name));
+            status.setMessage(String.format(PROJECT_ALREADY_EXISTS, name));
         }
 
         // set the status of the function
@@ -242,10 +242,10 @@ public class ProjectTask extends AbstractTask {
                 wsClient.qualityProfiles().addProject(addProjectRequest);
                 // log result
                 log(String.format(SUCCESS_QUALITYPROFILE, profileName));
-                status.setmMessage(String.format(SUCCESS_QUALITYPROFILE, profileName));
+                status.setMessage(String.format(SUCCESS_QUALITYPROFILE, profileName));
             } else {
                 // log warning when a profile could not be linked
-                status.setmMessage(String.format(WARNING_QUALITYPROFILE_UNKNOWN, profileName));
+                status.setMessage(String.format(WARNING_QUALITYPROFILE_UNKNOWN, profileName));
                 status.setSuccess(false);
             }
         });
@@ -299,14 +299,14 @@ public class ProjectTask extends AbstractTask {
                 // setting is a success
                 status.setSuccess(true);
                 log(String.format(SUCCESS_QUALITYGATE, qualityGateName));
-                status.setmMessage(String.format(SUCCESS_QUALITYGATE, qualityGateName));
+                status.setMessage(String.format(SUCCESS_QUALITYGATE, qualityGateName));
             } else {
                 // setting is not a success so we register the error message
-                status.setmMessage(String.format(QUALITY_GATE_UNKNOWN, qualityGateName));
+                status.setMessage(String.format(QUALITY_GATE_UNKNOWN, qualityGateName));
             }
         } else {
             // setting is not a success so we register the error message
-            status.setmMessage(String.format(QUALITY_GATE_UNKNOWN, qualityGateName));
+            status.setMessage(String.format(QUALITY_GATE_UNKNOWN, qualityGateName));
         }
 
         // return the status of the setting

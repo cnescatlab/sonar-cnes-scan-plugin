@@ -1,15 +1,15 @@
-package fr.cnes.sonar.plugins.analysis.ws;
+package fr.cnes.sonar.plugins.scan.ws;
 
-import fr.cnes.sonar.plugins.analysis.tasks.AnalysisTask;
-import fr.cnes.sonar.plugins.analysis.tasks.ReportTask;
-import fr.cnes.sonar.plugins.analysis.tasks.project.ProjectTask;
+import fr.cnes.sonar.plugins.scan.tasks.AnalysisTask;
+import fr.cnes.sonar.plugins.scan.tasks.ReportTask;
+import fr.cnes.sonar.plugins.scan.tasks.project.ProjectTask;
 import org.sonar.api.server.ws.WebService;
 
-import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
+import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Expose CNES plugin api
- * @author garconb
+ * @author begarco
  */
 public class CnesWs implements WebService {
 
@@ -41,7 +41,7 @@ public class CnesWs implements WebService {
     }
 
     /**
-     * Add the action corresponding to the analysis
+     * Add the action corresponding to the scan
      * @param controller controller to which add the action
      */
     private void analyzeAction(NewController controller) {
@@ -50,7 +50,7 @@ public class CnesWs implements WebService {
                 .setDescription(string(CNES_ACTION_1_DESC))
                 .setSince(string(SONAR_VERSION))
                 .setPost(true)
-                // new analysis task to handle the request and work on the code
+                // new scan task to handle the request and work on the code
                 .setHandler(new AnalysisTask());
         // create parameter of the action
         // key parameter

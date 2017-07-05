@@ -22,7 +22,7 @@ window.registerExtension('cnes/analysis', function (options) {
     var checkPermissions = function () {
         // get permissions of the current user
         var perm = options.currentUser.permissions.global;
-        // check that scna gateadmin and provisioning rights are in the permission array
+        // check that scan, quality gate admin and provisioning rights are in the permission array
         return options.currentUser.isLoggedIn && perm.indexOf("gateadmin")!==-1 && perm.indexOf("scan")!==-1 && perm.indexOf("provisioning")!==-1;
     };
 

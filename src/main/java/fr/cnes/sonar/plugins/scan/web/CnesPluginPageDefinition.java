@@ -1,15 +1,15 @@
-package fr.cnes.sonar.plugins.analysis.web;
+package fr.cnes.sonar.plugins.scan.web;
 
 import org.sonar.api.web.page.Context;
 import org.sonar.api.web.page.Page;
 import org.sonar.api.web.page.Page.Scope;
 import org.sonar.api.web.page.PageDefinition;
 
-import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
+import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Define web pages of the plugin
- * @author garconb
+ * @author begarco
  */
 public class CnesPluginPageDefinition implements PageDefinition {
 
@@ -20,7 +20,7 @@ public class CnesPluginPageDefinition implements PageDefinition {
     @Override
     public void define(Context context) {
         context
-            // add a new page for analysis + reporting
+            // add a new page for scan + reporting
             .addPage(Page.builder(string(CNES_PAGE_ANALYSIS_KEY))
                     // set its name
                 .setName(string(CNES_PAGE_ANALYSIS_NAME))

@@ -1,4 +1,4 @@
-package fr.cnes.sonar.plugins.analysis.tasks.project;
+package fr.cnes.sonar.plugins.scan.tasks.project;
 
 /**
  * Model of Quality Gate for json parsing

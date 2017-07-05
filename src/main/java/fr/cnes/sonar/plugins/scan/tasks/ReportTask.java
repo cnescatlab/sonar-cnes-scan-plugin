@@ -1,4 +1,4 @@
-package fr.cnes.sonar.plugins.analysis.tasks;
+package fr.cnes.sonar.plugins.scan.tasks;
 
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
+import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Execute element to produce the report
- * @author garconb
+ * @author begarco
  */
 public class ReportTask extends AbstractTask {
 
@@ -41,7 +41,7 @@ public class ReportTask extends AbstractTask {
         }
         // formatted date
         String date = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
-        // construct the command string to run analysis
+        // construct the command string to run scan
         String command = String.format(string(CNES_COMMAND_REPORT),
                 string(CNES_REPORT_PATH), string(SONAR_URL), projectId, projectQualityGate,
                 projectName, reportAuthor, date, reportPath, reportTemplate, issuesTemplate);

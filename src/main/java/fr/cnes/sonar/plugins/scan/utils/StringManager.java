@@ -1,4 +1,4 @@
-package fr.cnes.sonar.plugins.analysis.utils;
+package fr.cnes.sonar.plugins.scan.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 /**
  * Centralized the management of strings
  *
- * @author garconb
+ * @author begarco
  */
 public class StringManager {
 
@@ -21,35 +21,35 @@ public class StringManager {
      */
     public static final String CNES_CTRL_KEY = "cnes.ctrl.key";
     /**
-     * Property for action 1 (analysis) key
+     * Property for action 1 (scan) key
      */
     public static final String CNES_ACTION_1_KEY = "cnes.action.1.key";
     /**
-     * Property for action 1 (analysis) description
+     * Property for action 1 (scan) description
      */
     public static final String CNES_ACTION_1_DESC = "cnes.action.1.desc";
     /**
-     * Property for action 1 (analysis) param 1 description
+     * Property for action 1 (scan) param 1 description
      */
     public static final String CNES_ACTION_1_PARAM_1_DESC = "cnes.action.1.param.1.desc";
     /**
-     * Property for action 1 (analysis) param 2 description
+     * Property for action 1 (scan) param 2 description
      */
     public static final String CNES_ACTION_1_PARAM_2_DESC = "cnes.action.1.param.2.desc";
     /**
-     * Property for action 1 (analysis) param 3 description
+     * Property for action 1 (scan) param 3 description
      */
     public static final String CNES_ACTION_1_PARAM_3_DESC = "cnes.action.1.param.3.desc";
     /**
-     * Property for action 1 (analysis) param 4 description
+     * Property for action 1 (scan) param 4 description
      */
     public static final String CNES_ACTION_1_PARAM_4_DESC = "cnes.action.1.param.4.desc";
     /**
-     * Property for action 1 (analysis) param 5 description
+     * Property for action 1 (scan) param 5 description
      */
     public static final String CNES_ACTION_1_PARAM_5_DESC = "cnes.action.1.param.5.desc";
     /**
-     * Property for action 1 (analysis) param 6 description
+     * Property for action 1 (scan) param 6 description
      */
     public static final String CNES_ACTION_1_PARAM_6_DESC = "cnes.action.1.param.6.desc";
     /**
@@ -101,7 +101,7 @@ public class StringManager {
      */
     public static final String CNES_COMMAND_PROJECT_PROFILES_SEPARATOR = "cnes.command.project.profiles.separator";
     /**
-     * Property name of the command pattern to report an analysis
+     * Property name of the command pattern to report an scan
      */
     public static final String CNES_COMMAND_REPORT = "cnes.command.report";
     /**
@@ -125,11 +125,11 @@ public class StringManager {
      */
     public static final String DATE_PATTERN = "date.pattern";
     /**
-     * Property name of analysis page key
+     * Property name of scan page key
      */
     public static final String CNES_PAGE_ANALYSIS_KEY = "cnes.page.analysis.key";
     /**
-     * Property name of analysis page name
+     * Property name of scan page name
      */
     public static final String CNES_PAGE_ANALYSIS_NAME = "cnes.page.analysis.name";
     /**
@@ -166,7 +166,7 @@ public class StringManager {
      */
     public static final String CNES_LOG_PATH = "cnes.log.path";
     /**
-     * Command pattern to run an analysis
+     * Command pattern to run an scan
      */
     public static final String CNES_COMMAND_SCAN = "cnes.command.scan";
     /**
@@ -280,7 +280,7 @@ public class StringManager {
     /**
      * Default string to return when a key is unknown
      */
-    private static final String DEFAULT_STRING = "unknown string";
+    public static final String DEFAULT_STRING = "unknown string";
     /**
      * Unique instance of this class (singleton)
      */

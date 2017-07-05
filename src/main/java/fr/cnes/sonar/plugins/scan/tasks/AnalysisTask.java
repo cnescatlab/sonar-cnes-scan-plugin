@@ -1,4 +1,4 @@
-package fr.cnes.sonar.plugins.analysis.tasks;
+package fr.cnes.sonar.plugins.scan.tasks;
 
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
@@ -10,16 +10,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static fr.cnes.sonar.plugins.analysis.utils.StringManager.*;
+import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
- * Execute the analysis of a project
- * @author garconb
+ * Execute the scan of a project
+ * @author begarco
  */
 public class AnalysisTask extends AbstractTask {
 
     /**
-     * Execute the analysis of a project
+     * Execute the scan of a project
      * @param projectName name of the project to analyze
      * @param projectFolder url of the folder containing the project to analyze
      * @param sonarProjectProperties the sonar-project.properties as string
@@ -36,10 +36,10 @@ public class AnalysisTask extends AbstractTask {
                     string(CNES_WORKSPACE), projectFolder);
             // write sonar-project.properties in the project folder
             writeTextFile(sppPath, sonarProjectProperties);
-            // build the analysis command
+            // build the scan command
             String analysisCommand = String.format(string(CNES_COMMAND_SCAN),
                     string(CNES_WORKSPACE), projectFolder, projectFolder);
-            // analysis execution
+            // scan execution
             log(executeCommand(analysisCommand));
 
             // string formatted date as string
@@ -79,7 +79,7 @@ public class AnalysisTask extends AbstractTask {
     }
 
     /**
-     * Use the user's request to launch an analysis
+     * Use the user's request to launch an scan
      * @param request request coming from the user
      * @param response response to send to the user
      * @throws IOException when communicating with the client
@@ -96,7 +96,7 @@ public class AnalysisTask extends AbstractTask {
         final String workspace = request.mandatoryParam(string(CNES_ACTION_1_PARAM_5_NAME));
         final String sonarProjectProperties = request.mandatoryParam(string(CNES_ACTION_1_PARAM_6_NAME));
 
-        // concrete analysis
+        // concrete scan
         String result = analyze(projectName, workspace, sonarProjectProperties);
 
         // write the json response

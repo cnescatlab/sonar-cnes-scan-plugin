@@ -1,4 +1,4 @@
-package fr.cnes.sonar.plugins.analysis.tasks;
+package fr.cnes.sonar.plugins.scan.tasks;
 
 
 import org.sonar.api.server.ws.RequestHandler;
@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Execute the analysis of a project
- * @author garconb
+ * Execute the scan of a project
+ * @author begarco
  */
 public abstract class AbstractTask implements RequestHandler {
 
