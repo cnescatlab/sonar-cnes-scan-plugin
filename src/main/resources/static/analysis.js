@@ -1,4 +1,4 @@
-window.registerExtension('cnes/analysis', function (options) {
+window.registerExtension('cnesscan/analysis', function (options) {
     // let's create a flag telling if the page is still displayed
     var isDisplayedAnalysis = true;
 
@@ -311,7 +311,7 @@ window.registerExtension('cnes/analysis', function (options) {
         options.el.appendChild(template);
 
         // url of the template to load
-        var urlTemplate = checkPermissions() ? '../../static/cnes/templates/analysisForm.html' : '../../static/cnes/templates/denied.html';
+        var urlTemplate = checkPermissions() ? '../../static/cnesscan/templates/analysisForm.html' : '../../static/cnesscan/templates/denied.html';
 
         // add the form if user has permission otherwise the denied access page
         $('#template').load(urlTemplate, function () {

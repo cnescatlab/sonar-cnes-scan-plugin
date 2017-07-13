@@ -1,4 +1,4 @@
-window.registerExtension('cnes/help', function (options) {
+window.registerExtension('cnesscan/help', function (options) {
     // let's create a flag telling if the page is still displayed
     var isDisplayedHelp = true;
 
@@ -10,7 +10,7 @@ window.registerExtension('cnes/help', function (options) {
         template.setAttribute("id", "template");
         options.el.appendChild(template);
         // retrieve template in html file
-        $('#template').load('../../static/cnes/templates/help.html');
+        $('#template').load('../../static/cnesscan/templates/help.html');
 
     }
 

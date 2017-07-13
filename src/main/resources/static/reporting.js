@@ -1,4 +1,4 @@
-window.registerExtension('cnes/reporting', function (options) {
+window.registerExtension('cnesscan/reporting', function (options) {
     // let's create a flag telling if the page is still displayed
     var isDisplayedReporting = true;
 
@@ -108,7 +108,7 @@ window.registerExtension('cnes/reporting', function (options) {
         template.setAttribute("id", "template");
         options.el.appendChild(template);
         // retrieve template from html
-        $('#template').load('../../static/cnes/templates/reportForm.html', function(){
+        $('#template').load('../../static/cnesscan/templates/reportForm.html', function(){
             // set generation button action
             // set its action on click
             document.querySelector('#generation').onclick = function () {

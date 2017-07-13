@@ -46,8 +46,6 @@ public class CnesPluginPageDefinitionTest {
         Iterator pagesIterator = context.getPages().iterator();
         Page page = (Page) pagesIterator.next();
         assertNotNull(page);
-        assertEquals("cnes/help", page.getKey());
-        assertEquals("CNES Help", page.getName());
         assertFalse(page.isAdmin());
 
     }
