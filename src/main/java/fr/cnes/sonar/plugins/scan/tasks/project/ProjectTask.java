@@ -8,6 +8,7 @@ import fr.cnes.sonar.plugins.scan.utils.Status;
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
+import org.sonar.api.utils.text.JsonWriter;
 import org.sonarqube.ws.QualityProfiles.SearchWsResponse.QualityProfile;
 import org.sonarqube.ws.WsComponents;
 import org.sonarqube.ws.WsComponents.SearchProjectsWsResponse;
@@ -26,7 +27,7 @@ import static java.util.Arrays.asList;
 
 /**
  * Execute element to produce the report
- * @author garconb
+ * @author begarco
  */
 public class ProjectTask extends AbstractTask {
 
@@ -80,13 +81,13 @@ public class ProjectTask extends AbstractTask {
 
         // extract parameters
         // key of the project to create
-        String key = request.mandatoryParam(string(CNES_ACTION_3_PARAM_1_NAME));
+        String key = request.mandatoryParam(string(PROJECT_PARAM_KEY_NAME));
         // name of the project to create
-        String name = request.mandatoryParam(string(CNES_ACTION_3_PARAM_2_NAME));
+        String name = request.mandatoryParam(string(PROJECT_PARAM_NAME_NAME));
         // quality profiles of the project to create
-        String qualityProfiles = request.mandatoryParam(string(CNES_ACTION_3_PARAM_3_NAME));
+        String qualityProfiles = request.mandatoryParam(string(PROJECT_PARAM_PROFILES_NAME));
         // quality gate of the project to create
-        String qualityGate = request.mandatoryParam(string(CNES_ACTION_3_PARAM_4_NAME));
+        String qualityGate = request.mandatoryParam(string(PROJECT_PARAM_GATE_NAME));
         // extract the list of quality profiles
         List<String> qualityProfilesList = parseQualityProfiles(qualityProfiles);
 
@@ -116,14 +117,14 @@ public class ProjectTask extends AbstractTask {
         status.merge(profilesStatus);
 
         // write the json response
-        response.newJsonWriter()
-                .beginObject()
-                // add logs to response
-                .prop(string(CNES_ACTION_3_FIELD_1), status.getMessage())
-                // add success status
-                .prop(string(CNES_ACTION_3_FIELD_2), status.isSuccess())
-                .endObject()
-                .close();
+        JsonWriter jsonWriter = response.newJsonWriter();
+        jsonWriter.beginObject();
+        // add logs to response
+        jsonWriter.prop(string(PROJECT_REPONSE_LOG), status.getMessage());
+        // add success status
+        jsonWriter.prop(string(PROJECT_REPONSE_STATUS), status.isSuccess());
+        jsonWriter.endObject();
+        jsonWriter.close();
 
     }
 
@@ -176,11 +177,12 @@ public class ProjectTask extends AbstractTask {
         SearchProjectsWsResponse searchProjectsResponse = wsClient.components().searchProjects(searchProjectsRequest);
 
         // iterate on projects
-        Iterator iterator = searchProjectsResponse.getComponentsList().iterator();
+        Iterator<WsComponents.Component> iterator = searchProjectsResponse.getComponentsList().iterator();
+        WsComponents.Component current;
 
         // browse all projects until find the good one
         while(iterator.hasNext() && !exist) {
-            WsComponents.Component current = (WsComponents.Component) iterator.next();
+            current = iterator.next();
             exist = current.getKey().equals(projectKey);
         }
 
@@ -324,12 +326,15 @@ public class ProjectTask extends AbstractTask {
         WsQualityGates.QualityGate qualityGate = null;
 
         // iterator on the quality gate list
-        Iterator iterator = qualityGates.iterator();
+        Iterator<WsQualityGates.QualityGate> iterator = qualityGates.iterator();
+        WsQualityGates.QualityGate current;
 
         while(iterator.hasNext() && qualityGate==null) {
-            WsQualityGates.QualityGate current = (WsQualityGates.QualityGate) iterator.next();
+            current = iterator.next();
             // we check if the current quality gate is the good one (good name)
-            qualityGate = current.getName().equals(qualityGateName) ? current : null;
+            if(current.getName().equals(qualityGateName)) {
+                qualityGate = current;
+            }
         }
 
         return qualityGate;
@@ -346,12 +351,15 @@ public class ProjectTask extends AbstractTask {
         QualityProfile qualityProfile = null;
 
         // iterator on the quality gate list
-        Iterator iterator = qualityProfiles.iterator();
+        Iterator<QualityProfile> iterator = qualityProfiles.iterator();
+        QualityProfile current;
 
         while(iterator.hasNext() && qualityProfile==null) {
-            QualityProfile current = (QualityProfile) iterator.next();
+            current = iterator.next();
             // we check if the current quality gate is the good one (good name)
-            qualityProfile = current.getName().equals(qualityProfileName) ? current : null;
+            if(current.getName().equals(qualityProfileName)) {
+                qualityProfile = current;
+            }
         }
 
         return qualityProfile;

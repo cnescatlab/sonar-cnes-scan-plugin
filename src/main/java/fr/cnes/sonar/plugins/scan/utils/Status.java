@@ -41,7 +41,17 @@ public class Status {
      */
     public void merge(Status status) {
         setSuccess(this.mSuccess && status.mSuccess);
-        setMessage(this.mMessage + (this.mMessage.isEmpty()?"":string(CNES_LOG_SEPARATOR)) + status.mMessage);
+
+        // merge of the both messages
+        String mergedMessage = this.mMessage;
+        // if empty we do not add
+        if(!mergedMessage.isEmpty()) {
+            mergedMessage += string(CNES_LOG_SEPARATOR);
+        }
+        // add the second message
+        mergedMessage += status.getMessage();
+
+        setMessage(mergedMessage);
     }
 
     /**

@@ -62,7 +62,7 @@ window.registerExtension('cnesscan/reporting', function (options) {
         // get all the components of the form
         var elements = form.elements;
         // change all components readOnly field to (un)lock them
-        for (var i = 0, len = elements.length; i < len; ++i) {
+        for (var i = 0, len = elements.length; i < len; i++) {
             elements[i].readOnly = !isEnabled;
             elements[i].disabled = !isEnabled;
         }

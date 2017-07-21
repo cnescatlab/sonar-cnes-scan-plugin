@@ -39,7 +39,7 @@ public class CnesScanPluginTest {
         SonarRuntime runtime = SonarRuntimeImpl.forSonarQube(Version.create(6,3), SonarQubeSide.SERVER);
         Plugin.Context context = new Plugin.Context(runtime);
         cnesScanPlugin.define(context);
-        assertEquals(context.getExtensions().size(), 2);
+        assertEquals(context.getExtensions().size(), 3);
     }
 
 }

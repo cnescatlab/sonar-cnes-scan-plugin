@@ -19,24 +19,35 @@ public class CnesPluginPageDefinition implements PageDefinition {
      */
     @Override
     public void define(Context context) {
-        context
-            // add a new page for scan + reporting
-            .addPage(Page.builder(string(CNES_PAGE_ANALYSIS_KEY))
-                    // set its name
-                .setName(string(CNES_PAGE_ANALYSIS_NAME))
-                    // set its scope (where it is displayed)
-                .setScope(Scope.GLOBAL).build())
-            // add a new page for reporting
-            .addPage(Page.builder(string(CNES_PAGE_REPORT_KEY))
-                    // set its name
-                    .setName(string(CNES_PAGE_REPORT_NAME))
-                    // set its scope (where it is displayed)
-                    .setScope(Scope.GLOBAL).build())
-            // add a new page for help
-            .addPage(Page.builder(string(CNES_PAGE_HELP_KEY))
-                    // set its name
-                    .setName(string(CNES_PAGE_HELP_NAME))
-                    // set its scope (where it is displayed)
-                    .setScope(Scope.GLOBAL).build());
+
+        // create a page
+        Page.Builder page = Page.builder(string(CNES_PAGE_ANALYSIS_KEY));
+        // set its name
+        page.setName(string(CNES_PAGE_ANALYSIS_NAME));
+        // set its scope (where it is displayed)
+        page.setScope(Scope.GLOBAL);
+        // add a new page for scan + reporting
+        context.addPage(page.build());
+
+
+        // create a page
+        page = Page.builder(string(CNES_PAGE_REPORT_KEY));
+        // set its name
+        page.setName(string(CNES_PAGE_REPORT_NAME));
+        // set its scope (where it is displayed)
+        page.setScope(Scope.GLOBAL);
+        // add a new page for reporting
+        context.addPage(page.build());
+
+
+        // create a page
+        page = Page.builder(string(CNES_PAGE_HELP_KEY));
+        // set its name
+        page.setName(string(CNES_PAGE_HELP_NAME));
+        // set its scope (where it is displayed)
+        page.setScope(Scope.GLOBAL);
+        // add a new page for help
+        context.addPage(page.build());
+
     }
 }

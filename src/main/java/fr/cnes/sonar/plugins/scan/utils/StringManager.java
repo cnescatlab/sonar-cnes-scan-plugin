@@ -23,79 +23,79 @@ public class StringManager {
     /**
      * Property for action 1 (scan) key
      */
-    public static final String CNES_ACTION_1_KEY = "cnes.action.1.key";
+    public static final String ANALYZE_KEY = "cnes.action.analyze.key";
     /**
      * Property for action 1 (scan) description
      */
-    public static final String CNES_ACTION_1_DESC = "cnes.action.1.desc";
+    public static final String ANALYZE_DESC = "cnes.action.analyze.desc";
     /**
      * Property for action 1 (scan) param 1 description
      */
-    public static final String CNES_ACTION_1_PARAM_1_DESC = "cnes.action.1.param.1.desc";
+    public static final String ANALYZE_KEY_DESC = "cnes.action.analyze.param.key.desc";
     /**
      * Property for action 1 (scan) param 2 description
      */
-    public static final String CNES_ACTION_1_PARAM_2_DESC = "cnes.action.1.param.2.desc";
+    public static final String ANALYZE_NAME_DESC = "cnes.action.analyze.param.name.desc";
     /**
      * Property for action 1 (scan) param 3 description
      */
-    public static final String CNES_ACTION_1_PARAM_3_DESC = "cnes.action.1.param.3.desc";
+    public static final String ANALYZE_QUALITYPROFILE_DESC = "cnes.action.analyze.param.qualityprofile.desc";
     /**
      * Property for action 1 (scan) param 4 description
      */
-    public static final String CNES_ACTION_1_PARAM_4_DESC = "cnes.action.1.param.4.desc";
+    public static final String ANALYZE_QUALITYGATE_DESC = "cnes.action.analyze.param.qualitygate.desc";
     /**
      * Property for action 1 (scan) param 5 description
      */
-    public static final String CNES_ACTION_1_PARAM_5_DESC = "cnes.action.1.param.5.desc";
+    public static final String ANALYZE_FOLDER_DESC = "cnes.action.analyze.param.folder.desc";
     /**
      * Property for action 1 (scan) param 6 description
      */
-    public static final String CNES_ACTION_1_PARAM_6_DESC = "cnes.action.1.param.6.desc";
+    public static final String ANALYZE_SPP_DESC = "cnes.action.analyze.param.spp.desc";
     /**
      * Property for action 2 (reporting) param 1 name
      */
-    public static final String CNES_ACTION_2_PARAM_1_NAME = "cnes.action.2.param.1.name";
+    public static final String CNES_ACTION_REPORT_PARAM_KEY_NAME = "cnes.action.report.param.key.name";
     /**
      * Property for action 2 (reporting) param 2 name
      */
-    public static final String CNES_ACTION_2_PARAM_2_NAME = "cnes.action.2.param.2.name";
+    public static final String CNES_ACTION_REPORT_PARAM_QUALITYGATE_NAME = "cnes.action.report.param.qualitygate.name";
     /**
      * Property for action 2 (reporting) param 3 name
      */
-    public static final String CNES_ACTION_2_PARAM_3_NAME = "cnes.action.2.param.3.name";
+    public static final String CNES_ACTION_REPORT_PARAM_NAME_NAME = "cnes.action.report.param.name.name";
     /**
      * Define the name of the author parameter
      */
-    public static final String CNES_ACTION_2_PARAM_4_NAME = "cnes.action.2.param.4.name";
+    public static final String CNES_ACTION_REPORT_PARAM_AUTHOR_NAME = "cnes.action.report.param.author.name";
     /**
      * Property for action 2 (reporting) response's field 1
      */
-    public static final String CNES_ACTION_2_FIELD_1 = "cnes.action.2.field.1";
+    public static final String REPORT_RESPONSE_LOG = "cnes.action.report.response.log";
     /**
      * Property for action 2 (reporting) param 1 description
      */
-    public static final String CNES_ACTION_2_PARAM_1_DESC = "cnes.action.2.param.1.desc";
+    public static final String REPORT_KEY_DESC = "cnes.action.report.param.key.desc";
     /**
      * Property for action 2 (reporting) param 2 description
      */
-    public static final String CNES_ACTION_2_PARAM_2_DESC = "cnes.action.2.param.2.desc";
+    public static final String REPORT_QUALITYGATE_DESC = "cnes.action.report.param.qualitygate.desc";
     /**
      * Property for action 2 (reporting) param 3 description
      */
-    public static final String CNES_ACTION_2_PARAM_3_DESC = "cnes.action.2.param.3.desc";
+    public static final String REPORT_NAME_DESC = "cnes.action.report.param.name.desc";
     /**
      * Property for action 2 (reporting) param 4 description
      */
-    public static final String CNES_ACTION_2_PARAM_4_DESC = "cnes.action.2.param.4.desc";
+    public static final String REPORT_AUTHOR_DESC = "cnes.action.report.param.author.desc";
     /**
      * Property for action 2 (reporting) key
      */
-    public static final String CNES_ACTION_2_KEY = "cnes.action.2.key";
+    public static final String REPORT_KEY = "cnes.action.report.key";
     /**
      * Property for action 2 (reporting) description
      */
-    public static final String CNES_ACTION_2_DESC = "cnes.action.2.desc";
+    public static final String REPORT_DESC = "cnes.action.report.desc";
     /**
      * Property for quality profiles separator
      */
@@ -174,33 +174,33 @@ public class StringManager {
      */
     public static final String SONAR_VERSION = "sonar.version";
     /**
-     * Define the name of the quality profile parameter
+     * Define the name of the projects's key parameter
      */
-    public static final String CNES_ACTION_1_PARAM_3_NAME = "cnes.action.1.param.3.name";
-    /**
-     * Define the name of the quality gate parameter
-     */
-    public static final String CNES_ACTION_1_PARAM_4_NAME = "cnes.action.1.param.4.name";
+    public static final String ANALYZE_KEY_NAME = "cnes.action.analyze.param.key.name";
     /**
      * Define the name of the project's name parameter
      */
-    public static final String CNES_ACTION_1_PARAM_2_NAME = "cnes.action.1.param.2.name";
+    public static final String ANALYZE_NAME_NAME = "cnes.action.analyze.param.name.name";
     /**
-     * Define the name of the projects's key parameter
+     * Define the name of the quality profile parameter
      */
-    public static final String CNES_ACTION_1_PARAM_1_NAME = "cnes.action.1.param.1.name";
+    public static final String ANALYZE_QUALITYPROFILE_NAME = "cnes.action.analyze.param.qualityprofile.name";
     /**
-     * Define the name of the returned log filed
+     * Define the name of the quality gate parameter
      */
-    public static final String CNES_ACTION_1_FIELD_1 = "cnes.action.1.field.1";
+    public static final String ANALYZE_QUALITYGATE_NAME = "cnes.action.analyze.param.qualitygate.name";
     /**
      * Define the name of the projects's folder's name parameter
      */
-    public static final String CNES_ACTION_1_PARAM_5_NAME = "cnes.action.1.param.5.name";
+    public static final String ANALYZE_FOLDER_NAME = "cnes.action.analyze.param.folder.name";
     /**
      * Define the name of the projects's sonar-project.properties parameter
      */
-    public static final String CNES_ACTION_1_PARAM_6_NAME = "cnes.action.1.param.6.name";
+    public static final String ANALYZE_SPP_NAME = "cnes.action.analyze.param.spp.name";
+    /**
+     * Define the name of the returned log filed
+     */
+    public static final String ANALYZE_RESPONSE_LOG = "cnes.action.analyze.response.log";
     /**
      * Path where the report must be exported
      */
@@ -216,51 +216,51 @@ public class StringManager {
     /**
      * Property for the action's 3 key (project creation)
      */
-    public static final String CNES_ACTION_3_KEY = "cnes.action.3.key";
+    public static final String PROJECT_KEY = "cnes.action.project.key";
     /**
      * Property for the action's 3 description (project creation)
      */
-    public static final String CNES_ACTION_3_DESC = "cnes.action.3.desc";
+    public static final String PROJECT_DESC = "cnes.action.project.desc";
     /**
      * Property for the action 3 (project creation) parameter 1 name (project key)
      */
-    public static final String CNES_ACTION_3_PARAM_1_NAME = "cnes.action.3.param.1.name";
+    public static final String PROJECT_PARAM_KEY_NAME = "cnes.action.project.param.key.name";
     /**
      * Property for the action 3 (project creation) parameter 1 description (project key)
      */
-    public static final String CNES_ACTION_3_PARAM_1_DESC = "cnes.action.3.param.1.desc";
+    public static final String PROJECT_PARAM_KEY_DESC = "cnes.action.project.param.key.desc";
     /**
      * Property for the action 3 (project creation) parameter 2 name (project name)
      */
-    public static final String CNES_ACTION_3_PARAM_2_NAME = "cnes.action.3.param.2.name";
+    public static final String PROJECT_PARAM_NAME_NAME = "cnes.action.project.param.name.name";
     /**
      * Property for the action 3 (project creation) parameter 2 description (project name)
      */
-    public static final String CNES_ACTION_3_PARAM_2_DESC = "cnes.action.3.param.2.desc";
+    public static final String PROJECT_PARAM_NAME_DESC = "cnes.action.project.param.name.desc";
     /**
      * Property for the action 3 (project creation) parameter 3 name (quality profiles)
      */
-    public static final String CNES_ACTION_3_PARAM_3_NAME = "cnes.action.3.param.3.name";
+    public static final String PROJECT_PARAM_PROFILES_NAME = "cnes.action.project.param.profiles.name";
     /**
      * Property for the action 3 (project creation) parameter 3 description (quality profiles)
      */
-    public static final String CNES_ACTION_3_PARAM_3_DESC = "cnes.action.3.param.3.desc";
+    public static final String PROJECT_PARAM_PROFILES_DESC = "cnes.action.project.param.profiles.desc";
     /**
      * Property for the action 3 (project creation) parameter 4 name (quality gate)
      */
-    public static final String CNES_ACTION_3_PARAM_4_NAME = "cnes.action.3.param.4.name";
+    public static final String PROJECT_PARAM_GATE_NAME = "cnes.action.project.param.gate.name";
     /**
      * Property for the action 3 (project creation) parameter 4 description (quality gate)
      */
-    public static final String CNES_ACTION_3_PARAM_4_DESC = "cnes.action.3.param.4.desc";
+    public static final String PROJECT_PARAM_GATE_DESC = "cnes.action.project.param.gate.desc";
     /**
      * Property for action 3 (project) response's field 1
      */
-    public static final String CNES_ACTION_3_FIELD_1 = "cnes.action.3.field.1";
+    public static final String PROJECT_REPONSE_LOG = "cnes.action.project.response.log";
     /**
      * Property for action 3 (project) response's field 2
      */
-    public static final String CNES_ACTION_3_FIELD_2 = "cnes.action.3.field.2";
+    public static final String PROJECT_REPONSE_STATUS = "cnes.action.project.response.status";
     /**
      * Separator between two log entries
      */
@@ -282,9 +282,25 @@ public class StringManager {
      */
     public static final String DEFAULT_STRING = "unknown string";
     /**
+     * Key for the timeout property
+     */
+    public static final String TIMEOUT_PROP_DEF_KEY = "property.definition.timeout.key";
+    /**
+     * Name for the timeout property
+     */
+    public static final String TIMEOUT_PROP_DEF_NAME = "property.definition.timeout.name";
+    /**
+     * Description for the timeout property
+     */
+    public static final String TIMEOUT_PROP_DEF_DESC = "property.definition.timeout.desc";
+    /**
+     * Default value for the timeout property
+     */
+    public static final String TIMEOUT_PROP_DEF_DEFAULT = "property.definition.timeout.default";
+    /**
      * Unique instance of this class (singleton)
      */
-    private static final StringManager ourInstance = new StringManager();
+    private static StringManager ourInstance = null;
     /**
      * Gather all the properties concerning the plugin
      */
@@ -308,7 +324,10 @@ public class StringManager {
      *
      * @return unique instance of StringManager
      */
-    public static StringManager getInstance() {
+    public static synchronized StringManager getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new StringManager();
+        }
         return ourInstance;
     }
 
@@ -319,7 +338,17 @@ public class StringManager {
      * @return the property as String or the DEFAULT_STRING
      */
     public static String string(String key) {
-        return getInstance().properties.getProperty(key, DEFAULT_STRING);
+        return getInstance().getProperty(key, DEFAULT_STRING);
+    }
+
+    /**
+     * Get the value of a property through its key
+     *
+     * @param key Key of the string to string
+     * @return the property as String or the DEFAULT_STRING
+     */
+    private String getProperty(String key, String defaultString) {
+        return this.properties.getProperty(key, defaultString);
     }
 
     /**

@@ -45,32 +45,38 @@ public class CnesWs implements WebService {
      * @param controller controller to which add the action
      */
     private void analyzeAction(NewController controller) {
-        NewAction analysis = controller.createAction(string(CNES_ACTION_1_KEY))
-                //set
-                .setDescription(string(CNES_ACTION_1_DESC))
-                .setSince(string(SONAR_VERSION))
-                .setPost(true)
-                // new scan task to handle the request and work on the code
-                .setHandler(new AnalysisTask());
+        NewAction analysis = controller.createAction(string(ANALYZE_KEY));
+        //set
+        analysis.setDescription(string(ANALYZE_DESC));
+        analysis.setSince(string(SONAR_VERSION));
+        analysis.setPost(true);
+        // new scan task to handle the request and work on the code
+        analysis.setHandler(new AnalysisTask());
         // create parameter of the action
         // key parameter
-        analysis.createParam(string(CNES_ACTION_1_PARAM_1_NAME))
-                .setDescription(string(CNES_ACTION_1_PARAM_1_DESC)).setRequired(true);
+        NewParam newParam = analysis.createParam(string(ANALYZE_KEY_NAME));
+        newParam.setDescription(string(ANALYZE_KEY_DESC));
+        newParam.setRequired(true);
         // name parameter
-        analysis.createParam(string(CNES_ACTION_1_PARAM_2_NAME))
-                .setDescription(string(CNES_ACTION_1_PARAM_2_DESC)).setRequired(true);
+        newParam = analysis.createParam(string(ANALYZE_NAME_NAME));
+        newParam.setDescription(string(ANALYZE_NAME_DESC));
+        newParam.setRequired(true);
         // quality profile parameter
-        analysis.createParam(string(CNES_ACTION_1_PARAM_3_NAME))
-                .setDescription(string(CNES_ACTION_1_PARAM_3_DESC)).setRequired(true);
+        newParam = analysis.createParam(string(ANALYZE_QUALITYPROFILE_NAME));
+        newParam.setDescription(string(ANALYZE_QUALITYPROFILE_DESC));
+        newParam.setRequired(true);
         // quality gate parameter
-        analysis.createParam(string(CNES_ACTION_1_PARAM_4_NAME))
-                .setDescription(string(CNES_ACTION_1_PARAM_4_DESC)).setRequired(true);
+        newParam = analysis.createParam(string(ANALYZE_QUALITYGATE_NAME));
+        newParam.setDescription(string(ANALYZE_QUALITYGATE_DESC));
+        newParam.setRequired(true);
         // folder parameter
-        analysis.createParam(string(CNES_ACTION_1_PARAM_5_NAME))
-                .setDescription(string(CNES_ACTION_1_PARAM_5_DESC)).setRequired(true);
+        newParam = analysis.createParam(string(ANALYZE_FOLDER_NAME));
+        newParam.setDescription(string(ANALYZE_FOLDER_DESC));
+        newParam.setRequired(true);
         // spp parameter
-        analysis.createParam(string(CNES_ACTION_1_PARAM_6_NAME))
-                .setDescription(string(CNES_ACTION_1_PARAM_6_DESC)).setRequired(true);
+        newParam = analysis.createParam(string(ANALYZE_SPP_NAME));
+        newParam.setDescription(string(ANALYZE_SPP_DESC));
+        newParam.setRequired(true);
     }
 
     /**
@@ -78,23 +84,27 @@ public class CnesWs implements WebService {
      * @param controller controller to which add the action
      */
     private void reportAction(NewController controller) {
-        NewAction report = controller.createAction(string(CNES_ACTION_2_KEY))
-                .setDescription(string(CNES_ACTION_2_DESC))
-                .setSince(string(SONAR_VERSION))
-                .setHandler(new ReportTask());
+        NewAction report = controller.createAction(string(REPORT_KEY));
+        report.setDescription(string(REPORT_DESC));
+        report.setSince(string(SONAR_VERSION));
+        report.setHandler(new ReportTask());
         // add the parameters of the controller
         // key parameter
-        report.createParam(string(CNES_ACTION_2_PARAM_1_NAME))
-                .setDescription(string(CNES_ACTION_2_PARAM_1_DESC)).setRequired(true);
+        NewParam newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_KEY_NAME));
+        newParam.setDescription(string(REPORT_KEY_DESC));
+        newParam.setRequired(true);
         // quality gate parameter
-        report.createParam(string(CNES_ACTION_2_PARAM_2_NAME))
-                .setDescription(string(CNES_ACTION_2_PARAM_2_DESC)).setRequired(true);
+        newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_QUALITYGATE_NAME));
+        newParam.setDescription(string(REPORT_QUALITYGATE_DESC));
+        newParam.setRequired(true);
         // name of the project parameter
-        report.createParam(string(CNES_ACTION_2_PARAM_3_NAME))
-                .setDescription(string(CNES_ACTION_2_PARAM_3_DESC)).setRequired(true);
+        newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_NAME_NAME));
+        newParam.setDescription(string(REPORT_NAME_DESC));
+        newParam.setRequired(true);
         // author's name parameter
-        report.createParam(string(CNES_ACTION_2_PARAM_4_NAME))
-                .setDescription(string(CNES_ACTION_2_PARAM_4_DESC)).setRequired(true);
+        newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_AUTHOR_NAME));
+        newParam.setDescription(string(REPORT_AUTHOR_DESC));
+        newParam.setRequired(true);
     }
 
     /**
@@ -102,23 +112,27 @@ public class CnesWs implements WebService {
      * @param controller controller to which add the action
      */
     private void projectAction(NewController controller) {
-        NewAction project = controller.createAction(string(CNES_ACTION_3_KEY))
-                .setDescription(string(CNES_ACTION_3_DESC))
-                .setSince(string(SONAR_VERSION))
-                .setHandler(new ProjectTask());
+        NewAction project = controller.createAction(string(PROJECT_KEY));
+        project.setDescription(string(PROJECT_DESC));
+        project.setSince(string(SONAR_VERSION));
+        project.setHandler(new ProjectTask());
         // add the parameters of the controller
         // key parameter
-        project.createParam(string(CNES_ACTION_3_PARAM_1_NAME))
-                .setDescription(string(CNES_ACTION_3_PARAM_1_DESC)).setRequired(true);
+        NewParam newParam = project.createParam(string(PROJECT_PARAM_KEY_NAME));
+        newParam.setDescription(string(PROJECT_PARAM_KEY_DESC));
+        newParam.setRequired(true);
         // name of the project parameter
-        project.createParam(string(CNES_ACTION_3_PARAM_2_NAME))
-                .setDescription(string(CNES_ACTION_3_PARAM_2_DESC)).setRequired(true);
+        newParam = project.createParam(string(PROJECT_PARAM_NAME_NAME));
+        newParam.setDescription(string(PROJECT_PARAM_NAME_DESC));
+        newParam.setRequired(true);
         // quality profiles parameter
-        project.createParam(string(CNES_ACTION_3_PARAM_3_NAME))
-                .setDescription(string(CNES_ACTION_3_PARAM_3_DESC)).setRequired(true);
+        newParam = project.createParam(string(PROJECT_PARAM_PROFILES_NAME));
+        newParam.setDescription(string(PROJECT_PARAM_PROFILES_DESC));
+        newParam.setRequired(true);
         // quality gate parameter
-        project.createParam(string(CNES_ACTION_3_PARAM_4_NAME))
-                .setDescription(string(CNES_ACTION_3_PARAM_4_DESC)).setRequired(true);
+        newParam = project.createParam(string(PROJECT_PARAM_GATE_NAME));
+        newParam.setDescription(string(PROJECT_PARAM_GATE_DESC));
+        newParam.setRequired(true);
     }
 
 }

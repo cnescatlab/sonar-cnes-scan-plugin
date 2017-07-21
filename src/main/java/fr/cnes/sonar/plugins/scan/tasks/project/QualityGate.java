@@ -2,6 +2,7 @@ package fr.cnes.sonar.plugins.scan.tasks.project;
 
 /**
  * Model of Quality Gate for json parsing
+ * @author begarco
  */
 public class QualityGate {
 

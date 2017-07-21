@@ -2,6 +2,7 @@ package fr.cnes.sonar.plugins.scan.tasks;
 
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
+import org.sonar.api.utils.text.JsonWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -92,20 +93,20 @@ public class AnalysisTask extends AbstractTask {
         setLogs("");
 
         // get project's information from the request's parameters
-        final String projectName = request.mandatoryParam(string(CNES_ACTION_1_PARAM_2_NAME));
-        final String workspace = request.mandatoryParam(string(CNES_ACTION_1_PARAM_5_NAME));
-        final String sonarProjectProperties = request.mandatoryParam(string(CNES_ACTION_1_PARAM_6_NAME));
+        final String projectName = request.mandatoryParam(string(ANALYZE_NAME_NAME));
+        final String workspace = request.mandatoryParam(string(ANALYZE_FOLDER_NAME));
+        final String sonarProjectProperties = request.mandatoryParam(string(ANALYZE_SPP_NAME));
 
         // concrete scan
         String result = analyze(projectName, workspace, sonarProjectProperties);
 
         // write the json response
-        response.newJsonWriter()
-                .beginObject()
-                // add logs to response
-                .prop(string(CNES_ACTION_1_FIELD_1), result)
-                .endObject()
-                .close();
+        JsonWriter jsonWriter = response.newJsonWriter();
+        jsonWriter.beginObject();
+        // add logs to response
+        jsonWriter.prop(string(ANALYZE_RESPONSE_LOG), result);
+        jsonWriter.endObject();
+        jsonWriter.close();
     }
 
 }

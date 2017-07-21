@@ -107,7 +107,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
         // get all the components of the form
         var elements = form.elements;
         // change all components readOnly field to (un)lock them
-        for (var i = 0, len = elements.length; i < len; ++i) {
+        for (var i = 0, len = elements.length; i < len; i++) {
             elements[i].readOnly = !isEnabled;
             elements[i].disabled = !isEnabled;
         }
@@ -161,7 +161,9 @@ window.registerExtension('cnesscan/analysis', function (options) {
     var createProject = function (projectKey, name, folder, qualityGate, qualityProfile, spp, author, callback) {
 
         // check if the quality gate field is filled out
-        qualityGate = qualityGate === "" ? "CNES" : qualityGate;
+        if(qualityGate === "") {
+            qualityGate = "CNES";
+        }
 
         // Request to create a project with quality parameters
         window.SonarRequest.getJSON(
@@ -308,11 +310,17 @@ window.registerExtension('cnesscan/analysis', function (options) {
         // Add html template
         var template = document.createElement("div");
         template.setAttribute("id", "template");
-        options.el.appendChild(template);
 
-        // url of the template to load
-        var urlTemplate = checkPermissions() ? '../../static/cnesscan/templates/analysisForm.html' : '../../static/cnesscan/templates/denied.html';
+        // html template of the page to display
+        var urlTemplate;
 
+        // if the user has permission to access the page, the user get it
+        // otherwise he gets a denied access page
+        if(checkPermissions()) {
+            urlTemplate = '../../static/cnesscan/templates/analysisForm.html';
+        } else {
+            urlTemplate = '../../static/cnesscan/templates/denied.html';
+        }
         // add the form if user has permission otherwise the denied access page
         $('#template').load(urlTemplate, function () {
 

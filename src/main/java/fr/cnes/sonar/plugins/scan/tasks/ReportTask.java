@@ -2,6 +2,7 @@ package fr.cnes.sonar.plugins.scan.tasks;
 
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
+import org.sonar.api.utils.text.JsonWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,8 @@ public class ReportTask extends AbstractTask {
      */
     public String report(String projectId, String projectQualityGate,
                          String projectName, String reportAuthor, String reportPath,
-                         String reportTemplate, String issuesTemplate) throws IOException, InterruptedException {
+                         String reportTemplate, String issuesTemplate)
+            throws IOException, InterruptedException {
 
         // creation of the output directory
         boolean success = (new File(reportPath)).mkdirs();
@@ -67,7 +69,7 @@ public class ReportTask extends AbstractTask {
         setLogs("");
 
         // Name of the project provided by the user through parameters
-        final String projectName = request.mandatoryParam(string(CNES_ACTION_2_PARAM_3_NAME));
+        final String projectName = request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_NAME_NAME));
         // Date of today
         final String today = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
         // Construct the name of the output folder like that: sharedFolder/project-date-results
@@ -76,21 +78,21 @@ public class ReportTask extends AbstractTask {
         // read request parameters and generates response output
         // generate the reports and save output
         String result = report(
-                request.mandatoryParam(string(CNES_ACTION_2_PARAM_1_NAME)),
-                request.mandatoryParam(string(CNES_ACTION_2_PARAM_2_NAME)),
+                request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_KEY_NAME)),
+                request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_QUALITYGATE_NAME)),
                 projectName,
-                request.mandatoryParam(string(CNES_ACTION_2_PARAM_4_NAME)),
+                request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_AUTHOR_NAME)),
                 output,
                 string(CNES_REPORTER_TEMPLATE),
                 string(CNES_ISSUES_TEMPLATE)
         );
 
         // set the response
-        response.newJsonWriter()
-                .beginObject()
-                // add logs to response
-                .prop(string(CNES_ACTION_2_FIELD_1), result)
-                .endObject()
-                .close();
+        JsonWriter jsonWriter = response.newJsonWriter();
+        jsonWriter.beginObject();
+        // add logs to response
+        jsonWriter.prop(string(REPORT_RESPONSE_LOG), result);
+        jsonWriter.endObject();
+        jsonWriter.close();
     }
 }
