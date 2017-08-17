@@ -55,7 +55,16 @@ window.registerExtension('cnesscan/analysis', function (options) {
         var folder = document.forms["analyze-form"]["folder"].value;
         // check if void
         if (folder === "") {
-            log("Folder must be filled out.");
+            log("Workspace must be filled out.");
+            // abort the process
+            return false;
+        }
+        // check the field sources (project)
+        // get it
+        var folder = document.forms["analyze-form"]["sources"].value;
+        // check if void
+        if (folder === "") {
+            log("Sources must be filled out.");
             // abort the process
             return false;
         }
@@ -80,6 +89,21 @@ window.registerExtension('cnesscan/analysis', function (options) {
         // check if the user try to set project name
         } else if(spp.indexOf("sonar.projectName")!==-1) {
             log("Please do not use 'sonar.projectName' property.");
+            // abort the process
+            return false;
+        // check if the user try to set project sources
+        } else if(spp.indexOf("sonar.sources")!==-1) {
+            log("Please do not use 'sonar.sources' property.");
+            // abort the process
+            return false;
+        // check if the user try to set project version
+        } else if(spp.indexOf("sonar.projectVersion")!==-1) {
+            log("Please do not use 'sonar.projectVersion' property.");
+            // abort the process
+            return false;
+        // check if the user try to set project description
+        } else if(spp.indexOf("sonar.projectDescription")!==-1) {
+            log("Please do not use 'sonar.projectDescription' property.");
             // abort the process
             return false;
         }
@@ -107,7 +131,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
         // get all the components of the form
         var elements = form.elements;
         // change all components readOnly field to (un)lock them
-        for (var i = 0, len = elements.length; i < len; i++) {
+        for (var i = 0, len = elements.length; i < len; ++i) {
             elements[i].readOnly = !isEnabled;
             elements[i].disabled = !isEnabled;
         }
@@ -156,14 +180,16 @@ window.registerExtension('cnesscan/analysis', function (options) {
      * @param qualityProfile value for the quality profile
      * @param spp
      * @param author
+     * @param version
+     * @param description
+     * @param sources
      * @param callback
      */
-    var createProject = function (projectKey, name, folder, qualityGate, qualityProfile, spp, author, callback) {
+    var createProject = function (  projectKey, name, folder, qualityGate, qualityProfile, spp, author,
+                                    version, description, sources, callback) {
 
         // check if the quality gate field is filled out
-        if(qualityGate === "") {
-            qualityGate = "CNES";
-        }
+        qualityGate = qualityGate === "" ? "CNES" : qualityGate;
 
         // Request to create a project with quality parameters
         window.SonarRequest.getJSON(
@@ -174,7 +200,8 @@ window.registerExtension('cnesscan/analysis', function (options) {
             log('[INFO] Project creation log:\n' + response.logs);
             // if success we call the next function (analysis)
             if(response.success) {
-                callback(projectKey, name, folder, qualityGate, qualityProfile, spp, author, produceReport);
+                callback(projectKey, name, folder, qualityGate, qualityProfile, spp, author,
+                         version, description, sources, produceReport);
             } else {
                 // unlock form
                 setEnabled(true);
@@ -229,15 +256,25 @@ window.registerExtension('cnesscan/analysis', function (options) {
      * @param key
      * @param name
      * @param qualityprofile
+     * @param version
+     * @param description
+     * @param sources
      * @return Modified spp with automatic data
      */
-    var completeSPP = function (spp, key, name, qualityprofile) {
+    var completeSPP = function (spp, key, name, qualityprofile, version, description, sources) {
         // complete the spp with projectKey and projectName
         spp = spp.concat("\nsonar.projectKey="+key);
         spp = spp.concat("\nsonar.projectName="+name);
 
+        // complete the spp with version and description
+        spp = spp.concat("\nsonar.projectVersion="+version);
+        spp = spp.concat("\nsonar.projectDescription="+description);
+
+        // complete the spp with sources repository
+        spp = spp.concat("\nsonar.sources="+sources);
+
         // if a python quality profile is set and there are no pylintrc set
-        if(qualityprofile.indexOf("CNES_PYTHON")!==-1 && spp.indexOf("sonar.python.pylint_config")===-1) {
+        if(qualityprofile.indexOf("cnes_python")!==-1 && spp.indexOf("sonar.python.pylint_config")===-1) {
             // sonar pylint configuration property
             var pylintrcSonar = "\nsonar.python.pylint_config=";
             // path to configuration files
@@ -246,12 +283,12 @@ window.registerExtension('cnesscan/analysis', function (options) {
             var filename = "pylintrc_RNC_sonar_2017_D";
             // we append the appropriate one
             // check if there is a rated A or B profile and add the corresponding file
-            if(qualityprofile.indexOf("CNES_PYTHON_A") !== -1 || qualityprofile.indexOf("CNES_PYTHON_B") != -1) {
+            if(qualityprofile.indexOf("cnes_python_a") !== -1 || qualityprofile.indexOf("cnes_python_b") != -1) {
                 filename = "pylintrc_RNC_sonar_2017_A_B";
                 spp = spp.concat(pylintrcSonar+configurationPath+filename);
                 log("[INFO] Use of configuration file "+filename+" for Pylint.");
             // check if there is a rated C profile and add the corresponding file
-            } else if(qualityprofile.indexOf("CNES_PYTHON_C") !== -1) {
+            } else if(qualityprofile.indexOf("cnes_python_c") !== -1) {
                 filename = "pylintrc_RNC_sonar_2017_C";
                 spp = spp.concat(pylintrcSonar+configurationPath+filename);
                 log("[INFO] Use of configuration file "+filename+" for Pylint.");
@@ -274,12 +311,16 @@ window.registerExtension('cnesscan/analysis', function (options) {
      * @param qualityprofile
      * @param spp
      * @param author
+     * @param version
+     * @param description
+     * @param sources
      * @param callback
      */
-    var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp, author, callback) {
+    var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp, author,
+                                version, description, sources, callback) {
 
         // auto complete the sonar-project properties
-        spp = completeSPP(spp, key, name, qualityprofile);
+        spp = completeSPP(spp, key, name, qualityprofile, version, description, sources);
 
         // log the finally used spp
         log("[INFO] Here comes the finally used sonar-project.properties:\n" + spp);
@@ -304,23 +345,120 @@ window.registerExtension('cnesscan/analysis', function (options) {
         });
     };
 
+    /**
+     * Function which groups element by key
+     * @param array
+     * @param key
+     */
+    var groupBy = function(array, key) {
+        return array.reduce(function(rv, x) {
+            (rv[x[key]] = rv[x[key]] || []).push(x);
+            return rv;
+        }, {});
+    };
+
+    /**
+     *  Get quality gates from the server and fill out the combo box
+     */
+    var initQualityGateDropDownList = function() {
+        window.SonarRequest.getJSON(
+            '/api/qualitygates/list'
+        ).then(function (response) {
+            // on success
+            // we put each quality gate in the list
+            $.each(response.qualitygates, function (i, item) {
+                // we create a new option for each quality gate
+                // in the json response
+                var option = $('<option>', {
+                                 value: item.name,
+                                 text : item.name
+                             });
+                // we add it to the drop down list
+                $('#quality-gate').append(option);
+                // we select as a default value the default quality gate
+                if(item.id===response.default) {
+                    $('#quality-gate').val(item.name);
+                }
+            });
+        }).catch(function (error) {
+            // log error
+            log("[ERROR] " + error);
+        });
+    };
+
+    /**
+     *  Get quality profiles from the server and fill out the combo box
+     */
+    var initQualityProfileDropDownList = function() {
+        var id = '#quality-profile';
+
+        window.SonarRequest.getJSON(
+            '/api/qualityprofiles/search'
+        ).then(function (response) {
+            // on success
+
+            // sort profiles by language
+            var sorted = groupBy(response.profiles, 'languageName');
+
+            // and create an option group for each language
+            $.each(sorted, function (j, cat) {
+                var category = $('<optgroup>', {
+                                    label: j
+                                });
+                $(id).append(category);
+                // we put each quality profiles in the list
+                $.each(cat, function (i, item) {
+                    // we create a new option for each quality profile
+                    // in the json response
+                    var option = $('<option>', {
+                                     value: item.key,
+                                     text : item.name
+                                 });
+                    // we add it to the drop down list
+                    category.append(option);
+                    // we select as a default value the default quality profile
+                    if(item.isDefault) {
+                        //$(id).val(item.name);
+                    }
+                });
+            });
+        }).catch(function (error) {
+            // log error
+            log("[ERROR] " + error);
+        });
+    };
+
+    /**
+     *  Return a well formatted string for the profile argument of the web service
+     *  @param options
+     */
+    var optionsToString = function(options) {
+        var result = "";
+
+        // we concatenate all profiles' name in a string
+        // separated by ';'
+        for (var i = 0; i < options.length; ++i) {
+            // add a separator when necessary
+            if(i>0) {
+                result = result + ';';
+            }
+            result = result + options[i].value;
+        }
+
+        return result.replace(new RegExp('\\+', "g"), '%2B');
+    }
+
     // once the request is done, and the page is still displayed (not closed already)
     if (isDisplayedAnalysis) {
 
         // Add html template
         var template = document.createElement("div");
         template.setAttribute("id", "template");
+        options.el.appendChild(template);
 
-        // html template of the page to display
-        var urlTemplate;
+        // url of the template to load
+        var urlTemplate = checkPermissions() ? '../../static/cnesscan/templates/analysisForm.html' : '../../static/cnesscan/templates/denied.html';
 
-        // if the user has permission to access the page, the user get it
-        // otherwise he gets a denied access page
-        if(checkPermissions()) {
-            urlTemplate = '../../static/cnesscan/templates/analysisForm.html';
-        } else {
-            urlTemplate = '../../static/cnesscan/templates/denied.html';
-        }
         // add the form if user has permission otherwise the denied access page
         $('#template').load(urlTemplate, function () {
 
@@ -343,9 +481,12 @@ window.registerExtension('cnesscan/analysis', function (options) {
                     var name = document.forms["analyze-form"]["name"].value;
                     var folder = document.forms["analyze-form"]["folder"].value;
                     var qgate = document.forms["analyze-form"]["quality-gate"].value;
-                    var qprofile = document.forms["analyze-form"]["quality-profile"].value;
+                    var qprofile = optionsToString(document.forms["analyze-form"]["quality-profile"].selectedOptions);
                     var author = document.forms["analyze-form"]["author"].value;
                     var spp = document.forms["analyze-form"]["spp"].value;
+                    var version = document.forms["analyze-form"]["version"].value;
+                    var description = document.forms["analyze-form"]["description"].value;
+                    var sources = document.forms["analyze-form"]["sources"].value;
 
                     // lock the form
                     setEnabled(false);
@@ -354,7 +495,8 @@ window.registerExtension('cnesscan/analysis', function (options) {
                     $('#loading').show();
 
                     // request the creation of the project
-                    createProject(key, name, folder, qgate, qprofile, spp, author, runAnalysis);
+                    createProject(key, name, folder, qgate, qprofile, spp, author,
+                                    version, description, sources, runAnalysis);
                 }
             };
 
@@ -369,6 +511,13 @@ window.registerExtension('cnesscan/analysis', function (options) {
                 document.execCommand('copy');
                 return false;
             }
+
+            // fill out quality gate drop down list
+            initQualityGateDropDownList();
+
+            // fill out quality profiles drop down list
+            initQualityProfileDropDownList();
+
         });
     }
 

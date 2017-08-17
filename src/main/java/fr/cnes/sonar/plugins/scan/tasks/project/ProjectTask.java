@@ -42,19 +42,19 @@ public class ProjectTask extends AbstractTask {
     /**
      *  Error message when a project key is known
      */
-    private static final String PROJECT_ALREADY_EXISTS = "[WARNING] project %s already exists.";
+    private static final String PROJECT_ALREADY_EXISTS = "[WARNING] Project %s already exists.";
     /**
      *  Error message when a quality profile is unknown
      */
-    private static final String WARNING_QUALITYPROFILE_UNKNOWN = "[ERROR] quality profile %s is unknown.";
+    private static final String WARNING_QUALITYPROFILE_UNKNOWN = "[ERROR] Quality profile %s is unknown.";
     /**
      *  Success message for quality profile linking
      */
-    private static final String SUCCESS_QUALITYPROFILE = "[SUCCESS] quality profile %s was linked successfully.";
+    private static final String SUCCESS_QUALITYPROFILE = "[SUCCESS] Quality profile %s was linked successfully.";
     /**
      *  Success message for quality gate linking
      */
-    private static final String SUCCESS_QUALITYGATE = "[SUCCESS] quality gate %s was linked successfully.";
+    private static final String SUCCESS_QUALITYGATE = "[SUCCESS] Quality gate %s was linked successfully.";
     /**
      *  Maximum page size for a request to the server
      */
@@ -62,7 +62,7 @@ public class ProjectTask extends AbstractTask {
     /**
      *  Success message for project creation
      */
-    private static final String SUCCESS_PROJECT = "[SUCCESS] project %s was created successfully.";
+    private static final String SUCCESS_PROJECT = "[SUCCESS] Project %s was created successfully.";
 
     /**
      * Create a project and set quality gate and profiles
@@ -214,16 +214,17 @@ public class ProjectTask extends AbstractTask {
      * Set quality profiles from a list of quality profiles' names
      * @param wsClient Client to talk to the server
      * @param key Key of the project to set
-     * @param qualityProfilesList a list of quality profiles' names
+     * @param qualityProfilesList a list of quality profiles' keys
      * @return A Status
      */
     private Status setQualityProfiles(WsClient wsClient, String key, List<String> qualityProfilesList) {
         // result to know if the gate was set
         Status status = new Status();
         status.setSuccess(true);
+        Status tmpStatus = new Status();
 
         // retrieve the list of available quality profiles
-        qualityProfilesList.forEach((String profileName) -> {
+        qualityProfilesList.forEach((String profileKey) -> {
             // Create a request to find all profile corresponding to a key
             // Execute the request
             // Filter to select only one result, example:
@@ -231,9 +232,9 @@ public class ProjectTask extends AbstractTask {
             // so we have to filter the response's list
             org.sonarqube.ws.client.qualityprofile.SearchWsRequest searchWsRequest =
                     new org.sonarqube.ws.client.qualityprofile.SearchWsRequest();
-            searchWsRequest.setProfileName(profileName);
+            searchWsRequest.setProfileName(profileKey);
             List<QualityProfile> qpList = wsClient.qualityProfiles().search(searchWsRequest).getProfilesList();
-            QualityProfile profile = findQPByName(qpList, profileName);
+            QualityProfile profile = findQPByKey(qpList, profileKey);
 
             // if there is at means one result we linked it to the project
             if(profile!=null) {
@@ -243,13 +244,16 @@ public class ProjectTask extends AbstractTask {
                 // execute the previous request
                 wsClient.qualityProfiles().addProject(addProjectRequest);
                 // log result
-                log(String.format(SUCCESS_QUALITYPROFILE, profileName));
-                status.setMessage(String.format(SUCCESS_QUALITYPROFILE, profileName));
+                log(String.format(SUCCESS_QUALITYPROFILE, profileKey));
+                tmpStatus.setMessage(String.format(SUCCESS_QUALITYPROFILE, profileKey));
+                tmpStatus.setSuccess(true);
             } else {
                 // log warning when a profile could not be linked
-                status.setMessage(String.format(WARNING_QUALITYPROFILE_UNKNOWN, profileName));
-                status.setSuccess(false);
+                tmpStatus.setMessage(String.format(WARNING_QUALITYPROFILE_UNKNOWN, profileKey));
+                tmpStatus.setSuccess(false);
             }
+
+            status.merge(tmpStatus);
         });
 
         // return the status of the setting
@@ -341,12 +345,12 @@ public class ProjectTask extends AbstractTask {
     }
 
     /**
-     * Find a quality profile with its name
+     * Find a quality profile with its key
      * @param qualityProfiles quality profile list to browse
-     * @param qualityProfileName name of the quality profile to find
+     * @param qualityProfileKey key of the quality profile to find
      * @return the corresponding quality profile or null
      */
-    private QualityProfile findQPByName(List<QualityProfile> qualityProfiles, String qualityProfileName) {
+    private QualityProfile findQPByKey(List<QualityProfile> qualityProfiles, String qualityProfileKey) {
         // result that will be returned
         QualityProfile qualityProfile = null;
 
@@ -356,8 +360,8 @@ public class ProjectTask extends AbstractTask {
 
         while(iterator.hasNext() && qualityProfile==null) {
             current = iterator.next();
-            // we check if the current quality gate is the good one (good name)
-            if(current.getName().equals(qualityProfileName)) {
+            // we check if the current quality profile is the good one (good key)
+            if(current.getKey().equals(qualityProfileKey)) {
                 qualityProfile = current;
             }
         }
