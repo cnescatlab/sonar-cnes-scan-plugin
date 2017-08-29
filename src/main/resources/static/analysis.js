@@ -1,4 +1,8 @@
 window.registerExtension('cnesscan/analysis', function (options) {
+    // constants' definition
+    const analyzeFormId = "analyze-form";
+    const sppPlaceholderName = "<<TO REPLACE>>";
+
     // let's create a flag telling if the page is still displayed
     var isDisplayedAnalysis = true;
 
@@ -13,6 +17,22 @@ window.registerExtension('cnesscan/analysis', function (options) {
         logging.innerHTML = logging.innerHTML + "\n" + string;
         // scroll to bottom
         logging.scrollTop = logging.scrollHeight;
+    };
+
+    /**
+     * Log information in the bottom text area as info
+     * @param string Text to log
+     */
+    var info = function (string) {
+        log("[INFO] "+string)
+    };
+
+    /**
+     * Log information in the bottom text area as error
+     * @param string Text to log
+     */
+    var error = function (string) {
+        log("[ERROR] "+string)
     };
 
     /**
@@ -33,62 +53,62 @@ window.registerExtension('cnesscan/analysis', function (options) {
     var checkForm = function () {
         // check the field key
         // get it
-        var key = document.forms["analyze-form"]["key"].value;
+        var key = document.forms[analyzeFormId]["key"].value;
         // check if void
         if (key === "") {
             // log error
-            log("Key must be filled out.");
+            error("Key must be filled out.");
             // abort the process
             return false;
         }
         // check the field name (project)
         // get it
-        var name = document.forms["analyze-form"]["name"].value;
+        var name = document.forms[analyzeFormId]["name"].value;
         // check if void
         if (name === "") {
-            log("Name must be filled out.");
+            error("Name must be filled out.");
             // abort the process
             return false;
         }
         // check the field folder (project)
         // get it
-        var folder = document.forms["analyze-form"]["folder"].value;
+        var folder = document.forms[analyzeFormId]["folder"].value;
         // check if void
         if (folder === "") {
-            log("Workspace must be filled out.");
+            error("Workspace must be filled out.");
             // abort the process
             return false;
         }
         // check the field sources (project)
         // get it
-        var folder = document.forms["analyze-form"]["sources"].value;
+        var sources = document.forms[analyzeFormId]["sources"].value;
         // check if void
-        if (folder === "") {
-            log("Sources must be filled out.");
+        if (sources === "") {
+            error("Sources must be filled out.");
             // abort the process
             return false;
         }
         // check the field spp (sonar-project.properties)
         // get it
-        var spp = document.forms["analyze-form"]["spp"].value;
+        var spp = document.forms[analyzeFormId]["spp"].value;
         // check if void
         if (spp === "") {
-            log("sonar-project.properties must be filled out.");
+            error("sonar-project.properties must be filled out.");
             // abort the process
             return false;
         // check if it contains <<TO REPLACE>>
-        } else if(spp.indexOf("<<TO REPLACE>>")!==-1) {
-            log("sonar-project.properties was not correctly filled out. Replace all '<<TO REPLACE>>' fields.");
+        } else if(spp.indexOf(sppPlaceholderName)!==-1) {
+            error("sonar-project.properties was not correctly filled out. Replace all '"+sppPlaceholderName+"' fields.");
             // abort the process
             return false;
         // check if the user try to set project key
         } else if(spp.indexOf("sonar.projectKey")!==-1) {
-            log("Please do not use 'sonar.projectKey' property.");
+            error("Please do not use 'sonar.projectKey' property.");
             // abort the process
             return false;
         // check if the user try to set project name
         } else if(spp.indexOf("sonar.projectName")!==-1) {
-            log("Please do not use 'sonar.projectName' property.");
+            error("Please do not use 'sonar.projectName' property.");
             // abort the process
             return false;
         // check if the user try to set project sources
@@ -98,12 +118,12 @@ window.registerExtension('cnesscan/analysis', function (options) {
             return false;
         // check if the user try to set project version
         } else if(spp.indexOf("sonar.projectVersion")!==-1) {
-            log("Please do not use 'sonar.projectVersion' property.");
+            error("Please do not use 'sonar.projectVersion' property.");
             // abort the process
             return false;
         // check if the user try to set project description
         } else if(spp.indexOf("sonar.projectDescription")!==-1) {
-            log("Please do not use 'sonar.projectDescription' property.");
+            error("Please do not use 'sonar.projectDescription' property.");
             // abort the process
             return false;
         }
@@ -127,7 +147,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
      */
     var setEnabled = function (isEnabled) {
         // retrieve the form
-        var form = document.getElementById("analyze-form");
+        var form = document.getElementById(analyzeFormId);
         // get all the components of the form
         var elements = form.elements;
         // change all components readOnly field to (un)lock them
@@ -159,13 +179,13 @@ window.registerExtension('cnesscan/analysis', function (options) {
             { key: key, name: name, qualitygate: qualitygate, author: author }
         ).then(function (response) {
             // on success log generation
-            log("[INFO] Project report generation response: \n" + response.logs);
-            log("############################################################\n\tAnalysis finished with success!\n############################################################\n");
+            info("Project report generation response: \n" + response.logs);
+            info("Analysis successfully finished!");
             // unlock form
             setEnabled(true);
         }).catch(function (error) {
             // log error
-            log("[ERROR] Project report generation failed.");
+            error("Project report generation failed.");
             // unlock form
             setEnabled(true);
         });
@@ -196,8 +216,8 @@ window.registerExtension('cnesscan/analysis', function (options) {
             '/api/cnes/create_project?key='+projectKey+'&name='+name+'&gate='+qualityGate+'&profiles='+qualityProfile
         ).then(function (response) {
             // log response
-            log('[INFO] Project created successfully: ' + response.success);
-            log('[INFO] Project creation log:\n' + response.logs);
+            info('Project created successfully: ' + response.success);
+            info('Project creation log:\n' + response.logs);
             // if success we call the next function (analysis)
             if(response.success) {
                 callback(projectKey, name, folder, qualityGate, qualityProfile, spp, author,
@@ -208,7 +228,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
             }
         }).catch(function (error) {
             // log error
-            log(error);
+            error(error);
             // unlock form
             setEnabled(true);
         });
@@ -243,7 +263,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
 
         }).catch(function (error) {
             // log error
-            log("[ERROR] " + error);
+            error(error);
             // unlock form
             setEnabled(true);
         });
@@ -286,16 +306,16 @@ window.registerExtension('cnesscan/analysis', function (options) {
             if(qualityprofile.indexOf("cnes_python_a") !== -1 || qualityprofile.indexOf("cnes_python_b") != -1) {
                 filename = "pylintrc_RNC_sonar_2017_A_B";
                 spp = spp.concat(pylintrcSonar+configurationPath+filename);
-                log("[INFO] Use of configuration file "+filename+" for Pylint.");
+                info("Use of configuration file "+filename+" for Pylint.");
             // check if there is a rated C profile and add the corresponding file
             } else if(qualityprofile.indexOf("cnes_python_c") !== -1) {
                 filename = "pylintrc_RNC_sonar_2017_C";
                 spp = spp.concat(pylintrcSonar+configurationPath+filename);
-                log("[INFO] Use of configuration file "+filename+" for Pylint.");
+                info("Use of configuration file "+filename+" for Pylint.");
             // otherwise it is a D configuration to use
             } else {
                 spp = spp.concat(pylintrcSonar+configurationPath+filename);
-                log("[INFO] Use of configuration file "+filename+" for Pylint.");
+                info("Use of configuration file "+filename+" for Pylint.");
             }
         }
 
@@ -323,7 +343,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
         spp = completeSPP(spp, key, name, qualityprofile, version, description, sources);
 
         // log the finally used spp
-        log("[INFO] Here comes the finally used sonar-project.properties:\n" + spp);
+        info("Here comes the finally used sonar-project.properties:\n" + spp);
 
         // send post request to the cnes web service
         window.SonarRequest.postJSON(
@@ -332,14 +352,14 @@ window.registerExtension('cnesscan/analysis', function (options) {
         ).then(function (response) {
             // on success
             // log output
-            log("[INFO] Project analysis response: \n" + response.logs);
+            info("Project analysis response: \n" + response.logs);
             // wait that sonarqube has finished to import the report to produce the report
-            log("[INFO] SonarQube is still importing the report, please wait.");
+            info("SonarQube is still importing the report, please wait.");
             waitSonarQube(key, name, qualitygate, author, callback);
         }).catch(function (error) {
             // log error
-            log("[ERROR] Project analysis failed.");
-            log(error);
+            error("Project analysis failed.");
+            error(error);
             // unlock form
             setEnabled(true);
         });
@@ -382,7 +402,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
             });
         }).catch(function (error) {
             // log error
-            log("[ERROR] " + error);
+            error(error);
         });
     };
 
@@ -424,7 +444,40 @@ window.registerExtension('cnesscan/analysis', function (options) {
             });
         }).catch(function (error) {
             // log error
-            log("[ERROR] " + error);
+            error(error);
+        });
+    };
+
+    /**
+     *  Check the cnescxx status and call the callback function
+     *  only if the plugin is up
+     *  @param callback callback to call
+     */
+    var checkCnescxx = function(callback) {
+        // we check if the cnescxx is available
+        window.SonarRequest.getJSON(
+            '/api/cnescxx/health'
+        ).then(function (response) {
+            // on success
+            callback();
+        }).catch(function (error) {
+            // log error
+            error(error);
+            error("Plugin cnescxx is not installed.");
+        });
+    };
+
+    /**
+     *  Add a special part for c/c++ in the form.
+     *  Work only if the cnescxx plugin is installed.
+     */
+    var initCxxForm = function() {
+        var cxxPart = $("#cxx-part");
+        var urlTemplate = '../../static/cnesscan/templates/cxx.html';
+        // we check if the cnescxx is available
+        // and we load its form if yes
+        checkCnescxx(function() {
+            cxxPart.load(urlTemplate, function () {});
         });
     };
 
@@ -477,16 +530,17 @@ window.registerExtension('cnesscan/analysis', function (options) {
                 if (checkForm()) {
 
                     // Get form values
-                    var key = document.forms["analyze-form"]["key"].value;
-                    var name = document.forms["analyze-form"]["name"].value;
-                    var folder = document.forms["analyze-form"]["folder"].value;
-                    var qgate = document.forms["analyze-form"]["quality-gate"].value;
-                    var qprofile = optionsToString(document.forms["analyze-form"]["quality-profile"].selectedOptions);
-                    var author = document.forms["analyze-form"]["author"].value;
-                    var spp = document.forms["analyze-form"]["spp"].value;
-                    var version = document.forms["analyze-form"]["version"].value;
-                    var description = document.forms["analyze-form"]["description"].value;
-                    var sources = document.forms["analyze-form"]["sources"].value;
+                    var key = document.forms[analyzeFormId]["key"].value;
+                    var name = document.forms[analyzeFormId]["name"].value;
+                    var folder = document.forms[analyzeFormId]["folder"].value;
+                    var cxx = document.forms[analyzeFormId]["cxx-analysis"].checked;
+                    var qgate = document.forms[analyzeFormId]["quality-gate"].value;
+                    var qprofile = optionsToString(document.forms[analyzeFormId]["quality-profile"].selectedOptions);
+                    var author = document.forms[analyzeFormId]["author"].value;
+                    var spp = document.forms[analyzeFormId]["spp"].value;
+                    var version = document.forms[analyzeFormId]["version"].value;
+                    var description = document.forms[analyzeFormId]["description"].value;
+                    var sources = document.forms[analyzeFormId]["sources"].value;
 
                     // lock the form
                     setEnabled(false);
@@ -494,9 +548,26 @@ window.registerExtension('cnesscan/analysis', function (options) {
                     // show loading
                     $('#loading').show();
 
-                    // request the creation of the project
-                    createProject(key, name, folder, qgate, qprofile, spp, author,
+                    // call cxx tools
+                    if(cxx) {
+                        window.SonarRequest.getJSON(
+                            '/api/cnescxx/scan',
+                            { project: folder}
+                        ).then(function (response) {
+                            // on success
+                            // request the creation of the project
+                            info(response.log);
+                            createProject(key, name, folder, qgate, qprofile, spp, author,
+                                        version, description, sources, runAnalysis);
+                        }).catch(function (error) {
+                            // log error
+                            error(error);
+                        });
+                    } else {
+                        // request the creation of the project
+                        createProject(key, name, folder, qgate, qprofile, spp, author,
                                     version, description, sources, runAnalysis);
+                    }
                 }
             };
 
@@ -517,6 +588,9 @@ window.registerExtension('cnesscan/analysis', function (options) {
 
             // fill out quality profiles drop down list
             initQualityProfileDropDownList();
+
+            // initialize the c/c++ part of the form if the ws correctly answers
+            initCxxForm();
 
         });
     }
