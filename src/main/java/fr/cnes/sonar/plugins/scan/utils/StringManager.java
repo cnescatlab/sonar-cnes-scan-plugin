@@ -3,6 +3,7 @@ package fr.cnes.sonar.plugins.scan.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
  *
  * @author begarco
  */
-public class StringManager {
+public final class StringManager {
 
     /**
      * Property for controller description
@@ -270,14 +271,6 @@ public class StringManager {
      */
     public static final String CNES_REQUESTS_QUALITYGATES_LIST = "cnes.requests.qualitygates.list";
     /**
-     * Logger of this class
-     */
-    private static final Logger LOGGER = Logger.getLogger(StringManager.class.getName());
-    /**
-     * Properties file for the current plugin
-     */
-    private static final String PLUGIN_PROPERTIES = "strings.properties";
-    /**
      * Default string to return when a key is unknown
      */
     public static final String DEFAULT_STRING = "unknown string";
@@ -298,6 +291,14 @@ public class StringManager {
      */
     public static final String TIMEOUT_PROP_DEF_DEFAULT = "property.definition.timeout.default";
     /**
+     * Logger of this class
+     */
+    private static final Logger LOGGER = Logger.getLogger(StringManager.class.getName());
+    /**
+     * Properties file for the current plugin
+     */
+    private static final String PLUGIN_PROPERTIES = "strings.properties";
+    /**
      * Unique instance of this class (singleton)
      */
     private static StringManager ourInstance = null;
@@ -313,9 +314,7 @@ public class StringManager {
         try {
             load();
         } catch (IOException e) {
-            for (StackTraceElement ste : e.getStackTrace()) {
-                LOGGER.severe(ste.toString());
-            }
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -345,6 +344,7 @@ public class StringManager {
      * Get the value of a property through its key
      *
      * @param key Key of the string to string
+     * @param defaultString Default value to return
      * @return the property as String or the DEFAULT_STRING
      */
     private String getProperty(String key, String defaultString) {

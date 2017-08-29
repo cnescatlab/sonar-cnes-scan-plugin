@@ -42,7 +42,7 @@ public class ProjectTask extends AbstractTask {
     /**
      *  Error message when a project key is known
      */
-    private static final String PROJECT_ALREADY_EXISTS = "[WARNING] Project %s already exists.";
+    private static final String PROJECT_ALREADY_EXISTS = "[WARN] Project %s already exists.";
     /**
      *  Error message when a quality profile is unknown
      */
@@ -50,11 +50,11 @@ public class ProjectTask extends AbstractTask {
     /**
      *  Success message for quality profile linking
      */
-    private static final String SUCCESS_QUALITYPROFILE = "[SUCCESS] Quality profile %s was linked successfully.";
+    private static final String SUCCESS_QUALITYPROFILE = "[INFO] Quality profile %s was linked successfully.";
     /**
      *  Success message for quality gate linking
      */
-    private static final String SUCCESS_QUALITYGATE = "[SUCCESS] Quality gate %s was linked successfully.";
+    private static final String SUCCESS_QUALITYGATE = "[INFO] Quality gate %s was linked successfully.";
     /**
      *  Maximum page size for a request to the server
      */
@@ -62,7 +62,7 @@ public class ProjectTask extends AbstractTask {
     /**
      *  Success message for project creation
      */
-    private static final String SUCCESS_PROJECT = "[SUCCESS] Project %s was created successfully.";
+    private static final String SUCCESS_PROJECT = "[INFO] Project %s was created successfully.";
 
     /**
      * Create a project and set quality gate and profiles
@@ -77,31 +77,31 @@ public class ProjectTask extends AbstractTask {
         // reset logs to not stack them
         setLogs("");
         // describe how worked the task and is returned
-        Status status = new Status();
+        final Status status = new Status();
 
         // extract parameters
         // key of the project to create
-        String key = request.mandatoryParam(string(PROJECT_PARAM_KEY_NAME));
+        final String key = request.mandatoryParam(string(PROJECT_PARAM_KEY_NAME));
         // name of the project to create
-        String name = request.mandatoryParam(string(PROJECT_PARAM_NAME_NAME));
+        final String name = request.mandatoryParam(string(PROJECT_PARAM_NAME_NAME));
         // quality profiles of the project to create
-        String qualityProfiles = request.mandatoryParam(string(PROJECT_PARAM_PROFILES_NAME));
+        final String qualityProfiles = request.mandatoryParam(string(PROJECT_PARAM_PROFILES_NAME));
         // quality gate of the project to create
-        String qualityGate = request.mandatoryParam(string(PROJECT_PARAM_GATE_NAME));
+        final String qualityGate = request.mandatoryParam(string(PROJECT_PARAM_GATE_NAME));
         // extract the list of quality profiles
-        List<String> qualityProfilesList = parseQualityProfiles(qualityProfiles);
+        final List<String> qualityProfilesList = parseQualityProfiles(qualityProfiles);
 
 
         // create a new client to talk with sonarqube's services
-        WsClient wsClient = WsClientFactories.getLocal().newClient(request.localConnector());
+        final WsClient wsClient = WsClientFactories.getLocal().newClient(request.localConnector());
 
 
         // create the project
-        Status creationStatus = createProject(wsClient, key, name);
+        final Status creationStatus = createProject(wsClient, key, name);
         // set the quality gate
-        Status gateStatus = setQualityGate(wsClient, key, qualityGate);
+        final Status gateStatus = setQualityGate(wsClient, key, qualityGate);
         // set project's quality profiles
-        Status profilesStatus = setQualityProfiles(wsClient, key, qualityProfilesList);
+        final Status profilesStatus = setQualityProfiles(wsClient, key, qualityProfilesList);
 
 
         // check if all steps worked correctly and prepare the response
@@ -137,13 +137,13 @@ public class ProjectTask extends AbstractTask {
      */
     private Status createProject(WsClient wsClient, String key, String name) {
         // describe how worked the task and is returned
-        Status status = new Status();
+        final Status status = new Status();
 
         // search for project having the same key
         if(!checkProjectExists(wsClient, key)) {
 
             // prepare a request to ask for the creation of a project
-            CreateRequest projectCreateRequest = CreateRequest.builder().setKey(key).setName(name).build();
+            final CreateRequest projectCreateRequest = CreateRequest.builder().setKey(key).setName(name).build();
             // make the project creation request to the server
             wsClient.projects().create(projectCreateRequest);
             // log success
@@ -173,8 +173,8 @@ public class ProjectTask extends AbstractTask {
         boolean exist = false;
 
         // request to get all projects
-        SearchProjectsRequest searchProjectsRequest = SearchProjectsRequest.builder().setPageSize(PAGE_SIZE).build();
-        SearchProjectsWsResponse searchProjectsResponse = wsClient.components().searchProjects(searchProjectsRequest);
+        final SearchProjectsRequest searchProjectsRequest = SearchProjectsRequest.builder().setPageSize(PAGE_SIZE).build();
+        final SearchProjectsWsResponse searchProjectsResponse = wsClient.components().searchProjects(searchProjectsRequest);
 
         // iterate on projects
         Iterator<WsComponents.Component> iterator = searchProjectsResponse.getComponentsList().iterator();
@@ -198,7 +198,7 @@ public class ProjectTask extends AbstractTask {
      */
     private List<String> parseQualityProfiles(String qualityProfiles) {
         // final result to return, never null
-        List<String> list;
+        final List<String> list;
 
         // split with separators
         list = new LinkedList<>(asList(qualityProfiles.split(string(StringManager.CNES_COMMAND_PROJECT_PROFILES_SEPARATOR))));
@@ -219,9 +219,9 @@ public class ProjectTask extends AbstractTask {
      */
     private Status setQualityProfiles(WsClient wsClient, String key, List<String> qualityProfilesList) {
         // result to know if the gate was set
-        Status status = new Status();
+        final Status status = new Status();
         status.setSuccess(true);
-        Status tmpStatus = new Status();
+        final Status tmpStatus = new Status();
 
         // retrieve the list of available quality profiles
         qualityProfilesList.forEach((String profileKey) -> {
@@ -269,23 +269,23 @@ public class ProjectTask extends AbstractTask {
      */
     private Status setQualityGate(WsClient wsClient, String key, String qualityGateName) {
         // result to know if the gate was set
-        Status status = new Status();
+        final Status status = new Status();
         // Retrieve all quality gates from server
-        WsRequest listWsRequest = new GetRequest(string(CNES_REQUESTS_QUALITYGATES_LIST));
-        WsResponse listWsResponse = wsClient.wsConnector().call(listWsRequest);
+        final WsRequest listWsRequest = new GetRequest(string(CNES_REQUESTS_QUALITYGATES_LIST));
+        final WsResponse listWsResponse = wsClient.wsConnector().call(listWsRequest);
 
         // on previous success
         if(listWsResponse.isSuccessful()) {
             // tools to parse json
-            Gson gson = new Gson();
-            JsonParser jsonParser = new JsonParser();
+            final Gson gson = new Gson();
+            final JsonParser jsonParser = new JsonParser();
 
             // get the quality gates list from the json and as json
-            JsonElement json = jsonParser.parse(listWsResponse.content())
+            final JsonElement json = jsonParser.parse(listWsResponse.content())
                     .getAsJsonObject().get(QUALITYGATES_JSON_FIELD);
 
             // convert the list to QualityGate entities list
-            List<QualityGate> modelQGList = asList(gson.fromJson(json , QualityGate[].class));
+            final List<QualityGate> modelQGList = asList(gson.fromJson(json , QualityGate[].class));
 
             // fill out Sonar Quality Gates
             List<WsQualityGates.QualityGate> qualityGates = new ArrayList<>();
