@@ -11,7 +11,7 @@
                             name="key"
                             class="login-input"
                             maxlength="255"
-                            placeholder="Project key">
+                            placeholder="Project key"><em style="color:grey;">Tips: Allowed characters are: letters, numbers, '-', '_', '.' and ':', with at least one non-digit.</em>
                 </div>
                 <div class="big-spacer-bottom">
                     <label for="name" id="nameLabel" class="login-label" style="display: block;"><strong>Project name</strong><em style="color:red;">*</em></label>
@@ -30,7 +30,7 @@
                         name="folder"
                         class="login-input"
                         maxlength="255"
-                        placeholder="Workspace"><em style="color:grey;">Tips: use a relative path from the shared folder.</em>
+                        placeholder="Workspace"><em style="color:grey;">Tips: use a relative path from the shared folder. The default value you should use is a point '.'.</em>
                 </div>
                 <div class="big-spacer-bottom">
                     <label for="sources" id="sourcesLabel" class="login-label" style="display: block;"><strong>Sources</strong><em style="color:red;">*</em></label><input
@@ -86,7 +86,7 @@
                             name="quality-gate"
                             class="login-input" required></select>
                     <em style="color:grey;">Default value: CNES<br/>
-                    Tips: all quality gates are available <a href="../../../quality_gates">here</a>.
+                    Tips: all quality gates are available <a href="../../../quality_gates" target="_blank">here</a>.
                     </em>
                 </div>
                 <div class="big-spacer-bottom">
@@ -99,7 +99,7 @@
                     <em style="color:grey;">Default value: default quality profiles<br/>
                         Tips:
                         <ul>
-                            <li>- all quality profiles are available <a href="../../../profiles">here</a>.</li>
+                            <li>- all quality profiles are available <a href="../../../profiles" target="_blank">here</a>.</li>
                             <li>- press 'Ctrl' key to select multiple options.</li>
                         </ul>
                     </em>
