@@ -44,6 +44,14 @@ public class ProjectTask extends AbstractTask {
      */
     private static final String PROJECT_ALREADY_EXISTS = "[WARN] Project %s already exists.";
     /**
+     * Define the regex to match with for a project key
+     */
+    private static final String KEY_REGEX = "[a-zA-Z0-9_:.\\-]+";
+    /**
+     *  Error message when a project key is not matching the sonarqube regex
+     */
+    private static final String BAD_PROJECT_KEY = "[ERROR] Key %s does not match the following regular expression: " + KEY_REGEX;
+    /**
      *  Error message when a quality profile is unknown
      */
     private static final String WARNING_QUALITYPROFILE_UNKNOWN = "[ERROR] Quality profile %s is unknown.";
@@ -98,23 +106,24 @@ public class ProjectTask extends AbstractTask {
 
         // create the project
         final Status creationStatus = createProject(wsClient, key, name);
-        // set the quality gate
-        final Status gateStatus = setQualityGate(wsClient, key, qualityGate);
-        // set project's quality profiles
-        final Status profilesStatus = setQualityProfiles(wsClient, key, qualityProfilesList);
-
-
-        // check if all steps worked correctly and prepare the response
-        if(creationStatus.isSuccess() && gateStatus.isSuccess() && profilesStatus.isSuccess()) {
-            status.setSuccess(true);
-        }
-
         // log error concerning project creation
         status.merge(creationStatus);
-        // log error concerning gate
-        status.merge(gateStatus);
-        // log error concerning profiles
-        status.merge(profilesStatus);
+        // check if all steps worked correctly and prepare the response
+        if(creationStatus.isSuccess()) {
+            // set the quality gate
+            final Status gateStatus = setQualityGate(wsClient, key, qualityGate);
+            // log error concerning gate
+            status.merge(gateStatus);
+            if(gateStatus.isSuccess()) {
+                // set project's quality profiles
+                final Status profilesStatus = setQualityProfiles(wsClient, key, qualityProfilesList);
+                // log error concerning profiles
+                status.merge(profilesStatus);
+                if(profilesStatus.isSuccess()) {
+                    status.setSuccess(true);
+                }
+            }
+        }
 
         // write the json response
         JsonWriter jsonWriter = response.newJsonWriter();
@@ -139,25 +148,35 @@ public class ProjectTask extends AbstractTask {
         // describe how worked the task and is returned
         final Status status = new Status();
 
-        // search for project having the same key
-        if(!checkProjectExists(wsClient, key)) {
+        // we check if the key is correct
+        if(key.matches(KEY_REGEX)) {
+            // search for project having the same key
+            if (!checkProjectExists(wsClient, key)) {
 
-            // prepare a request to ask for the creation of a project
-            final CreateRequest projectCreateRequest = CreateRequest.builder().setKey(key).setName(name).build();
-            // make the project creation request to the server
-            wsClient.projects().create(projectCreateRequest);
-            // log success
-            log(String.format(SUCCESS_PROJECT, name));
-            status.setMessage(String.format(SUCCESS_PROJECT, name));
+                // prepare a request to ask for the creation of a project
+                final CreateRequest.Builder requestBuilder = CreateRequest.builder();
+                requestBuilder.setKey(key);
+                requestBuilder.setName(name);
+                final CreateRequest projectCreateRequest = requestBuilder.build();
+                // make the project creation request to the server
+                wsClient.projects().create(projectCreateRequest);
+                // log success
+                log(String.format(SUCCESS_PROJECT, name));
+                status.setMessage(String.format(SUCCESS_PROJECT, name));
 
+            } else {
+                // log error
+                log(String.format(PROJECT_ALREADY_EXISTS, name));
+                status.setMessage(String.format(PROJECT_ALREADY_EXISTS, name));
+            }
+
+            // set the status of the function
+            status.setSuccess(true);
         } else {
             // log error
-            log(String.format(PROJECT_ALREADY_EXISTS, name));
-            status.setMessage(String.format(PROJECT_ALREADY_EXISTS, name));
+            log(String.format(BAD_PROJECT_KEY, key));
+            status.setMessage(String.format(BAD_PROJECT_KEY, key));
         }
-
-        // set the status of the function
-        status.setSuccess(true);
 
         return status;
     }

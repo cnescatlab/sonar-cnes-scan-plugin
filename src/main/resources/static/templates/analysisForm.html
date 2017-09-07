@@ -101,13 +101,14 @@
                         <ul>
                             <li>- all quality profiles are available <a href="../../../profiles" target="_blank">here</a>.</li>
                             <li>- press 'Ctrl' key to select multiple options.</li>
+                            <li>- select one profile per language to analyze.</li>
                         </ul>
                     </em>
                 </div>
                 <div class="big-spacer-bottom">
                     <label for="spp" class="login-label" style="display: block;"><strong>sonar-project.properties</strong><em
                             style="color:red;">*</em></label>
-                    <em style="color:grey;">The sonar-project.properties file allows users to configure their analysis. Refer to the <a href="https://espace-collaboratif.cnes.fr/sites/DCT/LEQUAL/SONAR/Pages/vm-lequal-spp-guide.aspx">user guide</a>. </em>
+                    <em style="color:grey;">The sonar-project.properties file allows users to configure their analysis. Refer to the <a href="./help" target="_blank">user guide</a>. </em>
                     <textarea  required
                                id="spp"
                                name="spp"
@@ -118,7 +119,7 @@
 # Mandatory for java
 #############################################################
 # Path to the .class files relatively to the workspace
-sonar.java.binaries=target/classes</textarea><em style="color:red;">* mandatory field</em>
+#sonar.java.binaries=target/classes</textarea><em style="color:red;">* mandatory field</em>
                 </div>
                 <div class="big-spacer-bottom">
                     <div id="loading" class="text-center overflow-hidden" style="margin-bottom: 1em; display: none;">
