@@ -56,11 +56,11 @@ public abstract class AbstractTask implements RequestHandler {
             // append input stream to output
             String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line).append('\n');
+                output.append(line).append("\n");
             }
             // append error stream to output
             while ((line = reader2.readLine()) != null) {
-                output.append(line).append('\n');
+                output.append(line).append("\n");
             }
         }
 

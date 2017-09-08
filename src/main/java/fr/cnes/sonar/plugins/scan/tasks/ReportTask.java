@@ -18,10 +18,17 @@ import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 public class ReportTask extends AbstractTask {
 
     /**
+     * Replacement character for not supported chars
+     */
+    private static final String HASHTAG = "#";
+    /**
+     * Not supported characters' regex
+     */
+    private static final String NOT_SUPPORTED_CHARS = ":";
+
+    /**
      * Product the report
      * @param projectId Key of the project to report
-     * @param projectQualityGate Quality Gate of the project to report
-     * @param projectName  Name of the project to report
      * @param reportAuthor Author of the report
      * @param reportPath Output folder
      * @param reportTemplate template to use for the processing
@@ -30,8 +37,7 @@ public class ReportTask extends AbstractTask {
      * @throws IOException when a file writing goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    public String report(String projectId, String projectQualityGate,
-                         String projectName, String reportAuthor, String reportPath,
+    public String report(String projectId, String reportAuthor, String reportPath,
                          String reportTemplate, String issuesTemplate)
             throws IOException, InterruptedException {
 
@@ -45,8 +51,8 @@ public class ReportTask extends AbstractTask {
         String date = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
         // construct the command string to run scan
         String command = String.format(string(CNES_COMMAND_REPORT),
-                string(CNES_REPORT_PATH), string(SONAR_URL), projectId, projectQualityGate,
-                projectName, reportAuthor, date, reportPath, reportTemplate, issuesTemplate);
+                string(CNES_REPORT_PATH), string(SONAR_URL), projectId,
+                reportAuthor, date, reportPath, reportTemplate, issuesTemplate);
         // log the command used
         log(command);
         // log the execution result
@@ -68,20 +74,23 @@ public class ReportTask extends AbstractTask {
         // reset logs to not stack them
         setLogs("");
 
-        // Name of the project provided by the user through parameters
-        final String projectName = request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_NAME_NAME));
+        // Key of the project provided by the user through parameters
+        final String projectKey = request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_KEY_NAME));
+        // Code to be used in the created files. The only character that is not supported
+        // in filesystems but which is in project key is ":", so we replace all occurences by a "#".
+        final String projectCode = projectKey.replaceAll(NOT_SUPPORTED_CHARS, HASHTAG);
+        // Report's author
+        final String author = request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_AUTHOR_NAME));
         // Date of today
         final String today = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
         // Construct the name of the output folder like that: sharedFolder/project-date-results
-        final String output = String.format(string(CNES_REPORTS_FOLDER),string(CNES_REPORTER_OUTPUT), projectName, today);
+        final String output = String.format(string(CNES_REPORTS_FOLDER),string(CNES_REPORTER_OUTPUT), today, projectCode);
 
         // read request parameters and generates response output
         // generate the reports and save output
         String result = report(
-                request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_KEY_NAME)),
-                request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_QUALITYGATE_NAME)),
-                projectName,
-                request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_AUTHOR_NAME)),
+                projectKey,
+                author,
                 output,
                 string(CNES_REPORTER_TEMPLATE),
                 string(CNES_ISSUES_TEMPLATE)

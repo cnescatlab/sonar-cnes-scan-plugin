@@ -1,71 +1,27 @@
-<script>
-    /**
-     *  Show/hide the given label
-     *  labelId Id of the label to hide
-     */
-    function showLabel(labelId) {
-        if(($('#'+labelId).value)==="") {
-            // hide the label when the placeholder is displayed
-            $('#'+labelId).hide();
-        } else {
-            // show the label when the placeholder is no more present
-            $('#'+labelId).show();
-        }
-    };
-</script>
-
 <div id="bd" class="page-wrapper-simple">
     <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">
         <div>
             <h1 class="maintenance-title text-center">Generate a report</h1>
             <form id="generation-form">
                 <div class="big-spacer-bottom">
-                    <label for="key" id="keyLabel" class="login-label">Project key<em style="color:red;">*</em></label>
-                    <input type="text"
-                           id="key"
-                           name="key"
-                           class="login-input"
-                           maxlength="255"
-                           onkeyup="showLabel('keyLabel')"
-                           required
-                           placeholder="Project key">
-                    <em style="color:red;">* mandatory field</em>
+                    <label for="key" id="keyLabel" class="login-label" style="display: block;"><strong>Project key</strong></label>
+                    <select id="key"
+                            name="key"
+                            class="login-input" required></select>
+                    <em style="color:grey;">
+                        Tips: all projects are available <a href="../../../projects" target="_blank">here</a>.
+                    </em>
                 </div>
                 <div class="big-spacer-bottom">
-                    <label for="name" id="nameLabel" class="login-label">Project name<em style="color:red;">*</em></label>
-                    <input   type="text"
-                             id="name"
-                             name="name"
-                             class="login-input"
-                             maxlength="255"
-                             onkeyup="showLabel('nameLabel')"
-                             required
-                             placeholder="Project name">
-                    <em style="color:red;">* mandatory field</em>
-                </div>
-                <div class="big-spacer-bottom">
-                    <label for="author" id="authorLabel" class="login-label">Author</label>
+                    <label for="author" id="authorLabel" class="login-label" style="display: block;">Author</label>
                     <input   type="text"
                              id="author"
                              name="author"
                              class="login-input"
                              maxlength="255"
-                             onkeyup="showLabel('authorLabel')"
                              required
-                             placeholder="Report author">
+                             placeholder="Report's author">
                     <em style="color:grey;">Default value: default</em>
-                </div>
-                <div class="big-spacer-bottom">
-                    <label for="quality-gate" id="gateLabel" class="login-label">Project quality gate</label>
-                    <input   type="text"
-                             id="quality-gate"
-                             name="quality-gate"
-                             class="login-input"
-                             maxlength="255"
-                             onkeyup="showLabel('gateLabel')"
-                             required
-                             placeholder="Project quality gate">
-                    <em style="color:grey;">Default value: CNES</em>
                 </div>
                 <div class="big-spacer-bottom">
                     <div id="loading" class="text-center overflow-hidden" style="margin-bottom: 1em; display: none;">

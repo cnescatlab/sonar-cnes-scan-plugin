@@ -30,15 +30,7 @@ window.registerExtension('cnesscan/reporting', function (options) {
             // abort the process
             return false;
         }
-        // check the field name (project)
-        // get it
-        var name = document.forms["generation-form"]["name"].value;
-        // check if void
-        if (name === "") {
-            log("Name must be filled out.");
-            // abort the process
-            return false;
-        }
+
         return true;
     };
 
@@ -79,15 +71,13 @@ window.registerExtension('cnesscan/reporting', function (options) {
     /**
      * Generate the report
      * @param key
-     * @param name
-     * @param qualitygate
      * @param author
      */
-    var produceReport = function (key, name, qualitygate, author) {
+    var produceReport = function (key, author) {
         // http GET request to the cnes web service
         window.SonarRequest.getJSON(
             '/api/cnes/report',
-            { key: key, name: name, qualitygate: qualitygate, author: author }
+            { key: key, author: author }
         ).then(function (response) {
             // on success log generation
             log("[INFO] Project report generation response: \n" + response.logs);
@@ -97,6 +87,31 @@ window.registerExtension('cnesscan/reporting', function (options) {
             // log error
             log("[ERROR] Project report generation failed.");
             setEnabled(true);
+        });
+    };
+
+    /**
+     *  Get projects list from the server and fill out the combo box
+     */
+    var initProjectsDropDownList = function() {
+        window.SonarRequest.getJSON(
+            '/api/projects/index'
+        ).then(function (response) {
+            // on success
+            // we put each quality gate in the list
+            $.each(response, function (i, item) {
+                // we create a new option for each quality gate
+                // in the json response
+                var option = $('<option>', {
+                                 value: item.k,
+                                 text : item.nm + ' [' + item.k + ']'
+                             });
+                // we add it to the drop down list
+                $('#key').append(option);
+            });
+        }).catch(function (response) {
+            // log error
+            error(response);
         });
     };
 
@@ -124,8 +139,6 @@ window.registerExtension('cnesscan/reporting', function (options) {
 
                     // Get form values
                     var key = document.forms["generation-form"]["key"].value;
-                    var name = document.forms["generation-form"]["name"].value;
-                    var qgate = document.forms["generation-form"]["quality-gate"].value;
                     var author = document.forms["generation-form"]["author"].value;
 
                     // lock the form
@@ -135,9 +148,12 @@ window.registerExtension('cnesscan/reporting', function (options) {
                     $('#loading').show();
 
                     // request the creation of the report
-                    produceReport(key, name, qgate, author);
+                    produceReport(key, author);
                 }
             };
+
+            // fill out project's drop down list
+            initProjectsDropDownList();
         });
 
     }

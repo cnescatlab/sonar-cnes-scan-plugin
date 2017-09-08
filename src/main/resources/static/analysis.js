@@ -163,15 +163,13 @@ var setEnabled = function (isEnabled) {
 /**
  * Generate the report
  * @param key
- * @param name
- * @param qualitygate
  * @param author
  */
-var produceReport = function (key, name, qualitygate, author) {
+var produceReport = function (key, author) {
     // http GET request to the cnes web service
     window.SonarRequest.getJSON(
         '/api/cnes/report',
-        { key: key, name: name, qualitygate: qualitygate, author: author }
+        { key: key, author: author }
     ).then(function (response) {
         // on success log generation
         info("Project report generation response: \n" + response.logs);
@@ -218,7 +216,7 @@ var createProject = function (  projectKey, name, folder, qualityGate, qualityPr
         // if success we call the next function (analysis)
         if(response.success) {
             info("Project successfully created.");
-            callback(projectKey, name, folder, qualityGate, qualityProfile, spp, author,
+            callback(projectKey, name, folder, qualityProfile, spp, author,
                      version, description, sources, produceReport);
         } else {
             // unlock form
@@ -237,11 +235,10 @@ var createProject = function (  projectKey, name, folder, qualityGate, qualityPr
  * Wait that sonarqube has finished to import the report to run a callback
  * @param key
  * @param name
- * @param qualitygate
  * @param author
  * @param callback
  */
-var waitSonarQube = function(key, name, qualitygate, author, callback) {
+var waitSonarQube = function(key, name, author, callback) {
     // send get request to the cnes web service
     // we ask for information about task about a project
     window.SonarRequest.getJSON(
@@ -254,10 +251,10 @@ var waitSonarQube = function(key, name, qualitygate, author, callback) {
         // so it is ready to report
         if(response.queue.length === 0) {
             // produce the report
-            callback(key, name, qualitygate, author);
+            callback(key, name, author);
         } else {
             // retry later (in 2 seconds)
-            window.setTimeout(waitSonarQube(key, name, qualitygate, author, callback), 2000);
+            window.setTimeout(waitSonarQube(key, name, author, callback), 2000);
         }
 
     }).catch(function (response) {
@@ -326,7 +323,6 @@ var completeSPP = function (spp, key, name, qualityprofile, version, description
  * @param key
  * @param name
  * @param folder
- * @param qualitygate
  * @param qualityprofile
  * @param spp
  * @param author
@@ -335,7 +331,7 @@ var completeSPP = function (spp, key, name, qualityprofile, version, description
  * @param sources
  * @param callback
  */
-var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp, author,
+var runAnalysis = function (key, name, folder, qualityprofile, spp, author,
                             version, description, sources, callback) {
 
     // auto complete the sonar-project properties
@@ -347,14 +343,14 @@ var runAnalysis = function (key, name, folder, qualitygate, qualityprofile, spp,
     // send post request to the cnes web service
     window.SonarRequest.postJSON(
         '/api/cnes/analyze',
-        { key: key, name: name, folder: folder, qualitygate: qualitygate, qualityprofile: qualityprofile, sonarProjectProperties: spp }
+        { key: key, name: name, folder: folder, sonarProjectProperties: spp }
     ).then(function (response) {
         // on success
         // log output
         info("Project analysis response: \n" + response.logs);
         // wait that sonarqube has finished to import the report to produce the report
         info("SonarQube is still importing the report, please wait.");
-        waitSonarQube(key, name, qualitygate, author, callback);
+        waitSonarQube(key, name, author, callback);
     }).catch(function (response) {
         // log error
         error("Project analysis failed.");

@@ -61,14 +61,6 @@ public class CnesWs implements WebService {
         newParam = analysis.createParam(string(ANALYZE_NAME_NAME));
         newParam.setDescription(string(ANALYZE_NAME_DESC));
         newParam.setRequired(true);
-        // quality profile parameter
-        newParam = analysis.createParam(string(ANALYZE_QUALITYPROFILE_NAME));
-        newParam.setDescription(string(ANALYZE_QUALITYPROFILE_DESC));
-        newParam.setRequired(true);
-        // quality gate parameter
-        newParam = analysis.createParam(string(ANALYZE_QUALITYGATE_NAME));
-        newParam.setDescription(string(ANALYZE_QUALITYGATE_DESC));
-        newParam.setRequired(true);
         // folder parameter
         newParam = analysis.createParam(string(ANALYZE_FOLDER_NAME));
         newParam.setDescription(string(ANALYZE_FOLDER_DESC));
@@ -92,14 +84,6 @@ public class CnesWs implements WebService {
         // key parameter
         NewParam newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_KEY_NAME));
         newParam.setDescription(string(REPORT_KEY_DESC));
-        newParam.setRequired(true);
-        // quality gate parameter
-        newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_QUALITYGATE_NAME));
-        newParam.setDescription(string(REPORT_QUALITYGATE_DESC));
-        newParam.setRequired(true);
-        // name of the project parameter
-        newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_NAME_NAME));
-        newParam.setDescription(string(REPORT_NAME_DESC));
         newParam.setRequired(true);
         // author's name parameter
         newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_AUTHOR_NAME));

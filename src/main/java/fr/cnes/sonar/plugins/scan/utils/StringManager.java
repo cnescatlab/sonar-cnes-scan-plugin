@@ -38,14 +38,6 @@ public final class StringManager {
      */
     public static final String ANALYZE_NAME_DESC = "cnes.action.analyze.param.name.desc";
     /**
-     * Property for action 1 (scan) param 3 description
-     */
-    public static final String ANALYZE_QUALITYPROFILE_DESC = "cnes.action.analyze.param.qualityprofile.desc";
-    /**
-     * Property for action 1 (scan) param 4 description
-     */
-    public static final String ANALYZE_QUALITYGATE_DESC = "cnes.action.analyze.param.qualitygate.desc";
-    /**
      * Property for action 1 (scan) param 5 description
      */
     public static final String ANALYZE_FOLDER_DESC = "cnes.action.analyze.param.folder.desc";
@@ -77,10 +69,6 @@ public final class StringManager {
      * Property for action 2 (reporting) param 1 description
      */
     public static final String REPORT_KEY_DESC = "cnes.action.report.param.key.desc";
-    /**
-     * Property for action 2 (reporting) param 2 description
-     */
-    public static final String REPORT_QUALITYGATE_DESC = "cnes.action.report.param.qualitygate.desc";
     /**
      * Property for action 2 (reporting) param 3 description
      */
@@ -182,14 +170,6 @@ public final class StringManager {
      * Define the name of the project's name parameter
      */
     public static final String ANALYZE_NAME_NAME = "cnes.action.analyze.param.name.name";
-    /**
-     * Define the name of the quality profile parameter
-     */
-    public static final String ANALYZE_QUALITYPROFILE_NAME = "cnes.action.analyze.param.qualityprofile.name";
-    /**
-     * Define the name of the quality gate parameter
-     */
-    public static final String ANALYZE_QUALITYGATE_NAME = "cnes.action.analyze.param.qualitygate.name";
     /**
      * Define the name of the projects's folder's name parameter
      */

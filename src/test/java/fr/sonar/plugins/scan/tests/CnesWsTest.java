@@ -50,7 +50,7 @@ public class CnesWsTest {
         final WebService.Action getTree = controller.action("analyze");
         assertThat(getTree).isNotNull();
         assertThat(getTree.key()).isEqualTo("analyze");
-        assertThat(getTree.params().size()).isEqualTo(6);
+        assertThat(getTree.params().size()).isEqualTo(4);
     }
 
     /**
@@ -62,7 +62,7 @@ public class CnesWsTest {
         final WebService.Action getTree = controller.action("report");
         assertThat(getTree).isNotNull();
         assertThat(getTree.key()).isEqualTo("report");
-        assertThat(getTree.params().size()).isEqualTo(4);
+        assertThat(getTree.params().size()).isEqualTo(2);
     }
 
     /**
