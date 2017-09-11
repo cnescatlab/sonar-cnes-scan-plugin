@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Test for the CnesScanPlugin class
- * @author begarco
+ * @author lequal
  */
 public class CnesScanPluginTest {
 

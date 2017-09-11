@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 
 /**
  * Execute the scan of a project
- * @author begarco
+ * @author lequal
  */
 public abstract class AbstractTask implements RequestHandler {
 

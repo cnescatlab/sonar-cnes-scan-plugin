@@ -16,7 +16,7 @@ import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Execute the scan of a project
- * @author begarco
+ * @author lequal
  */
 public class AnalysisTask extends AbstractTask {
 

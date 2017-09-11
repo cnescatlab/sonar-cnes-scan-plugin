@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 /**
  * Centralized the management of strings
  *
- * @author begarco
+ * @author lequal
  */
 public final class StringManager {
 

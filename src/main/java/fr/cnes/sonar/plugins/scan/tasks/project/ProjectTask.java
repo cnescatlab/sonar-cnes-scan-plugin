@@ -27,7 +27,7 @@ import static java.util.Arrays.asList;
 
 /**
  * Execute element to produce the report
- * @author begarco
+ * @author lequal
  */
 public class ProjectTask extends AbstractTask {
 

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 
 /**
  * Test for the CnesPluginPageDefinition class
- * @author begarco
+ * @author lequal
  */
 public class CnesPluginPageDefinitionTest {
 

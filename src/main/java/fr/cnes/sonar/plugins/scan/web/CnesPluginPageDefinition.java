@@ -9,7 +9,7 @@ import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Define web pages of the plugin
- * @author begarco
+ * @author lequal
  */
 public class CnesPluginPageDefinition implements PageDefinition {
 

@@ -5,7 +5,7 @@ import static fr.cnes.sonar.plugins.scan.utils.StringManager.string;
 
 /**
  * Contain information about a terminated task
- * @author begarco
+ * @author lequal
  */
 public class Status {
     /**

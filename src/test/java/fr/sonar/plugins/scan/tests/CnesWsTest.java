@@ -10,7 +10,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * Test for the CnesWs class
- * @author begarco
+ * @author lequal
  */
 public class CnesWsTest {
 

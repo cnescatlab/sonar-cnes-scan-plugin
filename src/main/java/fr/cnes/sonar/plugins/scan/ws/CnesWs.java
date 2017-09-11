@@ -9,7 +9,7 @@ import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Expose CNES plugin api
- * @author begarco
+ * @author lequal
  */
 public class CnesWs implements WebService {
 

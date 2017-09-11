@@ -13,7 +13,7 @@ import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Execute element to produce the report
- * @author begarco
+ * @author lequal
  */
 public class ReportTask extends AbstractTask {
 
