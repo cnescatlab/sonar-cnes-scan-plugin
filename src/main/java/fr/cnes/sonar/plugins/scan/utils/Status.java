@@ -16,9 +16,6 @@
  */
 package fr.cnes.sonar.plugins.scan.utils;
 
-import static fr.cnes.sonar.plugins.scan.utils.StringManager.CNES_LOG_SEPARATOR;
-import static fr.cnes.sonar.plugins.scan.utils.StringManager.string;
-
 /**
  * Contain information about a terminated task
  * @author lequal
@@ -38,7 +35,7 @@ public class Status {
      * @param success If a task finished successfully it is true
      * @param message Description of the status
      */
-    public Status(boolean success, String message) {
+    public Status(final boolean success, final String message) {
         this.mSuccess = success;
         this.mMessage = message;
     }
@@ -55,14 +52,14 @@ public class Status {
      * Logic AND is used for mSuccess and mMessage is append
      * @param status Status to merge with this one
      */
-    public void merge(Status status) {
+    public void merge(final Status status) {
         setSuccess(this.mSuccess && status.mSuccess);
 
         // merge of the both messages
         String mergedMessage = this.mMessage;
         // if empty we do not add
         if(!mergedMessage.isEmpty()) {
-            mergedMessage += string(CNES_LOG_SEPARATOR);
+            mergedMessage += StringManager.string(StringManager.CNES_LOG_SEPARATOR);
         }
         // add the second message
         mergedMessage += status.getMessage();
@@ -82,7 +79,7 @@ public class Status {
      * Set success to true if it is a success
      * @param success boolean
      */
-    public void setSuccess(boolean success) {
+    public void setSuccess(final boolean success) {
         this.mSuccess = success;
     }
 
@@ -96,9 +93,9 @@ public class Status {
 
     /**
      * Setter for mMessage
-     * @param mMessage mMessage as String
+     * @param pMessage mMessage as String
      */
-    public void setMessage(String mMessage) {
-        this.mMessage = mMessage;
+    public void setMessage(final String pMessage) {
+        this.mMessage = pMessage;
     }
 }

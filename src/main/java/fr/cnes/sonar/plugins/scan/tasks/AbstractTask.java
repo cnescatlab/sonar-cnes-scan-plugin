@@ -17,6 +17,7 @@
 package fr.cnes.sonar.plugins.scan.tasks;
 
 
+import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.server.ws.RequestHandler;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -48,15 +49,15 @@ public abstract class AbstractTask implements RequestHandler {
      * @throws IOException when a stream use goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    protected String executeCommand(String command) throws IOException, InterruptedException {
+    protected String executeCommand(final String command) throws IOException, InterruptedException {
         // log the command to execute
         LOGGER.info(command);
 
         // prepare a string builder for the output gathering
-        StringBuilder output = new StringBuilder();
+        final StringBuilder output = new StringBuilder();
 
         // create a new process
-        Process p;
+        final Process p;
         // execute the process on the runtime
         p = Runtime.getRuntime().exec(command);
         // wait for the end of the process
@@ -65,23 +66,25 @@ public abstract class AbstractTask implements RequestHandler {
 
         try (
                 // collect input
-                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(p.getInputStream()));
                 // collect errors
-                BufferedReader reader2 = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+                BufferedReader reader2 = new BufferedReader(
+                        new InputStreamReader(p.getErrorStream()))) {
 
             // append input stream to output
             String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
+                output.append(line).append(StringManager.NEW_LINE);
             }
             // append error stream to output
             while ((line = reader2.readLine()) != null) {
-                output.append(line).append("\n");
+                output.append(line).append(StringManager.NEW_LINE);
             }
         }
 
         // log output
-        String result = output.toString();
+        final String result = output.toString();
         LOGGER.info(result);
 
         // return the output logs
@@ -98,17 +101,17 @@ public abstract class AbstractTask implements RequestHandler {
 
     /**
      * Setter of logs
-     * @param logs string to put in a new StringBuilder
+     * @param pLogs string to put in a new StringBuilder
      */
-    protected void setLogs(String logs) {
-        this.logs = new StringBuilder().append(logs);
+    protected void setLogs(final String pLogs) {
+        this.logs = new StringBuilder().append(pLogs);
     }
 
     /**
      * Add logs
-     * @param logs string to add
+     * @param pLogs string to add
      */
-    protected void log(String logs) {
-        this.logs.append(logs);
+    protected void log(final String pLogs) {
+        this.logs.append(pLogs);
     }
 }

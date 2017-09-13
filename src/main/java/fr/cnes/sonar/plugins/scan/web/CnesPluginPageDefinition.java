@@ -16,12 +16,11 @@
  */
 package fr.cnes.sonar.plugins.scan.web;
 
+import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.web.page.Context;
 import org.sonar.api.web.page.Page;
 import org.sonar.api.web.page.Page.Scope;
 import org.sonar.api.web.page.PageDefinition;
-
-import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Define web pages of the plugin
@@ -34,12 +33,13 @@ public class CnesPluginPageDefinition implements PageDefinition {
      * @param context Execution context of the plugin
      */
     @Override
-    public void define(Context context) {
+    public void define(final Context context) {
 
         // create a page
-        Page.Builder page = Page.builder(string(CNES_PAGE_ANALYSIS_KEY));
+        Page.Builder page = Page.builder(
+                StringManager.string(StringManager.CNES_PAGE_ANALYSIS_KEY));
         // set its name
-        page.setName(string(CNES_PAGE_ANALYSIS_NAME));
+        page.setName(StringManager.string(StringManager.CNES_PAGE_ANALYSIS_NAME));
         // set its scope (where it is displayed)
         page.setScope(Scope.GLOBAL);
         // add a new page for scan + reporting
@@ -47,9 +47,9 @@ public class CnesPluginPageDefinition implements PageDefinition {
 
 
         // create a page
-        page = Page.builder(string(CNES_PAGE_REPORT_KEY));
+        page = Page.builder(StringManager.string(StringManager.CNES_PAGE_REPORT_KEY));
         // set its name
-        page.setName(string(CNES_PAGE_REPORT_NAME));
+        page.setName(StringManager.string(StringManager.CNES_PAGE_REPORT_NAME));
         // set its scope (where it is displayed)
         page.setScope(Scope.GLOBAL);
         // add a new page for reporting
@@ -57,9 +57,9 @@ public class CnesPluginPageDefinition implements PageDefinition {
 
 
         // create a page
-        page = Page.builder(string(CNES_PAGE_HELP_KEY));
+        page = Page.builder(StringManager.string(StringManager.CNES_PAGE_HELP_KEY));
         // set its name
-        page.setName(string(CNES_PAGE_HELP_NAME));
+        page.setName(StringManager.string(StringManager.CNES_PAGE_HELP_NAME));
         // set its scope (where it is displayed)
         page.setScope(Scope.GLOBAL);
         // add a new page for help

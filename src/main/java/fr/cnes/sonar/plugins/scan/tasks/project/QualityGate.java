@@ -50,10 +50,10 @@ public class QualityGate {
 
     /**
      * Set the id
-     * @param id id to set
+     * @param pId id to set
      */
-    public void setId(String id) {
-        this.id = id;
+    public void setId(final String pId) {
+        this.id = pId;
     }
 
     /**
@@ -66,9 +66,9 @@ public class QualityGate {
 
     /**
      * Set the name
-     * @param name name to set
+     * @param pName name to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String pName) {
+        this.name = pName;
     }
 }

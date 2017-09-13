@@ -22,8 +22,8 @@ public class StringManagerTest {
      */
     @Test
     public void singletonUniquenessTest() {
-        StringManager sm1 = StringManager.getInstance();
-        StringManager sm2 = StringManager.getInstance();
+        final StringManager sm1 = StringManager.getInstance();
+        final StringManager sm2 = StringManager.getInstance();
 
         assertEquals(sm1, sm2);
     }

@@ -16,6 +16,7 @@
  */
 package fr.cnes.sonar.plugins.scan.tasks;
 
+import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.utils.text.JsonWriter;
@@ -28,8 +29,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
-
 /**
  * Execute the scan of a project
  * @author lequal
@@ -39,11 +38,13 @@ public class AnalysisTask extends AbstractTask {
     /**
      * Logged message when a file can not be deleted
      */
-    private static final String FILE_DELETION_ERROR = "The following file could not be deleted: %s.";
+    private static final String FILE_DELETION_ERROR =
+            "The following file could not be deleted: %s.";
     /**
      * Logged message when a file can not be set as executable
      */
-    private static final String FILE_PERMISSIONS_ERROR = "Permissions of the following file could not be changed: %s.";
+    private static final String FILE_PERMISSIONS_ERROR =
+            "Permissions of the following file could not be changed: %s.";
     /**
      * Just a slash
      */
@@ -70,33 +71,40 @@ public class AnalysisTask extends AbstractTask {
      * @throws IOException when a file writing goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    private String analyze(String projectName, String projectFolder, String sonarProjectProperties)
+    private String analyze(final String projectName, final String projectFolder, final String sonarProjectProperties)
             throws IOException, InterruptedException {
 
         // path where spp should be written
-        String sppPath = String.format(string(CNES_SPP_PATH),
-                string(CNES_WORKSPACE), projectFolder);
+        final String sppPath = String.format(StringManager.string(StringManager.CNES_SPP_PATH),
+                StringManager.string(StringManager.CNES_WORKSPACE), projectFolder);
         // write sonar-project.properties in the project folder
         writeTextFile(sppPath, sonarProjectProperties);
         // build the scan command
-        String analysisCommand = String.format(string(CNES_COMMAND_SCAN),
-                string(CNES_WORKSPACE), projectFolder, projectFolder);
+        final String analysisCommand = String.format(
+                StringManager.string(StringManager.CNES_COMMAND_SCAN),
+                StringManager.string(StringManager.CNES_WORKSPACE),
+                projectFolder,
+                projectFolder);
         // create the temporary script to run cxx tools
-        File script = createScript(projectFolder, analysisCommand);
+        final File script = createScript(projectFolder, analysisCommand);
 
         // string formatted date as string
-        String date = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
+        final String date = new SimpleDateFormat(
+                StringManager.string(StringManager.DATE_PATTERN)).format(new Date());
 
         // export log file
-        String logPath = String.format(string(CNES_LOG_PATH),
-                string(CNES_WORKSPACE), date, projectName);
+        final String logPath = String.format(StringManager.string(StringManager.CNES_LOG_PATH),
+                StringManager.string(StringManager.CNES_WORKSPACE), date, projectName);
 
         try {
             // scan execution
-            log(executeCommand(string(CNES_WORKSPACE)+SLASH+projectFolder+SLASH+CAT_SCAN_SCRIPT));
+            final String scriptCommand = StringManager.string(StringManager.CNES_WORKSPACE)+
+                    SLASH+projectFolder+SLASH+CAT_SCAN_SCRIPT;
+            log(executeCommand(scriptCommand));
             // log output file
-            String path = string(CNES_WORKSPACE)+ SLASH + projectFolder + SLASH + CAT_LOG_FILE;
-            for(String line : Files.readAllLines(Paths.get(path))) {
+            final String path = StringManager.string(StringManager.CNES_WORKSPACE)+
+                    SLASH + projectFolder + SLASH + CAT_LOG_FILE;
+            for(final String line : Files.readAllLines(Paths.get(path))) {
                 log(line+ NEW_LINE);
             }
             // export logs for user
@@ -124,9 +132,9 @@ public class AnalysisTask extends AbstractTask {
      * @param data Data to write
      * @throws IOException when a file writing goes wrong
      */
-    private void writeTextFile(String path, String data) throws IOException {
+    private void writeTextFile(final String path, final String data) throws IOException {
         // create a new file
-        File spp = new File(path);
+        final File spp = new File(path);
 
         // create the writer
         // true to append; false to overwrite.
@@ -144,24 +152,27 @@ public class AnalysisTask extends AbstractTask {
      * @throws InterruptedException ...
      */
     @Override
-    public void handle(Request request, Response response)
+    public void handle(final Request request, final Response response)
             throws IOException, InterruptedException {
         // reset logs to not stack them
         setLogs("");
 
         // get project's information from the request's parameters
-        final String projectName = request.mandatoryParam(string(ANALYZE_NAME_NAME));
-        final String workspace = request.mandatoryParam(string(ANALYZE_FOLDER_NAME));
-        final String sonarProjectProperties = request.mandatoryParam(string(ANALYZE_SPP_NAME));
+        final String projectName = request.mandatoryParam(
+                StringManager.string(StringManager.ANALYZE_NAME_NAME));
+        final String workspace = request.mandatoryParam(
+                StringManager.string(StringManager.ANALYZE_FOLDER_NAME));
+        final String sonarProjectProperties = request.mandatoryParam(
+                StringManager.string(StringManager.ANALYZE_SPP_NAME));
 
         // concrete scan
-        String result = analyze(projectName, workspace, sonarProjectProperties);
+        final String result = analyze(projectName, workspace, sonarProjectProperties);
 
         // write the json response
-        JsonWriter jsonWriter = response.newJsonWriter();
+        final JsonWriter jsonWriter = response.newJsonWriter();
         jsonWriter.beginObject();
         // add logs to response
-        jsonWriter.prop(string(ANALYZE_RESPONSE_LOG), result);
+        jsonWriter.prop(StringManager.string(StringManager.ANALYZE_RESPONSE_LOG), result);
         jsonWriter.endObject();
         jsonWriter.close();
     }
@@ -172,18 +183,20 @@ public class AnalysisTask extends AbstractTask {
      * @param commandLine command line to execute
      * @return The created file
      */
-    private File createScript(String project, String commandLine) {
-
+    private File createScript(final String project, final String commandLine) {
+        // path to the workspace
+        final String workspace = StringManager.string(StringManager.CNES_WORKSPACE)+
+                SLASH +project+ SLASH;
         // create script in a file located in the project's repository
-        final File scriptOutput = new File(string(CNES_WORKSPACE)+ SLASH +project+ SLASH + CAT_SCAN_SCRIPT);
+        final File scriptOutput = new File(workspace + CAT_SCAN_SCRIPT);
 
         // Write all command lines in a single temporary script
         try (
                 FileWriter script = new FileWriter(scriptOutput)
         ){
             script.write("#!/bin/bash -e");
-            script.write("\ncd "+string(CNES_WORKSPACE)+SLASH+project);
-            script.write(string(CNES_LOG_SEPARATOR)+commandLine);
+            script.write("\ncd "+workspace);
+            script.write(StringManager.string(StringManager.CNES_LOG_SEPARATOR)+commandLine);
             LOGGER.info(commandLine);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

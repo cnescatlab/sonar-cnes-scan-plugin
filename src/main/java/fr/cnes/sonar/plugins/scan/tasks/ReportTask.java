@@ -16,6 +16,7 @@
  */
 package fr.cnes.sonar.plugins.scan.tasks;
 
+import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.utils.text.JsonWriter;
@@ -24,8 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Execute element to produce the report
@@ -53,22 +52,25 @@ public class ReportTask extends AbstractTask {
      * @throws IOException when a file writing goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    public String report(String projectId, String reportAuthor, String reportPath,
-                         String reportTemplate, String issuesTemplate)
+    public String report(final String projectId, final String reportAuthor, final String reportPath,
+                         final String reportTemplate, final String issuesTemplate)
             throws IOException, InterruptedException {
 
         // creation of the output directory
-        boolean success = (new File(reportPath)).mkdirs();
+        final boolean success = (new File(reportPath)).mkdirs();
         if (!success) {
             // Directory creation failed
-            log(String.format(string(CNES_MKDIR_ERROR), reportPath));
+            log(String.format(StringManager.string(StringManager.CNES_MKDIR_ERROR), reportPath));
         }
         // formatted date
-        String date = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
+        final String date = new SimpleDateFormat(StringManager.string(StringManager.DATE_PATTERN))
+                .format(new Date());
         // construct the command string to run scan
-        String command = String.format(string(CNES_COMMAND_REPORT),
-                string(CNES_REPORT_PATH), string(SONAR_URL), projectId,
-                reportAuthor, date, reportPath, reportTemplate, issuesTemplate);
+        final String command = String.format(
+                StringManager.string(StringManager.CNES_COMMAND_REPORT),
+                StringManager.string(StringManager.CNES_REPORT_PATH),
+                StringManager.string(StringManager.SONAR_URL),
+                projectId, reportAuthor, date, reportPath, reportTemplate, issuesTemplate);
         // log the command used
         log(command);
         // log the execution result
@@ -86,37 +88,42 @@ public class ReportTask extends AbstractTask {
      * @throws InterruptedException ...
      */
     @Override
-    public void handle(Request request, Response response) throws IOException, InterruptedException {
+    public void handle(final Request request, final Response response)
+            throws IOException, InterruptedException {
         // reset logs to not stack them
         setLogs("");
 
         // Key of the project provided by the user through parameters
-        final String projectKey = request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_KEY_NAME));
+        final String projectKey = request.mandatoryParam(
+                StringManager.string(StringManager.CNES_ACTION_REPORT_PARAM_KEY_NAME));
         // Code to be used in the created files. The only character that is not supported
         // in filesystems but which is in project key is ":", so we replace all occurences by a "#".
         final String projectCode = projectKey.replaceAll(NOT_SUPPORTED_CHARS, HASHTAG);
         // Report's author
-        final String author = request.mandatoryParam(string(CNES_ACTION_REPORT_PARAM_AUTHOR_NAME));
+        final String author = request.mandatoryParam(
+                StringManager.string(StringManager.CNES_ACTION_REPORT_PARAM_AUTHOR_NAME));
         // Date of today
-        final String today = new SimpleDateFormat(string(DATE_PATTERN)).format(new Date());
+        final String today = new SimpleDateFormat(
+                StringManager.string(StringManager.DATE_PATTERN)).format(new Date());
         // Construct the name of the output folder like that: sharedFolder/project-date-results
-        final String output = String.format(string(CNES_REPORTS_FOLDER),string(CNES_REPORTER_OUTPUT), today, projectCode);
+        final String output = String.format(StringManager.string(StringManager.CNES_REPORTS_FOLDER),
+                StringManager.string(StringManager.CNES_REPORTER_OUTPUT), today, projectCode);
 
         // read request parameters and generates response output
         // generate the reports and save output
-        String result = report(
+        final String result = report(
                 projectKey,
                 author,
                 output,
-                string(CNES_REPORTER_TEMPLATE),
-                string(CNES_ISSUES_TEMPLATE)
+                StringManager.string(StringManager.CNES_REPORTER_TEMPLATE),
+                StringManager.string(StringManager.CNES_ISSUES_TEMPLATE)
         );
 
         // set the response
-        JsonWriter jsonWriter = response.newJsonWriter();
+        final JsonWriter jsonWriter = response.newJsonWriter();
         jsonWriter.beginObject();
         // add logs to response
-        jsonWriter.prop(string(REPORT_RESPONSE_LOG), result);
+        jsonWriter.prop(StringManager.string(StringManager.REPORT_RESPONSE_LOG), result);
         jsonWriter.endObject();
         jsonWriter.close();
     }

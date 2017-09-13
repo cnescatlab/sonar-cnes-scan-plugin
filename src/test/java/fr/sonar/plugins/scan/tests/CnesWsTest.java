@@ -14,6 +14,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  */
 public class CnesWsTest {
 
+	/**
+	 * Just a controller to test web service with stubbed data
+	 */
     private WebService.Controller controller;
 
     /**

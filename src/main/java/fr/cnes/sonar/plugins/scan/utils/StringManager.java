@@ -62,21 +62,20 @@ public final class StringManager {
      */
     public static final String ANALYZE_SPP_DESC = "cnes.action.analyze.param.spp.desc";
     /**
+     * Property for quality profiles separator
+     */
+    public static final String CNES_COMMAND_PROJECT_PROFILES_SEPARATOR =
+            "cnes.command.project.profiles.separator";
+    /**
      * Property for action 2 (reporting) param 1 name
      */
-    public static final String CNES_ACTION_REPORT_PARAM_KEY_NAME = "cnes.action.report.param.key.name";
-    /**
-     * Property for action 2 (reporting) param 2 name
-     */
-    public static final String CNES_ACTION_REPORT_PARAM_QUALITYGATE_NAME = "cnes.action.report.param.qualitygate.name";
-    /**
-     * Property for action 2 (reporting) param 3 name
-     */
-    public static final String CNES_ACTION_REPORT_PARAM_NAME_NAME = "cnes.action.report.param.name.name";
+    public static final String CNES_ACTION_REPORT_PARAM_KEY_NAME =
+            "cnes.action.report.param.key.name";
     /**
      * Define the name of the author parameter
      */
-    public static final String CNES_ACTION_REPORT_PARAM_AUTHOR_NAME = "cnes.action.report.param.author.name";
+    public static final String CNES_ACTION_REPORT_PARAM_AUTHOR_NAME =
+            "cnes.action.report.param.author.name";
     /**
      * Property for action 2 (reporting) response's field 1
      */
@@ -101,10 +100,6 @@ public final class StringManager {
      * Property for action 2 (reporting) description
      */
     public static final String REPORT_DESC = "cnes.action.report.desc";
-    /**
-     * Property for quality profiles separator
-     */
-    public static final String CNES_COMMAND_PROJECT_PROFILES_SEPARATOR = "cnes.command.project.profiles.separator";
     /**
      * Property name of the command pattern to report an scan
      */
@@ -237,11 +232,13 @@ public final class StringManager {
     /**
      * Property for the action 3 (project creation) parameter 3 name (quality profiles)
      */
-    public static final String PROJECT_PARAM_PROFILES_NAME = "cnes.action.project.param.profiles.name";
+    public static final String PROJECT_PARAM_PROFILES_NAME =
+            "cnes.action.project.param.profiles.name";
     /**
      * Property for the action 3 (project creation) parameter 3 description (quality profiles)
      */
-    public static final String PROJECT_PARAM_PROFILES_DESC = "cnes.action.project.param.profiles.desc";
+    public static final String PROJECT_PARAM_PROFILES_DESC =
+            "cnes.action.project.param.profiles.desc";
     /**
      * Property for the action 3 (project creation) parameter 4 name (quality gate)
      */
@@ -270,6 +267,10 @@ public final class StringManager {
      * Default string to return when a key is unknown
      */
     public static final String DEFAULT_STRING = "unknown string";
+    /**
+     * Just a new line
+     */
+    public static final String NEW_LINE = "\n";
     /**
      * Key for the timeout property
      */
@@ -332,7 +333,7 @@ public final class StringManager {
      * @param key Key of the string to string
      * @return the property as String or the DEFAULT_STRING
      */
-    public static String string(String key) {
+    public static String string(final String key) {
         return getInstance().getProperty(key, DEFAULT_STRING);
     }
 
@@ -343,7 +344,7 @@ public final class StringManager {
      * @param defaultString Default value to return
      * @return the property as String or the DEFAULT_STRING
      */
-    private String getProperty(String key, String defaultString) {
+    private String getProperty(final String key, final String defaultString) {
         return this.properties.getProperty(key, defaultString);
     }
 
@@ -356,9 +357,11 @@ public final class StringManager {
         // store properties
         this.properties = new Properties();
 
+        final ClassLoader classLoader = StringManager.class.getClassLoader();
+
         // read the file
         // load properties file as a stream
-        try (InputStream input = StringManager.class.getClassLoader().getResourceAsStream(PLUGIN_PROPERTIES)) {
+        try (InputStream input = classLoader.getResourceAsStream(PLUGIN_PROPERTIES)) {
             if (input != null) {
                 // load properties from the stream in an adapted structure
                 this.properties.load(input);

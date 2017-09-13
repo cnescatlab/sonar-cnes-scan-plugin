@@ -17,7 +17,13 @@ public class StatusTest {
      */
     private static final String TEST_STRING = "This is a test string.";
 
+    /**
+     * Entity to test
+     */
     private Status status;
+    /**
+     * Entity to test
+     */
     private Status status2;
 
     /**

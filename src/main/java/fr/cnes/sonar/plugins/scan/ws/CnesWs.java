@@ -19,9 +19,8 @@ package fr.cnes.sonar.plugins.scan.ws;
 import fr.cnes.sonar.plugins.scan.tasks.AnalysisTask;
 import fr.cnes.sonar.plugins.scan.tasks.ReportTask;
 import fr.cnes.sonar.plugins.scan.tasks.project.ProjectTask;
+import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.server.ws.WebService;
-
-import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
 
 /**
  * Expose CNES plugin api
@@ -35,13 +34,14 @@ public class CnesWs implements WebService {
      * @param context Context of the WebService
      */
     @Override
-    public void define(Context context) {
+    public void define(final Context context) {
         // create the new controller for the cnes web service
-        NewController controller = context.createController(string(CNES_CTRL_KEY));
+        final NewController controller = context.createController(
+                StringManager.string(StringManager.CNES_CTRL_KEY));
         // set minimal sonarqube version required
-        controller.setSince(string(SONAR_VERSION));
+        controller.setSince(StringManager.string(StringManager.SONAR_VERSION));
         // set description of the controller
-        controller.setDescription(string(CNES_CTRL_DESCRIPTION));
+        controller.setDescription(StringManager.string(StringManager.CNES_CTRL_DESCRIPTION));
 
         // create the action for URL /api/cnes/analyze
         analyzeAction(controller);
@@ -60,30 +60,32 @@ public class CnesWs implements WebService {
      * Add the action corresponding to the scan
      * @param controller controller to which add the action
      */
-    private void analyzeAction(NewController controller) {
-        NewAction analysis = controller.createAction(string(ANALYZE_KEY));
+    private void analyzeAction(final NewController controller) {
+        final NewAction analysis = controller.createAction(
+                StringManager.string(StringManager.ANALYZE_KEY));
         //set
-        analysis.setDescription(string(ANALYZE_DESC));
-        analysis.setSince(string(SONAR_VERSION));
+        analysis.setDescription(StringManager.string(StringManager.ANALYZE_DESC));
+        analysis.setSince(StringManager.string(StringManager.SONAR_VERSION));
         analysis.setPost(true);
         // new scan task to handle the request and work on the code
         analysis.setHandler(new AnalysisTask());
         // create parameter of the action
         // key parameter
-        NewParam newParam = analysis.createParam(string(ANALYZE_KEY_NAME));
-        newParam.setDescription(string(ANALYZE_KEY_DESC));
+        NewParam newParam = analysis.createParam(
+                StringManager.string(StringManager.ANALYZE_KEY_NAME));
+        newParam.setDescription(StringManager.string(StringManager.ANALYZE_KEY_DESC));
         newParam.setRequired(true);
         // name parameter
-        newParam = analysis.createParam(string(ANALYZE_NAME_NAME));
-        newParam.setDescription(string(ANALYZE_NAME_DESC));
+        newParam = analysis.createParam(StringManager.string(StringManager.ANALYZE_NAME_NAME));
+        newParam.setDescription(StringManager.string(StringManager.ANALYZE_NAME_DESC));
         newParam.setRequired(true);
         // folder parameter
-        newParam = analysis.createParam(string(ANALYZE_FOLDER_NAME));
-        newParam.setDescription(string(ANALYZE_FOLDER_DESC));
+        newParam = analysis.createParam(StringManager.string(StringManager.ANALYZE_FOLDER_NAME));
+        newParam.setDescription(StringManager.string(StringManager.ANALYZE_FOLDER_DESC));
         newParam.setRequired(true);
         // spp parameter
-        newParam = analysis.createParam(string(ANALYZE_SPP_NAME));
-        newParam.setDescription(string(ANALYZE_SPP_DESC));
+        newParam = analysis.createParam(StringManager.string(StringManager.ANALYZE_SPP_NAME));
+        newParam.setDescription(StringManager.string(StringManager.ANALYZE_SPP_DESC));
         newParam.setRequired(true);
     }
 
@@ -91,19 +93,22 @@ public class CnesWs implements WebService {
      * Add the action corresponding to the report generation
      * @param controller controller to which add the action
      */
-    private void reportAction(NewController controller) {
-        NewAction report = controller.createAction(string(REPORT_KEY));
-        report.setDescription(string(REPORT_DESC));
-        report.setSince(string(SONAR_VERSION));
+    private void reportAction(final NewController controller) {
+        final NewAction report = controller.createAction(
+                StringManager.string(StringManager.REPORT_KEY));
+        report.setDescription(StringManager.string(StringManager.REPORT_DESC));
+        report.setSince(StringManager.string(StringManager.SONAR_VERSION));
         report.setHandler(new ReportTask());
         // add the parameters of the controller
         // key parameter
-        NewParam newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_KEY_NAME));
-        newParam.setDescription(string(REPORT_KEY_DESC));
+        NewParam newParam = report.createParam(
+                StringManager.string(StringManager.CNES_ACTION_REPORT_PARAM_KEY_NAME));
+        newParam.setDescription(StringManager.string(StringManager.REPORT_KEY_DESC));
         newParam.setRequired(true);
         // author's name parameter
-        newParam = report.createParam(string(CNES_ACTION_REPORT_PARAM_AUTHOR_NAME));
-        newParam.setDescription(string(REPORT_AUTHOR_DESC));
+        newParam = report.createParam(
+                StringManager.string(StringManager.CNES_ACTION_REPORT_PARAM_AUTHOR_NAME));
+        newParam.setDescription(StringManager.string(StringManager.REPORT_AUTHOR_DESC));
         newParam.setRequired(true);
     }
 
@@ -111,27 +116,30 @@ public class CnesWs implements WebService {
      * Add the action corresponding to the project creation
      * @param controller controller to which add the action
      */
-    private void projectAction(NewController controller) {
-        NewAction project = controller.createAction(string(PROJECT_KEY));
-        project.setDescription(string(PROJECT_DESC));
-        project.setSince(string(SONAR_VERSION));
+    private void projectAction(final NewController controller) {
+        final NewAction project = controller.createAction(
+                StringManager.string(StringManager.PROJECT_KEY));
+        project.setDescription(StringManager.string(StringManager.PROJECT_DESC));
+        project.setSince(StringManager.string(StringManager.SONAR_VERSION));
         project.setHandler(new ProjectTask());
         // add the parameters of the controller
         // key parameter
-        NewParam newParam = project.createParam(string(PROJECT_PARAM_KEY_NAME));
-        newParam.setDescription(string(PROJECT_PARAM_KEY_DESC));
+        NewParam newParam = project.createParam(
+                StringManager.string(StringManager.PROJECT_PARAM_KEY_NAME));
+        newParam.setDescription(StringManager.string(StringManager.PROJECT_PARAM_KEY_DESC));
         newParam.setRequired(true);
         // name of the project parameter
-        newParam = project.createParam(string(PROJECT_PARAM_NAME_NAME));
-        newParam.setDescription(string(PROJECT_PARAM_NAME_DESC));
+        newParam = project.createParam(StringManager.string(StringManager.PROJECT_PARAM_NAME_NAME));
+        newParam.setDescription(StringManager.string(StringManager.PROJECT_PARAM_NAME_DESC));
         newParam.setRequired(true);
         // quality profiles parameter
-        newParam = project.createParam(string(PROJECT_PARAM_PROFILES_NAME));
-        newParam.setDescription(string(PROJECT_PARAM_PROFILES_DESC));
+        newParam = project.createParam(
+                StringManager.string(StringManager.PROJECT_PARAM_PROFILES_NAME));
+        newParam.setDescription(StringManager.string(StringManager.PROJECT_PARAM_PROFILES_DESC));
         newParam.setRequired(true);
         // quality gate parameter
-        newParam = project.createParam(string(PROJECT_PARAM_GATE_NAME));
-        newParam.setDescription(string(PROJECT_PARAM_GATE_DESC));
+        newParam = project.createParam(StringManager.string(StringManager.PROJECT_PARAM_GATE_NAME));
+        newParam.setDescription(StringManager.string(StringManager.PROJECT_PARAM_GATE_DESC));
         newParam.setRequired(true);
     }
 

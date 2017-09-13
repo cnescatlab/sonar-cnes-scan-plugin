@@ -38,9 +38,6 @@ import org.sonarqube.ws.client.qualityprofile.AddProjectRequest;
 import java.io.IOException;
 import java.util.*;
 
-import static fr.cnes.sonar.plugins.scan.utils.StringManager.*;
-import static java.util.Arrays.asList;
-
 /**
  * Execute element to produce the report
  * @author lequal
@@ -66,19 +63,23 @@ public class ProjectTask extends AbstractTask {
     /**
      *  Error message when a project key is not matching the sonarqube regex
      */
-    private static final String BAD_PROJECT_KEY = "[ERROR] Key %s does not match the following regular expression: " + KEY_REGEX;
+    private static final String BAD_PROJECT_KEY =
+            "[ERROR] Key %s does not match the following regular expression: " + KEY_REGEX;
     /**
      *  Error message when a quality profile is unknown
      */
-    private static final String WARNING_QUALITYPROFILE_UNKNOWN = "[ERROR] Quality profile %s is unknown.";
+    private static final String WARNING_QUALITYPROFILE_UNKNOWN =
+            "[ERROR] Quality profile %s is unknown.";
     /**
      *  Success message for quality profile linking
      */
-    private static final String SUCCESS_QUALITYPROFILE = "[INFO] Quality profile %s was linked successfully.";
+    private static final String SUCCESS_QUALITYPROFILE =
+            "[INFO] Quality profile %s was linked successfully.";
     /**
      *  Success message for quality gate linking
      */
-    private static final String SUCCESS_QUALITYGATE = "[INFO] Quality gate %s was linked successfully.";
+    private static final String SUCCESS_QUALITYGATE =
+            "[INFO] Quality gate %s was linked successfully.";
     /**
      *  Maximum page size for a request to the server
      */
@@ -97,7 +98,7 @@ public class ProjectTask extends AbstractTask {
      * @throws IOException ...
      */
     @Override
-    public void handle(Request request, Response response) throws IOException {
+    public void handle(final Request request, final Response response) throws IOException {
         // reset logs to not stack them
         setLogs("");
         // describe how worked the task and is returned
@@ -105,13 +106,17 @@ public class ProjectTask extends AbstractTask {
 
         // extract parameters
         // key of the project to create
-        final String key = request.mandatoryParam(string(PROJECT_PARAM_KEY_NAME));
+        final String key = request.mandatoryParam(
+                StringManager.string(StringManager.PROJECT_PARAM_KEY_NAME));
         // name of the project to create
-        final String name = request.mandatoryParam(string(PROJECT_PARAM_NAME_NAME));
+        final String name = request.mandatoryParam(
+                StringManager.string(StringManager.PROJECT_PARAM_NAME_NAME));
         // quality profiles of the project to create
-        final String qualityProfiles = request.mandatoryParam(string(PROJECT_PARAM_PROFILES_NAME));
+        final String qualityProfiles = request.mandatoryParam(
+                StringManager.string(StringManager.PROJECT_PARAM_PROFILES_NAME));
         // quality gate of the project to create
-        final String qualityGate = request.mandatoryParam(string(PROJECT_PARAM_GATE_NAME));
+        final String qualityGate = request.mandatoryParam(
+                StringManager.string(StringManager.PROJECT_PARAM_GATE_NAME));
         // extract the list of quality profiles
         final List<String> qualityProfilesList = parseQualityProfiles(qualityProfiles);
 
@@ -132,7 +137,8 @@ public class ProjectTask extends AbstractTask {
             status.merge(gateStatus);
             if(gateStatus.isSuccess()) {
                 // set project's quality profiles
-                final Status profilesStatus = setQualityProfiles(wsClient, key, qualityProfilesList);
+                final Status profilesStatus = setQualityProfiles(
+                        wsClient, key, qualityProfilesList);
                 // log error concerning profiles
                 status.merge(profilesStatus);
                 if(profilesStatus.isSuccess()) {
@@ -142,12 +148,14 @@ public class ProjectTask extends AbstractTask {
         }
 
         // write the json response
-        JsonWriter jsonWriter = response.newJsonWriter();
+        final JsonWriter jsonWriter = response.newJsonWriter();
         jsonWriter.beginObject();
         // add logs to response
-        jsonWriter.prop(string(PROJECT_REPONSE_LOG), status.getMessage());
+        final String logsField = StringManager.string(StringManager.PROJECT_REPONSE_LOG);
+        jsonWriter.prop(logsField, status.getMessage());
         // add success status
-        jsonWriter.prop(string(PROJECT_REPONSE_STATUS), status.isSuccess());
+        final String statusField = StringManager.string(StringManager.PROJECT_REPONSE_STATUS);
+        jsonWriter.prop(statusField, status.isSuccess());
         jsonWriter.endObject();
         jsonWriter.close();
 
@@ -160,7 +168,7 @@ public class ProjectTask extends AbstractTask {
      * @param name  Name of the project to create
      * @return logs of the task
      */
-    private Status createProject(WsClient wsClient, String key, String name) {
+    private Status createProject(final WsClient wsClient, final String key, final String name) {
         // describe how worked the task and is returned
         final Status status = new Status();
 
@@ -203,16 +211,19 @@ public class ProjectTask extends AbstractTask {
      * @param projectKey Key of the project to find
      * @return a boolean true if it exists
      */
-    private boolean checkProjectExists(WsClient wsClient, String projectKey) {
+    private boolean checkProjectExists(final WsClient wsClient, final String projectKey) {
         // returned value true if a project with the same key as projectKey exists
         boolean exist = false;
 
         // request to get all projects
-        final SearchProjectsRequest searchProjectsRequest = SearchProjectsRequest.builder().setPageSize(PAGE_SIZE).build();
-        final SearchProjectsWsResponse searchProjectsResponse = wsClient.components().searchProjects(searchProjectsRequest);
+        final SearchProjectsRequest searchProjectsRequest =
+                SearchProjectsRequest.builder().setPageSize(PAGE_SIZE).build();
+        final SearchProjectsWsResponse searchProjectsResponse =
+                wsClient.components().searchProjects(searchProjectsRequest);
 
         // iterate on projects
-        Iterator<WsComponents.Component> iterator = searchProjectsResponse.getComponentsList().iterator();
+        final Iterator<WsComponents.Component> iterator =
+                searchProjectsResponse.getComponentsList().iterator();
         WsComponents.Component current;
 
         // browse all projects until find the good one
@@ -231,12 +242,13 @@ public class ProjectTask extends AbstractTask {
      * @param qualityProfiles raw string input
      * @return List<String> with th quality profiles' names
      */
-    private List<String> parseQualityProfiles(String qualityProfiles) {
+    private List<String> parseQualityProfiles(final String qualityProfiles) {
         // final result to return, never null
         final List<String> list;
 
         // split with separators
-        list = new LinkedList<>(asList(qualityProfiles.split(string(StringManager.CNES_COMMAND_PROJECT_PROFILES_SEPARATOR))));
+        list = new LinkedList<>(Arrays.asList(qualityProfiles.split(
+                StringManager.string(StringManager.CNES_COMMAND_PROJECT_PROFILES_SEPARATOR))));
         // clean useless blanks
         list.replaceAll(String::trim);
         // remove empty strings
@@ -252,7 +264,8 @@ public class ProjectTask extends AbstractTask {
      * @param qualityProfilesList a list of quality profiles' keys
      * @return A Status
      */
-    private Status setQualityProfiles(WsClient wsClient, String key, List<String> qualityProfilesList) {
+    private Status setQualityProfiles(final WsClient wsClient, final String key,
+                                      final List<String> qualityProfilesList) {
         // result to know if the gate was set
         final Status status = new Status();
         status.setSuccess(true);
@@ -265,16 +278,17 @@ public class ProjectTask extends AbstractTask {
             // Filter to select only one result, example:
             // if you search key to, you can get [to, toto]
             // so we have to filter the response's list
-            org.sonarqube.ws.client.qualityprofile.SearchWsRequest searchWsRequest =
-                    new org.sonarqube.ws.client.qualityprofile.SearchWsRequest();
+        	final org.sonarqube.ws.client.qualityprofile.SearchWsRequest searchWsRequest =
+                new org.sonarqube.ws.client.qualityprofile.SearchWsRequest();
             searchWsRequest.setProfileName(profileKey);
-            List<QualityProfile> qpList = wsClient.qualityProfiles().search(searchWsRequest).getProfilesList();
-            QualityProfile profile = findQPByKey(qpList, profileKey);
+            final List<QualityProfile> qpList = wsClient.qualityProfiles()
+                    .search(searchWsRequest).getProfilesList();
+            final QualityProfile profile = findQPByKey(qpList, profileKey);
 
             // if there is at means one result we linked it to the project
             if(profile!=null) {
                 // create the link (the request) between the current profile and the project
-                AddProjectRequest addProjectRequest = AddProjectRequest.builder()
+            	final AddProjectRequest addProjectRequest = AddProjectRequest.builder()
                         .setProfileKey(profile.getKey()).setProjectKey(key).build();
                 // execute the previous request
                 wsClient.qualityProfiles().addProject(addProjectRequest);
@@ -302,11 +316,13 @@ public class ProjectTask extends AbstractTask {
      * @param qualityGateName Name of the quality gate to link
      * @return A Status
      */
-    private Status setQualityGate(WsClient wsClient, String key, String qualityGateName) {
+    private Status setQualityGate(final WsClient wsClient, final String key,
+                                  final String qualityGateName) {
         // result to know if the gate was set
         final Status status = new Status();
         // Retrieve all quality gates from server
-        final WsRequest listWsRequest = new GetRequest(string(CNES_REQUESTS_QUALITYGATES_LIST));
+        final WsRequest listWsRequest = new GetRequest(
+                StringManager.string(StringManager.CNES_REQUESTS_QUALITYGATES_LIST));
         final WsResponse listWsResponse = wsClient.wsConnector().call(listWsRequest);
 
         // on previous success
@@ -320,22 +336,28 @@ public class ProjectTask extends AbstractTask {
                     .getAsJsonObject().get(QUALITYGATES_JSON_FIELD);
 
             // convert the list to QualityGate entities list
-            final List<QualityGate> modelQGList = asList(gson.fromJson(json , QualityGate[].class));
+            final List<QualityGate> modelQGList = Arrays.asList(
+                    gson.fromJson(json , QualityGate[].class));
 
             // fill out Sonar Quality Gates
-            List<WsQualityGates.QualityGate> qualityGates = new ArrayList<>();
-            for (QualityGate q : modelQGList) {
+            final List<WsQualityGates.QualityGate> qualityGates = new ArrayList<>();
+            WsQualityGates.QualityGate.Builder qualityGateBuilder;
+            for (final QualityGate q : modelQGList) {
                 // build and add a new quality gate from model
-                qualityGates.add(WsQualityGates.QualityGate.newBuilder().setId(q.getId()).setName(q.getName()).build());
+                qualityGateBuilder = WsQualityGates.QualityGate.newBuilder();
+                qualityGateBuilder.setId(q.getId());
+                qualityGateBuilder.setName(q.getName());
+                qualityGates.add(qualityGateBuilder.build());
             }
 
 
             // look for the wanted quality gate
-            WsQualityGates.QualityGate qg = findQGByName(qualityGates, qualityGateName);
+            final WsQualityGates.QualityGate qg = findQGByName(qualityGates, qualityGateName);
 
             if(qg != null) {
                 // if we found the quality gate we link it to the project
-                SelectWsRequest selectWsRequest = new SelectWsRequest().setGateId(Long.parseLong(qg.getId())).setProjectKey(key);
+                final SelectWsRequest selectWsRequest = new SelectWsRequest()
+                        .setGateId(Long.parseLong(qg.getId())).setProjectKey(key);
                 wsClient.qualityGates().associateProject(selectWsRequest);
                 // setting is a success
                 status.setSuccess(true);
@@ -360,12 +382,13 @@ public class ProjectTask extends AbstractTask {
      * @param qualityGateName name of the quality gate to find
      * @return the corresponding quality gate or null
      */
-    private WsQualityGates.QualityGate findQGByName(List<WsQualityGates.QualityGate> qualityGates, String qualityGateName) {
+    private WsQualityGates.QualityGate findQGByName(final List<WsQualityGates.QualityGate> qualityGates,
+                                                    final String qualityGateName) {
         // result that will be returned
         WsQualityGates.QualityGate qualityGate = null;
 
         // iterator on the quality gate list
-        Iterator<WsQualityGates.QualityGate> iterator = qualityGates.iterator();
+        final Iterator<WsQualityGates.QualityGate> iterator = qualityGates.iterator();
         WsQualityGates.QualityGate current;
 
         while(iterator.hasNext() && qualityGate==null) {
@@ -385,12 +408,13 @@ public class ProjectTask extends AbstractTask {
      * @param qualityProfileKey key of the quality profile to find
      * @return the corresponding quality profile or null
      */
-    private QualityProfile findQPByKey(List<QualityProfile> qualityProfiles, String qualityProfileKey) {
+    private QualityProfile findQPByKey(final List<QualityProfile> qualityProfiles,
+                                       final String qualityProfileKey) {
         // result that will be returned
         QualityProfile qualityProfile = null;
 
         // iterator on the quality gate list
-        Iterator<QualityProfile> iterator = qualityProfiles.iterator();
+        final Iterator<QualityProfile> iterator = qualityProfiles.iterator();
         QualityProfile current;
 
         while(iterator.hasNext() && qualityProfile==null) {
