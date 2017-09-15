@@ -253,11 +253,10 @@ window.registerExtension('cnesscan/analysis', function (options) {
     /**
      * Wait that sonarqube has finished to import the report to run a callback
      * @param key
-     * @param name
      * @param author
      * @param callback
      */
-    var waitSonarQube = function(key, name, author, callback) {
+    var waitSonarQube = function(key, author, callback) {
         // send get request to the cnes web service
         // we ask for information about task about a project
         window.SonarRequest.getJSON(
@@ -270,10 +269,10 @@ window.registerExtension('cnesscan/analysis', function (options) {
             // so it is ready to report
             if(response.queue.length === 0) {
                 // produce the report
-                callback(key, name, author);
+                callback(key, author);
             } else {
                 // retry later (in 2 seconds)
-                window.setTimeout(waitSonarQube(key, name, author, callback), 2000);
+                window.setTimeout(waitSonarQube(key, author, callback), 2000);
             }
 
         }).catch(function (response) {
@@ -369,7 +368,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
             info("Project analysis response: \n" + response.logs);
             // wait that sonarqube has finished to import the report to produce the report
             info("SonarQube is still importing the report, please wait.");
-            waitSonarQube(key, name, author, callback);
+            waitSonarQube(key, author, callback);
         }).catch(function (response) {
             // log error
             error("Project analysis failed.");
