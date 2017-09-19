@@ -97,6 +97,10 @@ window.registerExtension('cnesscan/analysis', function (options) {
             error("Workspace must be filled out.");
             // abort the process
             return false;
+        } else if (folder.indexOf('\\')!==-1) {
+            error("Do not use backslashes (\\) in workspace, use slashes (/) instead.");
+            // abort the process
+            return false;
         }
         // check the field sources (project)
         // get it
@@ -104,6 +108,10 @@ window.registerExtension('cnesscan/analysis', function (options) {
         // check if void
         if (sources === "") {
             error("Sources must be filled out.");
+            // abort the process
+            return false;
+        } else if (folder.indexOf('\\')!==-1) {
+            error("Do not use backslashes (\\) in workspace, use slashes (/) instead.");
             // abort the process
             return false;
         }
