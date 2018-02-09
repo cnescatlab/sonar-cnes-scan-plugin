@@ -22,6 +22,7 @@ import com.google.gson.JsonParser;
 import fr.cnes.sonar.plugins.scan.tasks.AbstractTask;
 import fr.cnes.sonar.plugins.scan.utils.Status;
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
+import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.utils.text.JsonWriter;
@@ -280,7 +281,7 @@ public class ProjectTask extends AbstractTask {
             // so we have to filter the response's list
         	final org.sonarqube.ws.client.qualityprofile.SearchWsRequest searchWsRequest =
                 new org.sonarqube.ws.client.qualityprofile.SearchWsRequest();
-            searchWsRequest.setProfileName(profileKey);
+            searchWsRequest.setQualityProfile(profileKey);
             final List<QualityProfile> qpList = wsClient.qualityProfiles()
                     .search(searchWsRequest).getProfilesList();
             final QualityProfile profile = findQPByKey(qpList, profileKey);
@@ -289,7 +290,7 @@ public class ProjectTask extends AbstractTask {
             if(profile!=null) {
                 // create the link (the request) between the current profile and the project
             	final AddProjectRequest addProjectRequest = AddProjectRequest.builder()
-                        .setProfileKey(profile.getKey()).setProjectKey(key).build();
+                        .setQualityProfile(profile.getKey()).setProjectKey(key).build();
                 // execute the previous request
                 wsClient.qualityProfiles().addProject(addProjectRequest);
                 // log result
