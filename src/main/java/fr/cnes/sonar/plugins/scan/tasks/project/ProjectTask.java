@@ -22,7 +22,6 @@ import com.google.gson.JsonParser;
 import fr.cnes.sonar.plugins.scan.tasks.AbstractTask;
 import fr.cnes.sonar.plugins.scan.utils.Status;
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.utils.text.JsonWriter;
@@ -159,7 +158,6 @@ public class ProjectTask extends AbstractTask {
         jsonWriter.prop(statusField, status.isSuccess());
         jsonWriter.endObject();
         jsonWriter.close();
-
     }
 
     /**
