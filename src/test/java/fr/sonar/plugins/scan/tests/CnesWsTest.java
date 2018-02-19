@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.sonar.api.server.ws.WebService;
 import org.sonar.api.server.ws.WsTester;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * Test for the CnesWs class
@@ -38,10 +38,10 @@ public class CnesWsTest {
      */
     @Test
     public void controllerTest() {
-        assertThat(controller).isNotNull();
-        assertThat(controller.path()).isEqualTo("api/cnes");
-        assertThat(controller.description()).isNotEmpty();
-        assertThat(controller.actions().size()).isEqualTo(3);
+        assertNotNull(controller);
+        assertEquals("api/cnes", controller.path());
+        assertFalse(controller.description().isEmpty());
+        assertEquals(3, controller.actions().size());
     }
 
     /**
@@ -51,9 +51,9 @@ public class CnesWsTest {
     @Test
     public void analyzeWebServiceTest() {
         final WebService.Action getTree = controller.action("analyze");
-        assertThat(getTree).isNotNull();
-        assertThat(getTree.key()).isEqualTo("analyze");
-        assertThat(getTree.params().size()).isEqualTo(4);
+        assertNotNull(getTree);
+        assertEquals("analyze", getTree.key());
+        assertEquals(4, getTree.params().size());
     }
 
     /**
@@ -63,9 +63,9 @@ public class CnesWsTest {
     @Test
     public void reportWebServiceTest() {
         final WebService.Action getTree = controller.action("report");
-        assertThat(getTree).isNotNull();
-        assertThat(getTree.key()).isEqualTo("report");
-        assertThat(getTree.params().size()).isEqualTo(2);
+        assertNotNull(getTree);
+        assertEquals("report", getTree.key());
+        assertEquals(2, getTree.params().size());
     }
 
     /**
@@ -75,8 +75,8 @@ public class CnesWsTest {
     @Test
     public void createProjectWebServiceTest() {
         final WebService.Action getTree = controller.action("create_project");
-        assertThat(getTree).isNotNull();
-        assertThat(getTree.key()).isEqualTo("create_project");
-        assertThat(getTree.params().size()).isEqualTo(4);
+        assertNotNull(getTree);
+        assertEquals("create_project", getTree.key());
+        assertEquals(4, getTree.params().size());
     }
 }
