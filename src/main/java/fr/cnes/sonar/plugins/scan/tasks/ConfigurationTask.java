@@ -32,6 +32,9 @@ public class ConfigurationTask extends AbstractTask {
 
     private final Configuration config;
 
+    /**
+     * @param config The configuration
+     */
     public ConfigurationTask(Configuration config){
         this.config = config;
     }
