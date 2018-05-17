@@ -16,8 +16,11 @@
  */
 package fr.cnes.sonar.plugins.scan.utils;
 
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -149,10 +152,6 @@ public final class StringManager {
      */
     public static final String CNES_PAGE_HELP_NAME = "cnes.page.help.name";
     /**
-     * Property for the path to the working directory
-     */
-    public static final String CNES_WORKSPACE = "cnes.workspace";
-    /**
      * Path pattern for the sonar-project.properties file
      * arg1: shared folder
      * arg2: project folder
@@ -193,10 +192,7 @@ public final class StringManager {
      * Define the name of the returned log filed
      */
     public static final String ANALYZE_RESPONSE_LOG = "cnes.action.analyze.response.log";
-    /**
-     * Path where the report must be exported
-     */
-    public static final String CNES_REPORTER_OUTPUT = "cnes.reporter.output";
+
     /**
      * Template to use
      */
@@ -276,6 +272,10 @@ public final class StringManager {
      */
     public static final String TIMEOUT_PROP_DEF_KEY = "property.definition.timeout.key";
     /**
+     * Key for the timeout property in API
+     */
+    public static final String TIMEOUT_PROP_DEF_API_KEY = "property.definition.timeout.api.key";
+    /**
      * Name for the timeout property
      */
     public static final String TIMEOUT_PROP_DEF_NAME = "property.definition.timeout.name";
@@ -287,6 +287,129 @@ public final class StringManager {
      * Default value for the timeout property
      */
     public static final String TIMEOUT_PROP_DEF_DEFAULT = "property.definition.timeout.default";
+    /**
+     * Key for the workspace property
+     */
+    public static final String WORKSPACE_PROP_DEF_KEY = "property.definition.workspace.key";
+    /**
+     * Key for the workspace property in API
+     */
+    public static final String WORKSPACE_PROP_DEF_API_KEY = "property.definition.workspace.api.key";
+    /**
+     * Name for the workspace property
+     */
+    public static final String WORKSPACE_PROP_DEF_NAME = "property.definition.workspace.name";
+    /**
+     * Description for the workspace property
+     */
+    public static final String WORKSPACE_PROP_DEF_DESC = "property.definition.workspace.desc";
+    /**
+     * Default value for the workspace property
+     */
+    public static final String WORKSPACE_PROP_DEF_DEFAULT = "property.definition.workspace.default";
+    /**
+     * Key for the Sonarqube location property
+     */
+    public static final String HOME_PROP_DEF_KEY = "property.definition.home.key";
+    /**
+     * Key name for the Sonarqube location property in api
+     */
+    public static final String HOME_PROP_DEF_API_KEY = "property.definition.home.api.key";
+    /**
+     * Name for the timeout property
+     */
+    public static final String HOME_PROP_DEF_NAME = "property.definition.home.name";
+    /**
+     * Description for the timeout property
+     */
+    public static final String HOME_PROP_DEF_DESC = "property.definition.home.desc";
+    /**
+     * Default value for the timeout property
+     */
+    public static final String HOME_PROP_DEF_DEFAULT = "property.definition.home.default";
+    /**
+     * Key for the  scanner location property
+     */
+    public static final String SCANNER_PROP_DEF_KEY = "property.definition.scanner.key";
+    /**
+     * Key for the  scanner location property in API
+     */
+    public static final String SCANNER_PROP_DEF_API_KEY = "property.definition.scanner.api.key";
+    /**
+     * Name for the scanner property
+     */
+    public static final String SCANNER_PROP_DEF_NAME = "property.definition.scanner.name";
+    /**
+     * Description for the scanner property
+     */
+    public static final String SCANNER_PROP_DEF_DESC = "property.definition.scanner.desc";
+    /**
+     * Default value for the scanner property
+     */
+    public static final String SCANNER_PROP_DEF_DEFAULT = "property.definition.scanner.default";
+    /**
+     * Key for the report output destination property
+     */
+    public static final String REPORT_TEMPLATE_PROP_DEF_KEY = "property.definition.report.template.key";
+    /**
+     * Key for the report output destination property in API
+     */
+    public static final String REPORT_TEMPLATE_PROP_DEF_API_KEY = "property.definition.report.template.api.key";
+    /**
+     * Name for the report output destination property
+     */
+    public static final String REPORT_TEMPLATE_PROP_DEF_NAME = "property.definition.report.template.name";
+
+    /**
+     * Description for the report output destination property
+     */
+    public static final String REPORT_TEMPLATE_PROP_DEF_DESC = "property.definition.report.template.desc";
+    /**
+     * Default value for the report output destination property
+     */
+    public static final String REPORT_TEMPLATE_PROP_DEF_DEFAULT = "property.definition.report.template.default";
+    /**
+     * Key for the report output destination property
+     */
+    public static final String REPORT_OUTPUT_PROP_DEF_KEY = "property.definition.report.output.key";
+    /**
+     * Key for the report output destination property in API
+     */
+    public static final String REPORT_OUTPUT_PROP_DEF_API_KEY = "property.definition.report.output.api.key";
+    /**
+     * Name for the report output destination property
+     */
+    public static final String REPORT_OUTPUT_PROP_DEF_NAME = "property.definition.report.output.name";
+
+    /**
+     * Description for the report output destination property
+     */
+    public static final String REPORT_OUTPUT_PROP_DEF_DESC = "property.definition.report.output.desc";
+    /**
+     * Default value for the report output destination property
+     */
+    public static final String REPORT_OUTPUT_PROP_DEF_DEFAULT = "property.definition.report.output.default";
+    /**
+     * Key for the report output destination property
+     */
+    public static final String PYLINTRC_PROP_DEF_KEY = "property.definition.pylintrc.key";
+    /**
+     * Key for the report output destination property
+     */
+    public static final String PYLINTRC_PROP_DEF_API_KEY = "property.definition.pylintrc.api.key";
+    /**
+     * Name for the report output destination property
+     */
+    public static final String PYLINTRC_PROP_DEF_NAME = "property.definition.pylintrc.name";
+    /**
+     * Description for the report output destination property
+     */
+    public static final String PYLINTRC_PROP_DEF_DESC = "property.definition.pylintrc.desc";
+    /**
+     * Default value for the report output destination property
+     */
+    public static final String PYLINTRC_PROP_DEF_DEFAULT = "property.definition.pylintrc.default";
+
     /**
      * Logger of this class
      */

@@ -17,6 +17,7 @@
 package fr.cnes.sonar.plugins.scan.tasks;
 
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.utils.text.JsonWriter;
@@ -32,6 +33,12 @@ import java.util.Date;
  */
 public class ReportTask extends AbstractTask {
 
+
+    private final Configuration config;
+
+    public ReportTask(Configuration config){
+        this.config = config;
+    }
     /**
      * Replacement character for not supported chars
      */
@@ -68,7 +75,7 @@ public class ReportTask extends AbstractTask {
         // construct the command string to run scan
         final String command = String.format(
                 StringManager.string(StringManager.CNES_COMMAND_REPORT),
-                StringManager.string(StringManager.CNES_REPORT_PATH),
+                String.format(StringManager.CNES_REPORT_PATH, config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))),
                 StringManager.string(StringManager.SONAR_URL),
                 projectId, reportAuthor, date, reportPath, reportTemplate, issuesTemplate);
         // log the command used
@@ -107,7 +114,7 @@ public class ReportTask extends AbstractTask {
                 StringManager.string(StringManager.DATE_PATTERN)).format(new Date());
         // Construct the name of the output folder like that: sharedFolder/project-date-results
         final String output = String.format(StringManager.string(StringManager.CNES_REPORTS_FOLDER),
-                StringManager.string(StringManager.CNES_REPORTER_OUTPUT), today, projectCode);
+                config.get(StringManager.string(StringManager.REPORT_OUTPUT_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)), today, projectCode);
 
         // read request parameters and generates response output
         // generate the reports and save output

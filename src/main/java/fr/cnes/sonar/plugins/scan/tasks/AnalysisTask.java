@@ -17,6 +17,7 @@
 package fr.cnes.sonar.plugins.scan.tasks;
 
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.utils.text.JsonWriter;
@@ -35,6 +36,11 @@ import java.util.Date;
  */
 public class AnalysisTask extends AbstractTask {
 
+    private final Configuration config;
+
+    public AnalysisTask(Configuration config){
+        this.config = config;
+    }
     /**
      * Logged message when a file can not be deleted
      */
@@ -62,6 +68,8 @@ public class AnalysisTask extends AbstractTask {
      */
     private static final String NEW_LINE = "\n";
 
+
+
     /**
      * Execute the scan of a project
      * @param projectName name of the project to analyze
@@ -76,16 +84,20 @@ public class AnalysisTask extends AbstractTask {
 
         // path where spp should be written
         final String sppPath = String.format(StringManager.string(StringManager.CNES_SPP_PATH),
-                StringManager.string(StringManager.CNES_WORKSPACE), projectFolder);
+                config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)), projectFolder);
+
         // write sonar-project.properties in the project folder
         writeTextFile(sppPath, sonarProjectProperties);
         // build the scan command
         final String analysisCommand = String.format(
                 StringManager.string(StringManager.CNES_COMMAND_SCAN),
-                StringManager.string(StringManager.CNES_WORKSPACE),
+                config.get(StringManager.string(StringManager.SCANNER_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
+                config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
                 projectFolder,
+                config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
                 projectFolder);
         // create the temporary script to run cxx tools
+        LOGGER.debug(analysisCommand);
         final File script = createScript(projectFolder, analysisCommand);
 
         // string formatted date as string
@@ -94,15 +106,15 @@ public class AnalysisTask extends AbstractTask {
 
         // export log file
         final String logPath = String.format(StringManager.string(StringManager.CNES_LOG_PATH),
-                StringManager.string(StringManager.CNES_WORKSPACE), date, projectName);
+                config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)), date, projectName);
 
         try {
             // scan execution
-            final String scriptCommand = StringManager.string(StringManager.CNES_WORKSPACE)+
+            final String scriptCommand = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))+
                     SLASH+projectFolder+SLASH+CAT_SCAN_SCRIPT;
             log(executeCommand(scriptCommand));
             // log output file
-            final String path = StringManager.string(StringManager.CNES_WORKSPACE)+
+            final String path = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))+
                     SLASH + projectFolder + SLASH + CAT_LOG_FILE;
             for(final String line : Files.readAllLines(Paths.get(path))) {
                 log(line+ NEW_LINE);
@@ -185,7 +197,7 @@ public class AnalysisTask extends AbstractTask {
      */
     private File createScript(final String project, final String commandLine) {
         // path to the workspace
-        final String workspace = StringManager.string(StringManager.CNES_WORKSPACE)+
+        final String workspace = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))+
                 SLASH +project+ SLASH;
         // create script in a file located in the project's repository
         final File scriptOutput = new File(workspace + CAT_SCAN_SCRIPT);

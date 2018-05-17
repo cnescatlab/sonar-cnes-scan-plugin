@@ -319,30 +319,41 @@ window.registerExtension('cnesscan/analysis', function (options) {
         if(qualityprofile.indexOf("cnes_python")!==-1 && spp.indexOf("sonar.python.pylint_config")===-1) {
             // sonar pylint configuration property
             var pylintrcSonar = "\nsonar.python.pylint_config=";
-            // path to configuration files
-            var configurationPath = "/home/labo/Documents/VM_LEQUAL/conf/python/";
             // name of the configuration file to use
             var filename = "pylintrc_RNC_sonar_2017_D";
             // we append the appropriate one
             // check if there is a rated A or B profile and add the corresponding file
             if(qualityprofile.indexOf("cnes_python_a") !== -1 || qualityprofile.indexOf("cnes_python_b") != -1) {
                 filename = "pylintrc_RNC_sonar_2017_A_B";
-                spp = spp.concat(pylintrcSonar+configurationPath+filename);
+                spp = spp.concat(pylintrcSonar+getPylintrcFolder+filename);
                 info("Use of configuration file "+filename+" for Pylint.");
             // check if there is a rated C profile and add the corresponding file
             } else if(qualityprofile.indexOf("cnes_python_c") !== -1) {
                 filename = "pylintrc_RNC_sonar_2017_C";
-                spp = spp.concat(pylintrcSonar+configurationPath+filename);
+                spp = spp.concat(pylintrcSonar+getPylintrcFolder+filename);
                 info("Use of configuration file "+filename+" for Pylint.");
             // otherwise it is a D configuration to use
             } else {
-                spp = spp.concat(pylintrcSonar+configurationPath+filename);
+                spp = spp.concat(pylintrcSonar+getPylintrcFolder+filename);
                 info("Use of configuration file "+filename+" for Pylint.");
             }
         }
 
         return spp;
     };
+
+    /**
+     * Send a request to identify Pylintrc files folder.
+     * @return Absolute path to pylintrc's folder.
+     */
+    function getPylintrcFolder(){
+        return window.SonarRequest.getJSON('/api/cnes/configuration')
+            .then(function (response) {
+                return response.sonar.pylintrc.path;
+            })
+    }
+
+
 
     /**
      * Run the analysis
