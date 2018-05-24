@@ -14,6 +14,10 @@ This plugin is free software; you can redistribute it and/or modify it under the
 - Run analysis from web interface
 - Export data as OpenXML reports
 
+### Configuration
+- Go to Administration > Sonar CNES Scan plugin
+- Set reports destinations, and analysis workspace locations.
+
 ### Resources
 - Run an analysis
 - Architecture

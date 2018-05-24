@@ -119,6 +119,14 @@ public final class StringManager {
      */
     public static final String CNES_MKDIR_ERROR = "cnes.mkdir.error";
     /**
+     * Property for error message when the report generation is interrupted by a timeout
+     */
+    public static final String CNES_REPORT_TIMEOUT_ERROR = "cnes.report.timeout.error";
+    /**
+     * Property for error message when the analysis is interrupted by a timeout
+     */
+    public static final String CNES_ANALYSIS_TIMEOUT_ERROR = "cnes.analysis.timeout.error";
+    /**
      * Property name of the date pattern
      */
     public static final String DATE_PATTERN = "date.pattern";
