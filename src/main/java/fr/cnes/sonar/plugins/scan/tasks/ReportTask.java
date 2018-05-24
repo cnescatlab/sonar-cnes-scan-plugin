@@ -75,7 +75,7 @@ public class ReportTask extends AbstractTask {
         // construct the command string to run scan
         final String command = String.format(
                 StringManager.string(StringManager.CNES_COMMAND_REPORT),
-                String.format(StringManager.CNES_REPORT_PATH, config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))),
+                config.get(StringManager.string(StringManager.REPORT_PATH_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
                 StringManager.string(StringManager.SONAR_URL),
                 projectId, reportAuthor, date, reportPath, reportTemplate, issuesTemplate);
         // log the command used
@@ -122,8 +122,8 @@ public class ReportTask extends AbstractTask {
                 projectKey,
                 author,
                 output,
-                StringManager.string(StringManager.CNES_REPORTER_TEMPLATE),
-                StringManager.string(StringManager.CNES_ISSUES_TEMPLATE)
+                StringManager.string(config.get(StringManager.string(StringManager.REPORT_TEMPLATE_PROP_DEF_KEY)).orElse(StringManager.DEFAULT_STRING)),
+                StringManager.string(config.get(StringManager.string(StringManager.ISSUES_TEMPLATE_PROP_DEF_KEY)).orElse(StringManager.DEFAULT_STRING))
         );
 
         // set the response

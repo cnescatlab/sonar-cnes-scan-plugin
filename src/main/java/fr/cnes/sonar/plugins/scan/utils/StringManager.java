@@ -109,10 +109,7 @@ public final class StringManager {
      * Property name of SonarQube server url
      */
     public static final String SONAR_URL = "sonar.url";
-    /**
-     * Property name of output
-     */
-    public static final String CNES_REPORT_PATH = "cnes.reporter.path";
+
     /**
      * Property name of results' folder
      */
@@ -191,14 +188,6 @@ public final class StringManager {
      */
     public static final String ANALYZE_RESPONSE_LOG = "cnes.action.analyze.response.log";
 
-    /**
-     * Template to use
-     */
-    public static final String CNES_REPORTER_TEMPLATE = "cnes.reporter.template";
-    /**
-     * Template to use for xlsx
-     */
-    public static final String CNES_ISSUES_TEMPLATE = "cnes.issues.template";
     /**
      * Property for the action's 3 key (project creation)
      */
@@ -367,6 +356,27 @@ public final class StringManager {
      */
     public static final String REPORT_TEMPLATE_PROP_DEF_DEFAULT = "property.definition.report.template.default";
     /**
+     * Key for the issues template file
+     */
+    public static final String ISSUES_TEMPLATE_PROP_DEF_KEY = "property.definition.issues.template.key";
+    /**
+     * Key for the issues template file
+     */
+    public static final String ISSUES_TEMPLATE_PROP_DEF_API_KEY = "property.definition.issues.template.api.key";
+    /**
+     * Name for the issues template file
+     */
+    public static final String ISSUES_TEMPLATE_PROP_DEF_NAME = "property.definition.issues.template.name";
+
+    /**
+     * Description for the issues template file
+     */
+    public static final String ISSUES_TEMPLATE_PROP_DEF_DESC = "property.definition.issues.template.desc";
+    /**
+     * Default value for the issues template file
+     */
+    public static final String ISSUES_TEMPLATE_PROP_DEF_DEFAULT = "property.definition.issues.template.default";
+    /**
      * Key for the report output destination property
      */
     public static final String REPORT_OUTPUT_PROP_DEF_KEY = "property.definition.report.output.key";
@@ -407,7 +417,27 @@ public final class StringManager {
      * Default value for the report output destination property
      */
     public static final String PYLINTRC_PROP_DEF_DEFAULT = "property.definition.pylintrc.default";
+    /**
+     * Key for the report output destination property
+     */
+    public static final String REPORT_PATH_PROP_DEF_KEY = "property.definition.report.path.key";
+    /**
+     * Key for the report output destination property in API
+     */
+    public static final String REPORT_PATH_PROP_DEF_API_KEY = "property.definition.report.path.api.key";
+    /**
+     * Name for the report output destination property
+     */
+    public static final String REPORT_PATH_PROP_DEF_NAME = "property.definition.report.path.name";
 
+    /**
+     * Description for the report output destination property
+     */
+    public static final String REPORT_PATH_PROP_DEF_DESC = "property.definition.report.path.desc";
+    /**
+     * Default value for the report output destination property
+     */
+    public static final String REPORT_PATH_PROP_DEF_DEFAULT = "property.definition.report.path.default";
     /**
      * Logger of this class
      */
