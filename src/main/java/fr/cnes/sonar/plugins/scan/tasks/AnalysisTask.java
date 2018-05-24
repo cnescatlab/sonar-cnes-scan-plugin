@@ -29,6 +29,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.*;
 
 /**
  * Execute the scan of a project
@@ -108,31 +111,49 @@ public class AnalysisTask extends AbstractTask {
         final String logPath = String.format(StringManager.string(StringManager.CNES_LOG_PATH),
                 config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)), date, projectName);
 
+        final Integer timeout = Integer.parseInt(config.get(StringManager.string(StringManager.TIMEOUT_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)));
+
+        final ExecutorService service = Executors.newSingleThreadExecutor();
         try {
-            // scan execution
-            final String scriptCommand = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))+
-                    SLASH+projectFolder+SLASH+CAT_SCAN_SCRIPT;
-            log(executeCommand(scriptCommand));
-            // log output file
-            final String path = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))+
-                    SLASH + projectFolder + SLASH + CAT_LOG_FILE;
-            for(final String line : Files.readAllLines(Paths.get(path))) {
-                log(line+ NEW_LINE);
-            }
-            // export logs for user
-            writeTextFile(logPath, sonarProjectProperties+NEW_LINE+getLogs());
-        } catch (IOException | InterruptedException e) {
-            // the spp file or the log file could not be written
-            // so we log the problem and return logs
+            final Runnable task = () -> {
+                try {
+                    // scan execution
+                    final String scriptCommand = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)) +
+                            SLASH + projectFolder + SLASH + CAT_SCAN_SCRIPT;
+                    log(executeCommand(scriptCommand));
+                    // log output file
+                    final String path = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)) +
+                            SLASH + projectFolder + SLASH + CAT_LOG_FILE;
+                    for (final String line : Files.readAllLines(Paths.get(path))) {
+                        log(line + NEW_LINE);
+                    }
+                    // export logs for user
+                    writeTextFile(logPath, sonarProjectProperties + NEW_LINE + getLogs());
+                } catch (IOException | InterruptedException e) {
+                    // the spp file or the log file could not be written
+                    // so we log the problem and return logs
+                    log(e.getMessage());
+                    LOGGER.error(e.getMessage(), e);
+                }
+
+
+            };
+            final Future<?> execution = service.submit(task);
+
+            // Execute the task until timeout
+            execution.get(timeout, TimeUnit.MINUTES);
+        } catch (ExecutionException | TimeoutException e) {
             log(e.getMessage());
             LOGGER.error(e.getMessage(), e);
         }
-
-        // delete temporary script
-        if(!script.delete()) {
-            LOGGER.error(String.format(FILE_DELETION_ERROR, script.getName()));
+        finally {
+            service.shutdown();
         }
 
+        // delete temporary script
+        if (!script.delete()) {
+            LOGGER.error(String.format(FILE_DELETION_ERROR, script.getName()));
+        }
 
         // return the complete logs
         return getLogs();
