@@ -59,15 +59,15 @@ public class ConfigurationTask extends AbstractTask {
     public void handle(final Request request, final Response response)
             throws IOException, InterruptedException {
         // write the json response
-        final JsonWriter jsonWriter = response.newJsonWriter();
-        jsonWriter.beginObject();
-        // add logs to response
-        jsonWriter.prop(StringManager.string(StringManager.HOME_PROP_DEF_API_KEY), getValue(StringManager.HOME_PROP_DEF_KEY));
-        jsonWriter.prop(StringManager.string(StringManager.REPORT_OUTPUT_PROP_DEF_API_KEY), getValue(StringManager.REPORT_OUTPUT_PROP_DEF_KEY));
-        jsonWriter.prop(StringManager.string(StringManager.PYLINTRC_PROP_DEF_API_KEY), getValue(StringManager.PYLINTRC_PROP_DEF_KEY));
-        jsonWriter.prop(StringManager.string(StringManager.TIMEOUT_PROP_DEF_API_KEY), getValue(StringManager.TIMEOUT_PROP_DEF_KEY));
-        jsonWriter.endObject();
-        jsonWriter.close();
+        try (JsonWriter jsonWriter = response.newJsonWriter()) {
+            jsonWriter.beginObject();
+            // add logs to response
+            jsonWriter.prop(StringManager.string(StringManager.HOME_PROP_DEF_API_KEY), getValue(StringManager.HOME_PROP_DEF_KEY));
+            jsonWriter.prop(StringManager.string(StringManager.REPORT_OUTPUT_PROP_DEF_API_KEY), getValue(StringManager.REPORT_OUTPUT_PROP_DEF_KEY));
+            jsonWriter.prop(StringManager.string(StringManager.PYLINTRC_PROP_DEF_API_KEY), getValue(StringManager.PYLINTRC_PROP_DEF_KEY));
+            jsonWriter.prop(StringManager.string(StringManager.TIMEOUT_PROP_DEF_API_KEY), getValue(StringManager.TIMEOUT_PROP_DEF_KEY));
+            jsonWriter.endObject();
+        }
     }
 
 

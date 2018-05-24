@@ -147,16 +147,16 @@ public class ProjectTask extends AbstractTask {
         }
 
         // write the json response
-        final JsonWriter jsonWriter = response.newJsonWriter();
-        jsonWriter.beginObject();
-        // add logs to response
-        final String logsField = StringManager.string(StringManager.PROJECT_REPONSE_LOG);
-        jsonWriter.prop(logsField, status.getMessage());
-        // add success status
-        final String statusField = StringManager.string(StringManager.PROJECT_REPONSE_STATUS);
-        jsonWriter.prop(statusField, status.isSuccess());
-        jsonWriter.endObject();
-        jsonWriter.close();
+        try (JsonWriter jsonWriter = response.newJsonWriter()) {
+            jsonWriter.beginObject();
+            // add logs to response
+            final String logsField = StringManager.string(StringManager.PROJECT_REPONSE_LOG);
+            jsonWriter.prop(logsField, status.getMessage());
+            // add success status
+            final String statusField = StringManager.string(StringManager.PROJECT_REPONSE_STATUS);
+            jsonWriter.prop(statusField, status.isSuccess());
+            jsonWriter.endObject();
+        }
     }
 
     /**

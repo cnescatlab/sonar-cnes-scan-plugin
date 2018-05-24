@@ -181,12 +181,12 @@ public class AnalysisTask extends AbstractTask {
         final String result = analyze(projectName, workspace, sonarProjectProperties);
 
         // write the json response
-        final JsonWriter jsonWriter = response.newJsonWriter();
-        jsonWriter.beginObject();
-        // add logs to response
-        jsonWriter.prop(StringManager.string(StringManager.ANALYZE_RESPONSE_LOG), result);
-        jsonWriter.endObject();
-        jsonWriter.close();
+        try (JsonWriter jsonWriter = response.newJsonWriter()) {
+            jsonWriter.beginObject();
+            // add logs to response
+            jsonWriter.prop(StringManager.string(StringManager.ANALYZE_RESPONSE_LOG), result);
+            jsonWriter.endObject();
+        }
     }
 
     /**

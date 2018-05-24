@@ -127,11 +127,11 @@ public class ReportTask extends AbstractTask {
         );
 
         // set the response
-        final JsonWriter jsonWriter = response.newJsonWriter();
-        jsonWriter.beginObject();
-        // add logs to response
-        jsonWriter.prop(StringManager.string(StringManager.REPORT_RESPONSE_LOG), result);
-        jsonWriter.endObject();
-        jsonWriter.close();
+        try (JsonWriter jsonWriter = response.newJsonWriter()) {
+            jsonWriter.beginObject();
+            // add logs to response
+            jsonWriter.prop(StringManager.string(StringManager.REPORT_RESPONSE_LOG), result);
+            jsonWriter.endObject();
+        }
     }
 }
