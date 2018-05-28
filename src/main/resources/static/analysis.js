@@ -291,6 +291,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
         });
     };
 
+
     /**
      * Complete automatically the sonar-project.properties to add information
      * computable from form's fields
@@ -303,7 +304,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
      * @param sources
      * @return Modified spp with automatic data
      */
-    var completeSPP = function (spp, key, name, qualityprofile, version, description, sources) {
+    var completeSPP = function (spp, key, name, qualityprofile, version, description, sources, pylintrcfolder) {
         // complete the spp with projectKey and projectName
         spp = spp.concat("\nsonar.projectKey="+key);
         spp = spp.concat("\nsonar.projectName="+name);
@@ -325,33 +326,25 @@ window.registerExtension('cnesscan/analysis', function (options) {
             // check if there is a rated A or B profile and add the corresponding file
             if(qualityprofile.indexOf("cnes_python_a") !== -1 || qualityprofile.indexOf("cnes_python_b") != -1) {
                 filename = "pylintrc_RNC_sonar_2017_A_B";
-                spp = spp.concat(pylintrcSonar+getPylintrcFolder+filename);
+                spp = spp.concat(pylintrcSonar+pylintrcfolder+filename);
                 info("Use of configuration file "+filename+" for Pylint.");
             // check if there is a rated C profile and add the corresponding file
             } else if(qualityprofile.indexOf("cnes_python_c") !== -1) {
                 filename = "pylintrc_RNC_sonar_2017_C";
-                spp = spp.concat(pylintrcSonar+getPylintrcFolder+filename);
+                spp = spp.concat(pylintrcSonar+pylintrcfolder+filename);
                 info("Use of configuration file "+filename+" for Pylint.");
             // otherwise it is a D configuration to use
             } else {
-                spp = spp.concat(pylintrcSonar+getPylintrcFolder+filename);
+                spp = spp.concat(pylintrcSonar+pylintrcfolder+filename);
                 info("Use of configuration file "+filename+" for Pylint.");
             }
         }
 
+
         return spp;
     };
 
-    /**
-     * Send a request to identify Pylintrc files folder.
-     * @return Absolute path to pylintrc's folder.
-     */
-    function getPylintrcFolder(){
-        return window.SonarRequest.getJSON('/api/cnes/configuration')
-            .then(function (response) {
-                return response.sonar.pylintrc.path;
-            })
-    }
+
 
 
 
@@ -370,27 +363,38 @@ window.registerExtension('cnesscan/analysis', function (options) {
      */
     var runAnalysis = function (key, name, folder, qualityprofile, spp, author,
                                 version, description, sources, callback) {
+        window.SonarRequest.getJSON(
+            '/api/cnes/configuration'
+        ).then(function(response){
+            var pylintrcfolder = response.pylintrc;
 
-        // auto complete the sonar-project properties
-        spp = completeSPP(spp, key, name, qualityprofile, version, description, sources);
+            // auto complete the sonar-project properties
+            spp = completeSPP(spp, key, name, qualityprofile, version, description, sources, pylintrcfolder);
 
-        // log the finally used spp
-        info("Here comes the finally used sonar-project.properties:\n" + spp);
+            // log the finally used spp
+            info("Here comes the finally used sonar-project.properties:\n" + spp);
 
-        // send post request to the cnes web service
-        window.SonarRequest.postJSON(
-            '/api/cnes/analyze',
-            { key: key, name: name, folder: folder, sonarProjectProperties: spp }
-        ).then(function (response) {
-            // on success
-            // log output
-            info("Project analysis response: \n" + response.logs);
-            // wait that sonarqube has finished to import the report to produce the report
-            info("SonarQube is still importing the report, please wait.");
-            waitSonarQube(key, author, callback);
+            // send post request to the cnes web service
+            window.SonarRequest.postJSON(
+                '/api/cnes/analyze',
+                { key: key, name: name, folder: folder, sonarProjectProperties: spp }
+            ).then(function (response) {
+                // on success
+                // log output
+                info("Project analysis response: \n" + response.logs);
+                // wait that sonarqube has finished to import the report to produce the report
+                info("SonarQube is still importing the report, please wait.");
+                waitSonarQube(key, author, callback);
+            }).catch(function (response) {
+                // log error
+                error("Project analysis failed.");
+                error(response);
+                // unlock form
+                setEnabled(true);
+            });
         }).catch(function (response) {
             // log error
-            error("Project analysis failed.");
+            error("Impossible to find pylintrc folder property.");
             error(response);
             // unlock form
             setEnabled(true);
