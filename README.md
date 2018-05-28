@@ -15,8 +15,12 @@ This plugin is free software; you can redistribute it and/or modify it under the
 - Export data as OpenXML reports
 
 ### Configuration
+- Sign-in as an administrator
 - Go to Administration > Sonar CNES Scan plugin
-- Set reports destinations, and analysis workspace locations.
+  - Timeout : Set the maximum time to realize the analysis
+  - Pylintrc : Set the folder containing all pylintrc files.
+  - Reports : Set reports generator's path, templates, and destination folder.
+  - Workspace :  Set the folder containing projects to analyze.
 
 ### Resources
 - Run an analysis
@@ -28,6 +32,6 @@ If you experienced a problem with the plugin please open an issue. Inside this i
 If you want to do a PR, please put inside of it the reason of this pull request. If this pull request fix an issue please insert the number of the issue or explain inside of the PR how to reproduce this issue.
 
 ### License
-Copyright 2017 LEQUAL.
+Copyright 2018 LEQUAL.
 
 Licensed under the [GNU General Public License, Version 3.0](https://www.gnu.org/licenses/gpl.txt)
