@@ -49,7 +49,7 @@ public class ConfigurationTask extends AbstractTask {
 
 
     /**
-     * Use the user's request to launch an scan
+     * Send plugin's properties set for the current instance of sonar
      * @param request request coming from the user
      * @param response response to send to the user
      * @throws IOException when communicating with the client
