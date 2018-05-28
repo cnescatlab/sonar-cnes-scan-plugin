@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.*;
 
 /**
  * Execute element to produce the report
@@ -62,26 +63,51 @@ public class ReportTask extends AbstractTask {
     public String report(final String projectId, final String reportAuthor, final String reportPath,
                          final String reportTemplate, final String issuesTemplate)
             throws IOException, InterruptedException {
+        // setting a timer based on user's timeout property configuration
+        final Integer timeout = Integer.parseInt(config.get(StringManager.string(StringManager.TIMEOUT_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)));
+        final ExecutorService service = Executors.newSingleThreadExecutor();
+        try {
+            final Runnable task = () -> {
+                try {
+                    // creation of the output directory
+                    final boolean success = (new File(reportPath)).mkdirs();
+                    if (!success) {
+                        // Directory creation failed
+                        log(String.format(StringManager.string(StringManager.CNES_MKDIR_ERROR), reportPath));
+                    }
+                    // formatted date
+                    final String date = new SimpleDateFormat(StringManager.string(StringManager.DATE_PATTERN))
+                            .format(new Date());
+                    // construct the command string to run scan
+                    final String command = String.format(
+                            StringManager.string(StringManager.CNES_COMMAND_REPORT),
+                            config.get(StringManager.string(StringManager.REPORT_PATH_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
+                            StringManager.string(StringManager.SONAR_URL),
+                            projectId, reportAuthor, date, reportPath, reportTemplate, issuesTemplate);
+                    // log the command used
+                    log(command);
+                    // log the execution result
+                    log(executeCommand(command));
+                } catch (IOException | InterruptedException e) {
+                    // the spp file or the log file could not be written
+                    // so we log the problem and return logs
+                    log(e.getMessage());
+                    LOGGER.error(e.getMessage(), e);
+                }
 
-        // creation of the output directory
-        final boolean success = (new File(reportPath)).mkdirs();
-        if (!success) {
-            // Directory creation failed
-            log(String.format(StringManager.string(StringManager.CNES_MKDIR_ERROR), reportPath));
+            };
+            final Future<?> execution = service.submit(task);
+            // Execute the task until timeout
+            execution.get(timeout, TimeUnit.MINUTES);
+        } catch (ExecutionException e) {
+            log(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
+        } catch (TimeoutException e) {
+            log(StringManager.string(StringManager.CNES_ANALYSIS_TIMEOUT_ERROR));
+            LOGGER.error(StringManager.string(StringManager.CNES_ANALYSIS_TIMEOUT_ERROR), e);
+        } finally {
+            service.shutdown();
         }
-        // formatted date
-        final String date = new SimpleDateFormat(StringManager.string(StringManager.DATE_PATTERN))
-                .format(new Date());
-        // construct the command string to run scan
-        final String command = String.format(
-                StringManager.string(StringManager.CNES_COMMAND_REPORT),
-                config.get(StringManager.string(StringManager.REPORT_PATH_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
-                StringManager.string(StringManager.SONAR_URL),
-                projectId, reportAuthor, date, reportPath, reportTemplate, issuesTemplate);
-        // log the command used
-        log(command);
-        // log the execution result
-        log(executeCommand(command));
 
         // return the log
         return getLogs();
@@ -122,8 +148,8 @@ public class ReportTask extends AbstractTask {
                 projectKey,
                 author,
                 output,
-                StringManager.string(config.get(StringManager.string(StringManager.REPORT_TEMPLATE_PROP_DEF_KEY)).orElse(StringManager.DEFAULT_STRING)),
-                StringManager.string(config.get(StringManager.string(StringManager.ISSUES_TEMPLATE_PROP_DEF_KEY)).orElse(StringManager.DEFAULT_STRING))
+                config.get(StringManager.string(StringManager.REPORT_TEMPLATE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
+                config.get(StringManager.string(StringManager.ISSUES_TEMPLATE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))
         );
 
         // set the response
