@@ -1,8 +1,11 @@
 package fr.sonar.plugins.scan.tests;
 
+import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import fr.cnes.sonar.plugins.scan.ws.CnesWs;
 import org.junit.Before;
 import org.junit.Test;
+import org.sonar.api.config.Configuration;
+import org.sonar.api.config.internal.MapSettings;
 import org.sonar.api.server.ws.WebService;
 import org.sonar.api.server.ws.WsTester;
 
@@ -19,13 +22,21 @@ public class CnesWsTest {
 	 */
     private WebService.Controller controller;
 
+    private CnesWs cws;
+
+    private MapSettings settings = new MapSettings();
     /**
      * Executed each time before running a single test
      */
     @Before
     public void prepare() {
-        final WebService ws = new CnesWs();
+        /*
+         * Enter parameters to verify
+         */
+        settings.setProperty(StringManager.string(StringManager.HOME_PROP_DEF_KEY),StringManager.string(StringManager.HOME_PROP_DEF_DEFAULT));
 
+        cws = new CnesWs(settings.asConfig());
+        final WebService ws = cws;
         // WsTester is available in the Maven artifact
         // org.codehaus.sonar:sonar-plugin-api
         // with type "test-jar"
@@ -41,7 +52,7 @@ public class CnesWsTest {
         assertNotNull(controller);
         assertEquals("api/cnes", controller.path());
         assertFalse(controller.description().isEmpty());
-        assertEquals(3, controller.actions().size());
+        assertEquals(4, controller.actions().size());
     }
 
     /**
@@ -78,5 +89,31 @@ public class CnesWsTest {
         assertNotNull(getTree);
         assertEquals("create_project", getTree.key());
         assertEquals(4, getTree.params().size());
+    }
+
+    /**
+     * Check create_project web service
+     * Assert that the key, name and parameters' number is correct
+     */
+    @Test
+    public void configurationWebServiceTest() {
+        final WebService.Action getTree = controller.action("configuration");
+        assertNotNull(getTree);
+        assertEquals("configuration", getTree.key());
+        assertEquals(0, getTree.params().size());
+    }
+
+    /**
+     * Check configuration injection on Constructor
+     * Assert that configuration injected can be retrieved.
+     */
+    @Test
+    public void verifyConfiguration() {
+        //assertTrue(cws.getConfiguration().getStringArray(StringManager.string(StringManager.HOME_PROP_DEF_KEY)).length==1);
+        Configuration config = cws.getConfiguration();
+        assertTrue(config.hasKey(StringManager.string(StringManager.HOME_PROP_DEF_KEY)));
+        assertEquals(StringManager.string(StringManager.HOME_PROP_DEF_DEFAULT), config.get(StringManager.string(StringManager.HOME_PROP_DEF_KEY)).get());
+
+
     }
 }

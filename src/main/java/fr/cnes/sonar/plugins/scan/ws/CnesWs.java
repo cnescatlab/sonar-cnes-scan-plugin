@@ -16,17 +16,35 @@
  */
 package fr.cnes.sonar.plugins.scan.ws;
 
+import fr.cnes.sonar.plugins.scan.tasks.AbstractTask;
 import fr.cnes.sonar.plugins.scan.tasks.AnalysisTask;
+import fr.cnes.sonar.plugins.scan.tasks.ConfigurationTask;
 import fr.cnes.sonar.plugins.scan.tasks.ReportTask;
 import fr.cnes.sonar.plugins.scan.tasks.project.ProjectTask;
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.WebService;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 
 /**
  * Expose CNES plugin api
  * @author lequal
  */
 public class CnesWs implements WebService {
+
+    protected static final Logger LOGGER = Loggers.get(AbstractTask.class);
+
+    private final Configuration configuration;
+
+    public CnesWs(final Configuration config){
+        this.configuration = config;
+        LOGGER.debug(config.toString());
+    }
+
+    public Configuration getConfiguration(){
+        return this.configuration;
+    }
 
     /**
      * Define the new web service
@@ -52,8 +70,23 @@ public class CnesWs implements WebService {
         // create the action for URL /api/cnes/create_project
         projectAction(controller);
 
+        // create the action for URL /api/cnes/configuration/pylintrc
+        configurationAction(controller);
+
+
         // important to apply changes
         controller.done();
+    }
+    /**
+     * Add the action corresponding to the report generation
+     * @param controller controller to which add the action
+     */
+    private void configurationAction(final NewController controller) {
+        final NewAction configuratoin = controller.createAction("configuration" );
+        configuratoin.setDescription("Return CNES Scanner plugin user's set properties.");
+        configuratoin.setSince("6.7.1");
+        configuratoin.setHandler(new ConfigurationTask(this.configuration));
+
     }
 
     /**
@@ -68,7 +101,7 @@ public class CnesWs implements WebService {
         analysis.setSince(StringManager.string(StringManager.SONAR_VERSION));
         analysis.setPost(true);
         // new scan task to handle the request and work on the code
-        analysis.setHandler(new AnalysisTask());
+        analysis.setHandler(new AnalysisTask(this.configuration));
         // create parameter of the action
         // key parameter
         NewParam newParam = analysis.createParam(
@@ -98,7 +131,7 @@ public class CnesWs implements WebService {
                 StringManager.string(StringManager.REPORT_KEY));
         report.setDescription(StringManager.string(StringManager.REPORT_DESC));
         report.setSince(StringManager.string(StringManager.SONAR_VERSION));
-        report.setHandler(new ReportTask());
+        report.setHandler(new ReportTask(this.configuration));
         // add the parameters of the controller
         // key parameter
         NewParam newParam = report.createParam(

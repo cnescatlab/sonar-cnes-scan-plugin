@@ -5,7 +5,7 @@
   <groupId>fr.cnes.sonar.plugins.scan</groupId>
   <artifactId>sonar-cnes-scan-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>1.1</version>
+  <version>1.2</version>
 
   <name>SonarQube CNES Scan Plugin</name>
   <description>CNES plugin for SonarQube that launches analysis directly from the web interface and export reports.</description>
