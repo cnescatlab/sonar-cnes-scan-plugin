@@ -26,6 +26,50 @@ This plugin is free software; you can redistribute it and/or modify it under the
 - Run an analysis
 - Architecture
 
+### Compatibility matrix
+<table>
+ <tr>
+  <td><b>Sonar CNES Scan Plugin / CNES Report</b></td>
+  <td><b>1.1.0</b></td>
+  <td><b>1.2.0</b></td>
+  <td><b>1.2.1</b></td>
+  <td><b>2.0.0</b></td>
+  <td><b>2.1.0</b></td>
+ </tr>
+ <tr>
+  <td><b>1.0.0</b></td>
+  <td>x</td>
+  <td>x</td>
+  <td>x</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><b>1.1.0</b></td>
+  <td>x</td>
+  <td>x</td>
+  <td>x</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><b>1.2.0</b></td>
+  <td>x</td>
+  <td>x</td>
+  <td>x</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><b>1.3.0</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>x</td>
+  <td>x</td>
+ </tr>
+</table>
+
 ### How to contribute
 If you experienced a problem with the plugin please open an issue. Inside this issue please explain us how to reproduce this issue and paste the log.
 
