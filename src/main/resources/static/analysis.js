@@ -211,7 +211,8 @@ window.registerExtension('cnesscan/analysis', function (options) {
             setEnabled(true);
         }).catch(function (response) {
             // log error
-            error("Project report generation failed.");
+            error("Project report generation failed. \n" + response.logs);
+            displayLog("Project report generation failed. Please check logs. The project results are still available in the dashboard.","orange")
             // unlock form
             setEnabled(true);
         });
