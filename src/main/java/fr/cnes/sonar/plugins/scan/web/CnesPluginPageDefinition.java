@@ -47,16 +47,6 @@ public class CnesPluginPageDefinition implements PageDefinition {
 
 
         // create a page
-        page = Page.builder(StringManager.string(StringManager.CNES_PAGE_REPORT_KEY));
-        // set its name
-        page.setName(StringManager.string(StringManager.CNES_PAGE_REPORT_NAME));
-        // set its scope (where it is displayed)
-        page.setScope(Scope.GLOBAL);
-        // add a new page for reporting
-        context.addPage(page.build());
-
-
-        // create a page
         page = Page.builder(StringManager.string(StringManager.CNES_PAGE_HELP_KEY));
         // set its name
         page.setName(StringManager.string(StringManager.CNES_PAGE_HELP_NAME));

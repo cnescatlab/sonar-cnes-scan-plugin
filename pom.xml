@@ -5,7 +5,7 @@
   <groupId>fr.cnes.sonar.plugins.scan</groupId>
   <artifactId>sonar-cnes-scan-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>1.3</version>
+  <version>1.4</version>
 
   <name>SonarQube CNES Scan Plugin</name>
   <description>CNES plugin for SonarQube that launches analysis directly from the web interface and export reports.</description>
@@ -37,6 +37,13 @@
       <id>begarco</id>
       <name>Benoît Garçon</name>
       <email>benoit.garcon@outlook.com</email>
+      <organization>CNES</organization>
+      <organizationUrl>https://cnes.fr/</organizationUrl>
+    </developer>
+    <developer>
+      <id>louisjdmartin</id>
+      <name>Louis Martin</name>
+      <email>louis.jd.martin@gmail.com</email>
       <organization>CNES</organization>
       <organizationUrl>https://cnes.fr/</organizationUrl>
     </developer>

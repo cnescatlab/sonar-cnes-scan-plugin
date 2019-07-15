@@ -37,12 +37,17 @@ window.registerExtension('cnesscan/analysis', function (options) {
         logging.scrollTop = logging.scrollHeight;
     };
 
+    var displayLog = function (string,color){
+        $('#last_log').html("<pre style='color:"+color+"'>"+string+"</pre>")
+    }
+
     /**
      * Log information in the bottom text area as info
      * @param string Text to log
      */
     var info = function (string) {
         log("[INFO] "+string)
+        displayLog(string,"blue")
     };
 
     /**
@@ -51,6 +56,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
      */
     var error = function (string) {
         log("[ERROR] "+string)
+        displayLog(string,"red")
     };
 
     /**
@@ -205,7 +211,8 @@ window.registerExtension('cnesscan/analysis', function (options) {
             setEnabled(true);
         }).catch(function (response) {
             // log error
-            error("Project report generation failed.");
+            error("Project report generation failed. \n" + response.logs);
+            displayLog("Project report generation failed. Please check logs. The project results are still available in the dashboard.","orange")
             // unlock form
             setEnabled(true);
         });
@@ -373,6 +380,7 @@ window.registerExtension('cnesscan/analysis', function (options) {
 
             // log the finally used spp
             info("Here comes the finally used sonar-project.properties:\n" + spp);
+            info("The analysis is running, please wait.");
 
             // send post request to the cnes web service
             window.SonarRequest.postJSON(
@@ -618,6 +626,15 @@ window.registerExtension('cnesscan/analysis', function (options) {
                 // select the text area to copy it in the clipboard
                 toCopy.select();
                 document.execCommand('copy');
+                return false;
+            }
+
+            // get copy button in the DOM
+            var logButton = document.querySelector('#show_logs');
+            // set copy button action
+            logButton.onclick = function () {
+                $('#logging, #copy, #show_logs').toggle();
+
                 return false;
             }
 
