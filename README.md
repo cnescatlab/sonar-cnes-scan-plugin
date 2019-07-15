@@ -35,12 +35,14 @@ This plugin is free software; you can redistribute it and/or modify it under the
   <td><b>1.2.1</b></td>
   <td><b>2.0.0</b></td>
   <td><b>2.1.0</b></td>
+  <td><b>2.2.0</b></td>
  </tr>
  <tr>
   <td><b>1.0.0</b></td>
   <td>x</td>
   <td>x</td>
   <td>x</td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
  </tr>
@@ -51,12 +53,14 @@ This plugin is free software; you can redistribute it and/or modify it under the
   <td>x</td>
   <td>-</td>
   <td>-</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>1.2.0</b></td>
   <td>x</td>
   <td>x</td>
   <td>x</td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
  </tr>
@@ -66,6 +70,16 @@ This plugin is free software; you can redistribute it and/or modify it under the
   <td>-</td>
   <td>-</td>
   <td>x</td>
+  <td>x</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><b>1.4.0</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
   <td>x</td>
  </tr>
 </table>
