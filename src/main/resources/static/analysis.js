@@ -200,22 +200,11 @@ window.registerExtension('cnesscan/analysis', function (options) {
      */
     var produceReport = function (key, author) {
         // http GET request to the cnes web service
-        window.SonarRequest.getJSON(
-            '/api/cnes/report',
-            { key: key, author: author }
-        ).then(function (response) {
-            // on success log generation
-            info("Project report generation response: \n" + response.logs);
-            info("Analysis successfully finished!");
-            // unlock form
-            setEnabled(true);
-        }).catch(function (response) {
-            // log error
-            error("Project report generation failed. \n" + response.logs);
-            displayLog("Project report generation failed. Please check logs. The project results are still available in the dashboard.","orange")
-            // unlock form
-            setEnabled(true);
-        });
+        info("Analysis successfully finished! The report will be downloaded soon. If fail go to More => CNES Report to download report again.");
+        // unlock form
+        setEnabled(true);
+        // generate report
+        window.location = "/api/cnesreport/report?key="+key+"&author="+author+"&token=noauth"
     };
 
     /**
