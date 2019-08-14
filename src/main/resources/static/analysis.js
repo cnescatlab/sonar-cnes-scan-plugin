@@ -199,7 +199,7 @@ function registerScan(options){
    */
   var produceReport = function (key, author) {
       // http GET request to the cnes web service
-      info("Analysis successfully finished! The report will be downloaded soon. If fail go to More => CNES Report to download report again.");
+      info("Analysis successfully finished! The report will be downloaded soon. If it fails go to More => CNES Report to download report again.");
       // unlock form
       setEnabled(true);
       // generate report
