@@ -124,6 +124,7 @@
         <version>${sonar-packaging-maven-plugin.version}</version>
         <extensions>true</extensions>
         <configuration>
+          <jarName>sonar-cnes-scan-plugin</jarName>
           <pluginKey>cnesscan</pluginKey>
           <pluginClass>fr.cnes.sonar.plugins.scan.CnesScanPlugin</pluginClass>
         </configuration>
