@@ -1,4 +1,5 @@
-# SonarQube CNES Scan Plugin [![Build Status](https://travis-ci.org/lequal/sonar-cnes-scan-plugin.svg?branch=master)](https://travis-ci.org/lequal/sonar-cnes-scan-plugin) [![Quality Gate](https://sonarcloud.io/api/badges/gate?key=fr.cnes.sonar.plugins.scan%3Asonar-cnes-scan-plugin)](https://sonarcloud.io/dashboard?id=fr.cnes.sonar.plugins.scan%3Asonar-cnes-scan-plugin)
+# SonarQube CNES Scan Plugin [![Build Status](https://travis-ci.org/lequal/sonar-cnes-scan-plugin.svg?branch=master)](https://travis-ci.org/lequal/sonar-cnes-scan-plugin) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar.plugins.scan%3Asonar-cnes-scan-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=fr.cnes.sonar.plugins.scan%3Asonar-cnes-scan-plugin)
+
 SonarQube is an open platform to manage code quality. This plugin adds ability to launch analysis directly from the web interface and export reports.
 
 This plugin is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
@@ -35,12 +36,14 @@ This plugin is free software; you can redistribute it and/or modify it under the
   <td><b>1.2.1</b></td>
   <td><b>2.0.0</b></td>
   <td><b>2.1.0</b></td>
+  <td><b>2.2.0</b></td>
  </tr>
  <tr>
   <td><b>1.0.0</b></td>
   <td>x</td>
   <td>x</td>
   <td>x</td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
  </tr>
@@ -51,12 +54,14 @@ This plugin is free software; you can redistribute it and/or modify it under the
   <td>x</td>
   <td>-</td>
   <td>-</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>1.2.0</b></td>
   <td>x</td>
   <td>x</td>
   <td>x</td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
  </tr>
@@ -66,6 +71,16 @@ This plugin is free software; you can redistribute it and/or modify it under the
   <td>-</td>
   <td>-</td>
   <td>x</td>
+  <td>x</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><b>1.4.0</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
   <td>x</td>
  </tr>
 </table>

@@ -14,122 +14,130 @@
     You should have received a copy of the GNU General Public License
     along with cnesscan.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
+<style>
+    .small_col{
+        display: inline-grid;
+        width: 33%;
+        align-content: start;
+    }
+    .select2-container{
+        padding:0;
+    }
+    .cnes-scan-input{
+        width:100%;
+    }
+</style>
 <div id="bd" class="page-wrapper-simple">
     <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">
         <div>
             <h1 class="maintenance-title text-center">Analyze a project</h1>
             <form id="analyze-form">
-                <div class="big-spacer-bottom">
-                    <label for="key" id="keyLabel" class="login-label" style="display: block;"><strong>Project key</strong><em style="color:red;">*</em></label>
+                <div class="big-spacer-bottom small_col">
+                    <label for="key" id="keyLabel" class="cnes-scan-label" style="display: block;"><strong>Project key</strong><em style="color:red;">*</em></label>
                     <input  required
                             type="text"
                             id="key"
                             name="key"
-                            class="login-input"
+                            class="cnes-scan-input"
                             maxlength="255"
-                            placeholder="Project key"><em style="color:grey;">Tips: Allowed characters are: letters, numbers, '-', '_', '.' and ':', with at least one non-digit.</em>
+                            placeholder=""><em style="color:grey;">Tips: Allowed characters are: letters, numbers, '-', '_', '.' and ':', with at least one non-digit.</em>
                 </div>
-                <div class="big-spacer-bottom">
-                    <label for="name" id="nameLabel" class="login-label" style="display: block;"><strong>Project name</strong><em style="color:red;">*</em></label>
+                <div class="big-spacer-bottom small_col">
+                    <label for="name" id="nameLabel" class="cnes-scan-label" style="display: block;"><strong>Project name</strong><em style="color:red;">*</em></label>
                     <input
                         required type="text"
                         id="name"
                         name="name"
-                        class="login-input"
+                        class="cnes-scan-input"
                         maxlength="255"
-                        placeholder="Project name">
+                        placeholder="">
                 </div>
-                <div class="big-spacer-bottom">
-                    <label for="folder" id="workspace" class="login-label" style="display: block;"><strong>Workspace</strong><em style="color:red;">*</em></label><input
+                <div class="big-spacer-bottom small_col">
+                    <label for="folder" id="workspace" class="cnes-scan-label" style="display: block;"><strong>Workspace</strong><em style="color:red;">*</em></label><input
                         required type="text"
                         id="folder"
                         name="folder"
-                        class="login-input"
+                        class="cnes-scan-input"
                         maxlength="255"
-                        placeholder="Workspace"><em style="color:grey;">Tips: use a relative path from the shared folder. The default value you should use is a point '.'.</em>
+                        placeholder=""><em style="color:grey;">Tips: use a relative path from the shared folder.</em>
                 </div>
-                <div class="big-spacer-bottom">
-                    <label for="sources" id="sourcesLabel" class="login-label" style="display: block;"><strong>Sources</strong><em style="color:red;">*</em></label><input
+                <div class="big-spacer-bottom small_col">
+                    <label for="sources" id="sourcesLabel" class="cnes-scan-label" style="display: block;"><strong>Sources</strong><em style="color:red;">*</em></label><input
                         required type="text"
                         id="sources"
                         name="sources"
-                        class="login-input"
+                        class="cnes-scan-input"
                         maxlength="255"
-                        placeholder="Sources"><em style="color:grey;">Tips: this field correspond to the 'sonar.sources' property of a sonar-project.properties,
-                            use a relative path from the previously given workspace folder.
-                            The default value you should use is a point '.'.</em>
+                        value="."><em style="color:grey;">Tips: this field correspond to the 'sonar.sources' property of a sonar-project.properties,
+                            use a relative path from the previously given workspace folder.</em>
                 </div>
-                <div class="big-spacer-bottom">
-                    <label for="author" id="authorLabel" class="login-label" style="display: block;"><strong>Author</strong></label>
+                <div class="big-spacer-bottom small_col">
+                    <label for="author" id="authorLabel" class="cnes-scan-label" style="display: block;"><strong>Author</strong></label>
                     <input   type="text"
                              id="author"
                              name="author"
-                             class="login-input"
+                             class="cnes-scan-input"
                              maxlength="255"
                              required
-                             placeholder="Report author">
-                    <em style="color:grey;">Default value: default<br/></em>
+                             placeholder="default">
                 </div>
-                <div class="big-spacer-bottom">
-                    <label for="version" id="versionLabel" class="login-label" style="display: block;"><strong>Version</strong></label>
+                <div class="big-spacer-bottom small_col">
+                    <label for="version" id="versionLabel" class="cnes-scan-label" style="display: block;"><strong>Version</strong></label>
                     <input   type="text"
                              id="version"
                              name="version"
-                             class="login-input"
+                             class="cnes-scan-input"
                              maxlength="255"
                              required
-                             placeholder="Version">
-                    <em style="color:grey;">Default value is none<br/>
-                        Tips: give a version id to this analysis to distinguish two versions and compare them.</em>
+                             placeholder="">
+                    <em style="color:grey;">Tips: give a version id to this analysis to distinguish two versions and compare them.</em>
                 </div>
-                <div class="big-spacer-bottom">
-                    <label for="description" id="descriptionLabel" class="login-label" style="display: block;"><strong>Description</strong></label>
+                <div class="big-spacer-bottom small_col">
+                    <label for="description" id="descriptionLabel" class="cnes-scan-label" style="display: block;"><strong>Description</strong></label>
                     <input   type="text"
                              id="description"
                              name="description"
-                             class="login-input"
+                             class="cnes-scan-input"
                              maxlength="1000"
                              required
-                             placeholder="Description">
-                    <em style="color:grey;">Default value is empty<br/>
-                        Tips: give a simple description of the project that will appear in the report.</em>
+                             placeholder="">
+                    <em style="color:grey;">Tips: give a simple description of the project that will appear in the report.</em>
                 </div>
-                <div class="big-spacer-bottom" id="cxx-part">
-                </div>
-                <div class="big-spacer-bottom">
-                    <label for="quality-gate" id="gateLabel" class="login-label" style="display: block;"><strong>Quality gate</strong></label>
+                <div class="big-spacer-bottom small_col">
+                    <label for="quality-gate" id="gateLabel" class="cnes-scan-label" style="display: block;"><strong>Quality gate</strong></label>
                     <select id="quality-gate"
                             name="quality-gate"
-                            class="login-input" required></select>
-                    <em style="color:grey;">Default value: CNES<br/>
+                            class="cnes-scan-input" required></select>
+                    <em style="color:grey;">If empty, use default quality gate.<br/>
                     Tips: all quality gates are available <a href="../../../quality_gates" target="_blank">here</a>.
                     </em>
                 </div>
-                <div class="big-spacer-bottom">
-                    <label for="quality-profile" id="profileLabel" class="login-label" style="display: block;"><strong>Quality profiles</strong></label>
+                <div class="big-spacer-bottom small_col">
+                    <label for="quality-profile" id="profileLabel" class="cnes-scan-label" style="display: block;"><strong>Quality profiles</strong></label>
                     <select multiple id="quality-profile"
                             name="quality-profile"
-                            class="login-input"
-                            required
-                            style="height: 200px!important;"></select>
+                            class="cnes-scan-input"
+                            required></select>
                     <em style="color:grey;">Default value: default quality profiles<br/>
                         Tips:
                         <ul>
                             <li>- all quality profiles are available <a href="../../../profiles" target="_blank">here</a>.</li>
-                            <li>- press 'Ctrl' key to select multiple options.</li>
                             <li>- select one profile per language to analyze.</li>
                         </ul>
                     </em>
                 </div>
+
+                <div class="big-spacer-bottom" id="cxx-part">
+                </div>
+
                 <div class="big-spacer-bottom">
-                    <label for="spp" class="login-label" style="display: block;"><strong>sonar-project.properties</strong><em
+                    <label for="spp" class="cnes-scan-label" style="display: block;"><strong>sonar-project.properties</strong><em
                             style="color:red;">*</em></label>
                     <em style="color:grey;">The sonar-project.properties file allows users to configure their analysis. Refer to the <a href="./help" target="_blank">user guide</a>. </em>
                     <textarea  required
                                id="spp"
                                name="spp"
-                               class="login-input"
+                               class="cnes-scan-input"
                                rows="12"
                                style="resize: none;font-size: 1.2em;font-family: consolas;">
 #############################################################
@@ -143,16 +151,27 @@
                         <img src="../../static/cnesscan/images/loader.gif" alt="Working..."/>
                     </div>
                     <div class="text-center overflow-hidden">
-                        <input id="analyze" name="analyze" type="button" value="Analyze">
+                        <input id="analyze" class="button button-yellow spacer-left" name="analyze" type="button" value="Analyze">
                         <input id="clear" class="button button-red spacer-left" type="reset" value="Reset">
-                        <input id="copy" class="button button-yellow spacer-left" type="button"
+                        <input id="show_logs" class="button button-yellow spacer-left" name="logs" type="button" value="Show logs">
+                        <input id="copy" class="button button-yellow spacer-left" style="display:none" type="button"
                                value="Copy to clipboard">
                     </div>
                 </div>
-                <textarea id="logging" name="logging" class="login-input" rows="15" required
-                          style="background: black; color:white; resize: none;font-family: consolas;"
+                <div id="last_log"></div>
+                <textarea id="logging" name="logging" class="cnes-scan-input" rows="15" required
+                          style="background: black; color:white; resize: none;font-family: consolas;display:none"
                           readonly="">## Logging console ##</textarea>
             </form>
         </div>
     </div>
 </div>
+
+<link href="../../static/cnesscan/select2/select2.min.css" rel="stylesheet" />
+<script src="../../static/cnesscan/select2/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#quality-gate').select2();
+        $('#quality-profile').select2();
+    });
+</script>

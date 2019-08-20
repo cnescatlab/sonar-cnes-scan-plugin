@@ -1,21 +1,26 @@
 language: java
 sudo: false
 install: true
-
 addons:
   sonarcloud:
-    organization: "lequal"
-    
+    organization: lequal
 jdk:
-  - oraclejdk8
-  
+- openjdk8
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
-  
+- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
-
+  - "$HOME/.m2/repository"
+  - "$HOME/.sonar/cache"
 notifications:
   email: false
+deploy:
+  provider: releases
+  api_key:
+    secure: OhU774Af2Y+VUIW0c5GocJ5BH0XXghPLabB7rgCuulKmURqNV8XoXuNfd2O3lgAPp0gPdMo/7ctNaisnPNRaQgBAocxzef8rHhUNE3E7u8ICzxmRsuPPpisnZYq4kySYbrkNNZrpbtM73/MGqTTsgJ2brKhAp9XCvybX+ZA6n9UIVuuFlzrPVQPSzo9ofBYP6l3RLWjxwQSlw0OkTldbUO/ntY80UgukqfAxefw+TVPLDDJo+BMJdncqbB/uXJzdyeJZj+8uKVZ7QOEMXkrBdhvzFIlBBAIV74sHvuj+mh73zEb6t0zoWj+gfJbsHPkcQwiJrH/M+Bgm8vVyq5ZkVmE5YeYeBM+fm2EDA/Oy6Viq01/NsC1FOx+ubZfQdkPpCsukEA5vNrklPxU6ZNPQ40WA8SgF40CuV6LweS34kUWToc+pYgRfw7UVY9+NoePxE8ixC7zFMC9waYveHZhwU4v8JzKS1BvPZ0O4SZG3exF+E+BKinhdF2EwnwJl3CHLr58ZIABtCOdegONUpOQh/F4KKSbryVKdKfChKKllrL/smRxUEkAiDvJTijTGD08YcggDS4GGqeS6H/9rxCLw9LXfvBJ2AQOa8+wiLA9Xn4pWcrwgGAK4c6md5lhurrlamIhfDzDfwOYZfwbtf8t/+7YF5ockpcKzqkrOr8utaY8=
+  file: target/sonar-cnes-scan-plugin.jar
+  draft: true
+  skip_cleanup: true
+  on:
+    repo: lequal/sonar-cnes-scan-plugin
+    tags: true

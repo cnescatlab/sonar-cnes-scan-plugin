@@ -286,10 +286,7 @@ public final class StringManager {
      * Key for the workspace property
      */
     public static final String WORKSPACE_PROP_DEF_KEY = "property.definition.workspace.key";
-    /**
-     * Key for the workspace property in API
-     */
-    public static final String WORKSPACE_PROP_DEF_API_KEY = "property.definition.workspace.api.key";
+
     /**
      * Name for the workspace property
      */
@@ -326,10 +323,7 @@ public final class StringManager {
      * Key for the  scanner location property
      */
     public static final String SCANNER_PROP_DEF_KEY = "property.definition.scanner.key";
-    /**
-     * Key for the  scanner location property in API
-     */
-    public static final String SCANNER_PROP_DEF_API_KEY = "property.definition.scanner.api.key";
+
     /**
      * Name for the scanner property
      */
@@ -346,44 +340,6 @@ public final class StringManager {
      * Key for the report output destination property
      */
     public static final String REPORT_TEMPLATE_PROP_DEF_KEY = "property.definition.report.template.key";
-    /**
-     * Key for the report output destination property in API
-     */
-    public static final String REPORT_TEMPLATE_PROP_DEF_API_KEY = "property.definition.report.template.api.key";
-    /**
-     * Name for the report output destination property
-     */
-    public static final String REPORT_TEMPLATE_PROP_DEF_NAME = "property.definition.report.template.name";
-
-    /**
-     * Description for the report output destination property
-     */
-    public static final String REPORT_TEMPLATE_PROP_DEF_DESC = "property.definition.report.template.desc";
-    /**
-     * Default value for the report output destination property
-     */
-    public static final String REPORT_TEMPLATE_PROP_DEF_DEFAULT = "property.definition.report.template.default";
-    /**
-     * Key for the issues template file
-     */
-    public static final String ISSUES_TEMPLATE_PROP_DEF_KEY = "property.definition.issues.template.key";
-    /**
-     * Key for the issues template file
-     */
-    public static final String ISSUES_TEMPLATE_PROP_DEF_API_KEY = "property.definition.issues.template.api.key";
-    /**
-     * Name for the issues template file
-     */
-    public static final String ISSUES_TEMPLATE_PROP_DEF_NAME = "property.definition.issues.template.name";
-
-    /**
-     * Description for the issues template file
-     */
-    public static final String ISSUES_TEMPLATE_PROP_DEF_DESC = "property.definition.issues.template.desc";
-    /**
-     * Default value for the issues template file
-     */
-    public static final String ISSUES_TEMPLATE_PROP_DEF_DEFAULT = "property.definition.issues.template.default";
     /**
      * Key for the report output destination property
      */
@@ -425,27 +381,6 @@ public final class StringManager {
      * Default value for the report output destination property
      */
     public static final String PYLINTRC_PROP_DEF_DEFAULT = "property.definition.pylintrc.default";
-    /**
-     * Key for the report output destination property
-     */
-    public static final String REPORT_PATH_PROP_DEF_KEY = "property.definition.report.path.key";
-    /**
-     * Key for the report output destination property in API
-     */
-    public static final String REPORT_PATH_PROP_DEF_API_KEY = "property.definition.report.path.api.key";
-    /**
-     * Name for the report output destination property
-     */
-    public static final String REPORT_PATH_PROP_DEF_NAME = "property.definition.report.path.name";
-
-    /**
-     * Description for the report output destination property
-     */
-    public static final String REPORT_PATH_PROP_DEF_DESC = "property.definition.report.path.desc";
-    /**
-     * Default value for the report output destination property
-     */
-    public static final String REPORT_PATH_PROP_DEF_DEFAULT = "property.definition.report.path.default";
     /**
      * Logger of this class
      */

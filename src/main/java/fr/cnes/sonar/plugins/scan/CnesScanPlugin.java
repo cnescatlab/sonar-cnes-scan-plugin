@@ -56,12 +56,6 @@ public class CnesScanPlugin implements Plugin {
         context.addExtension(createSimplePropertyDefinition(string(StringManager.SCANNER_PROP_DEF_KEY), string(StringManager.SCANNER_PROP_DEF_NAME), string(StringManager.SCANNER_PROP_DEF_DESC), string(StringManager.SCANNER_PROP_DEF_DEFAULT)));
         //Create workspace's absolute path property definition
         context.addExtension(createSimplePropertyDefinition(string(StringManager.WORKSPACE_PROP_DEF_KEY), string(StringManager.WORKSPACE_PROP_DEF_NAME), string(StringManager.WORKSPACE_PROP_DEF_DESC), string(StringManager.WORKSPACE_PROP_DEF_DEFAULT)));
-        //Create report template property definition
-        context.addExtension(createSimplePropertyDefinition(string(StringManager.REPORT_TEMPLATE_PROP_DEF_KEY), string(StringManager.REPORT_TEMPLATE_PROP_DEF_NAME), string(StringManager.REPORT_TEMPLATE_PROP_DEF_DESC), string(StringManager.REPORT_TEMPLATE_PROP_DEF_DEFAULT)));
-        //Create issues template file property definition
-        context.addExtension(createSimplePropertyDefinition(string(StringManager.ISSUES_TEMPLATE_PROP_DEF_KEY), string(StringManager.ISSUES_TEMPLATE_PROP_DEF_NAME), string(StringManager.ISSUES_TEMPLATE_PROP_DEF_DESC), string(StringManager.ISSUES_TEMPLATE_PROP_DEF_DEFAULT)));
-        //Create report's extension executable file path
-        context.addExtension(createSimplePropertyDefinition(string(StringManager.REPORT_PATH_PROP_DEF_KEY), string(StringManager.REPORT_PATH_PROP_DEF_NAME), string(StringManager.REPORT_PATH_PROP_DEF_DESC), string(StringManager.REPORT_PATH_PROP_DEF_DEFAULT)));
         //Create report output destination property definition
         context.addExtension(createSimplePropertyDefinition(string(StringManager.REPORT_OUTPUT_PROP_DEF_KEY), string(StringManager.REPORT_OUTPUT_PROP_DEF_NAME), string(StringManager.REPORT_OUTPUT_PROP_DEF_DESC), string(StringManager.REPORT_OUTPUT_PROP_DEF_DEFAULT)));
         //Create pylintrc's folder property definition

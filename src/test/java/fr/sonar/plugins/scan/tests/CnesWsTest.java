@@ -52,7 +52,7 @@ public class CnesWsTest {
         assertNotNull(controller);
         assertEquals("api/cnes", controller.path());
         assertFalse(controller.description().isEmpty());
-        assertEquals(4, controller.actions().size());
+        assertEquals(3, controller.actions().size());
     }
 
     /**
@@ -65,18 +65,6 @@ public class CnesWsTest {
         assertNotNull(getTree);
         assertEquals("analyze", getTree.key());
         assertEquals(4, getTree.params().size());
-    }
-
-    /**
-     * Check report web service
-     * Assert that the key, name and parameters' number is correct
-     */
-    @Test
-    public void reportWebServiceTest() {
-        final WebService.Action getTree = controller.action("report");
-        assertNotNull(getTree);
-        assertEquals("report", getTree.key());
-        assertEquals(2, getTree.params().size());
     }
 
     /**
