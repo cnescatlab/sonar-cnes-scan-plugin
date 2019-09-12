@@ -5,14 +5,14 @@
   <groupId>fr.cnes.sonar.plugins.scan</groupId>
   <artifactId>sonar-cnes-scan-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>1.4</version>
+  <version>1.5</version>
 
   <name>SonarQube CNES Scan Plugin</name>
   <description>CNES plugin for SonarQube that launches analysis directly from the web interface and export reports.</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <sonar.apiVersion>6.7.1</sonar.apiVersion>
+    <sonar.apiVersion>7.9</sonar.apiVersion>
     <sonar.sslr-squid-bridge.version>2.6.1</sonar.sslr-squid-bridge.version>
     <sonar-packaging-maven-plugin.version>1.17</sonar-packaging-maven-plugin.version>
     <commons-lang.version>3.7</commons-lang.version>
@@ -21,7 +21,7 @@
     <jdk.min.version>1.8</jdk.min.version>
     <pluginUrl>https://cnes.fr</pluginUrl>
     <pluginOrganizationName>CNES</pluginOrganizationName>
-    <jacoco.version>0.8.0</jacoco.version>
+    <jacoco.version>0.8.4</jacoco.version>
   </properties>
 
   <licenses>

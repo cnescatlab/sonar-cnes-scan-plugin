@@ -143,7 +143,8 @@ public class CnesWs implements WebService {
         newParam = project.createParam(
                 StringManager.string(StringManager.PROJECT_PARAM_PROFILES_NAME));
         newParam.setDescription(StringManager.string(StringManager.PROJECT_PARAM_PROFILES_DESC));
-        newParam.setRequired(true);
+        newParam.setDefaultValue("");
+        newParam.setRequired(false);
         // quality gate parameter
         newParam = project.createParam(StringManager.string(StringManager.PROJECT_PARAM_GATE_NAME));
         newParam.setDescription(StringManager.string(StringManager.PROJECT_PARAM_GATE_DESC));
