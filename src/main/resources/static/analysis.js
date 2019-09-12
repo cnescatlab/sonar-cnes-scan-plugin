@@ -37,7 +37,7 @@ function registerScan(options){
   };
 
   var displayLog = function (string,color){
-      $('#last_log').html("<pre style='color:"+color+"'>"+string+"</pre>")
+      $('#last_log').html("<pre style='color:"+color+"'>"+string+"</pre>");
   }
 
   /**
@@ -362,7 +362,6 @@ function registerScan(options){
           '/api/cnes/configuration'
       ).then(function(response){
           var pylintrcfolder = response.pylintrc;
-
           // auto complete the sonar-project properties
           spp = completeSPP(spp, key, name, qualityprofile, version, description, sources, pylintrcfolder);
 
@@ -464,7 +463,7 @@ function registerScan(options){
                   // in the json response
                   var option = $('<option>', {
                                    value: item.key,
-                                   text : item.name
+                                   text : j + " - " +item.name
                                });
                   // we add it to the drop down list
                   category.append(option);
