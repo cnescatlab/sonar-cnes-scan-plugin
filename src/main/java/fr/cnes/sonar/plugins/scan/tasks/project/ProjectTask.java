@@ -112,7 +112,7 @@ public class ProjectTask extends AbstractTask {
                 StringManager.string(StringManager.PROJECT_PARAM_NAME_NAME));
         // quality profiles of the project to create
         final String qualityProfiles = request.param(
-                StringManager.string(StringManager.PROJECT_PARAM_PROFILES_NAME));
+                StringManager.string(StringManager.PROJECT_PARAM_PROFILES_NAME), "");
         // quality gate of the project to create
         final String qualityGate = request.mandatoryParam(
                 StringManager.string(StringManager.PROJECT_PARAM_GATE_NAME));
