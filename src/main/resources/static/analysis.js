@@ -480,39 +480,6 @@ function registerScan(options){
   };
 
   /**
-   *  Check the cnescxx status and call the callback function
-   *  only if the plugin is up
-   *  @param callback callback to call
-   */
-  var checkCnescxx = function(callback) {
-      // we check if the cnescxx is available
-      window.SonarRequest.getJSON(
-          '/api/cnescxx/health'
-      ).then(function (response) {
-          // on success
-          callback();
-      }).catch(function (response) {
-          // log error
-          error(response);
-          error("Plugin cnescxx is not installed.");
-      });
-  };
-
-  /**
-   *  Add a special part for c/c++ in the form.
-   *  Work only if the cnescxx plugin is installed.
-   */
-  var initCxxForm = function() {
-      var cxxPart = $("#cxx-part");
-      var urlTemplate = '../../static/cnesscan/templates/cxx.html';
-      // we check if the cnescxx is available
-      // and we load its form if yes
-      checkCnescxx(function() {
-          cxxPart.load(urlTemplate, function () {});
-      });
-  };
-
-  /**
    *  Return a well formatted string for the profile argument of the web service
    *  @param options
    */
@@ -567,7 +534,6 @@ function registerScan(options){
                   var key = document.forms[analyzeFormId]["key"].value;
                   var name = document.forms[analyzeFormId]["name"].value;
                   var folder = document.forms[analyzeFormId]["folder"].value;
-                  var cxx = document.forms[analyzeFormId]["cxx-analysis"].checked;
                   var qgate = document.forms[analyzeFormId]["quality-gate"].value;
                   var qprofile = optionsToString(document.forms[analyzeFormId]["quality-profile"].selectedOptions);
                   var author = document.forms[analyzeFormId]["author"].value;
@@ -582,28 +548,10 @@ function registerScan(options){
                   // show loading
                   $('#loading').show();
 
-                  // call cxx tools
-                  if(cxx) {
-                      info("Please wait during C++ tools are running...");
-                      window.SonarRequest.getJSON(
-                          '/api/cnescxx/scan',
-                          { project: folder}
-                      ).then(function (response) {
-                          // on success
-                          // request the creation of the project
-                          info(response.log);
-                          info("C++ tools' execution finished.");
-                          createProject(key, name, folder, qgate, qprofile, spp, author,
-                                      version, description, sources, runAnalysis);
-                      }).catch(function (response) {
-                          // log error
-                          error(response);
-                      });
-                  } else {
-                      // request the creation of the project
-                      createProject(key, name, folder, qgate, qprofile, spp, author,
-                                  version, description, sources, runAnalysis);
-                  }
+                   // request the creation of the project
+                   createProject(key, name, folder, qgate, qprofile, spp, author,
+                               version, description, sources, runAnalysis);
+
               }
           };
 
@@ -633,9 +581,6 @@ function registerScan(options){
 
           // fill out quality profiles drop down list
           initQualityProfileDropDownList();
-
-          // initialize the c/c++ part of the form if the ws correctly answers
-          initCxxForm();
 
       });
   }
