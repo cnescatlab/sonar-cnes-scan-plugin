@@ -52,7 +52,7 @@ public class CnesWs implements WebService {
      */
     @Override
     public void define(final Context context) {
-        LOGGER.warning("Defining CNES web service");
+        LOGGER.info("Defining CNES web service");
         // create the new controller for the cnes web service
         final NewController controller = context.createController(
                 StringManager.string(StringManager.CNES_CTRL_KEY));
@@ -73,6 +73,7 @@ public class CnesWs implements WebService {
 
         // important to apply changes
         controller.done();
+        LOGGER.info("CNES web service defined");
     }
     /**
      * Add the action corresponding to the report generation

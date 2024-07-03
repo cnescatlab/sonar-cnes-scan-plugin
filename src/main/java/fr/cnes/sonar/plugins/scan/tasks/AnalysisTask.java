@@ -102,9 +102,7 @@ public class AnalysisTask extends AbstractTask {
                             projectFolder,
                             config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
                             projectFolder);
-                    // create the temporary script to run cxx tools
-                    LOGGER.debug(analysisCommand);
-                    final File script = createScript(projectFolder, analysisCommand);
+                            final File script = createScript(projectFolder, analysisCommand);
 
                     // string formatted date as string
                     final String date = new SimpleDateFormat(
@@ -129,14 +127,14 @@ public class AnalysisTask extends AbstractTask {
 
                     // delete temporary script
                     if (!script.delete()) {
-                        LOGGER.error(String.format(FILE_DELETION_ERROR, script.getName()));
+                        LOGGER.severe(String.format(FILE_DELETION_ERROR, script.getName()));
                     }
 
                 } catch (IOException | InterruptedException e) {
                     // the spp file or the log file could not be written
                     // so we log the problem and return logs
                     log(e.getMessage());
-                    LOGGER.error(e.getMessage(), e);
+                    LOGGER.severe(e.getMessage());
                 }
 
 
@@ -147,10 +145,10 @@ public class AnalysisTask extends AbstractTask {
             execution.get(timeout, TimeUnit.MINUTES);
         } catch (ExecutionException e) {
             log(e.getMessage());
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.severe(e.getMessage());
         } catch (TimeoutException e) {
             log(StringManager.string(StringManager.CNES_ANALYSIS_TIMEOUT_ERROR));
-            LOGGER.error(StringManager.string(StringManager.CNES_ANALYSIS_TIMEOUT_ERROR), e);
+            LOGGER.severe(e.getMessage());
         } finally {
             service.shutdown();
         }
@@ -231,14 +229,14 @@ public class AnalysisTask extends AbstractTask {
             script.write("#!/bin/bash -e");
             script.write("\ncd "+workspace);
             script.write(StringManager.string(StringManager.CNES_LOG_SEPARATOR)+commandLine);
-            LOGGER.info(commandLine);
+            LOGGER.info("commandLine : " + commandLine);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.severe(e.getMessage());
         }
 
         // give execution rights on the script
         if(!scriptOutput.setExecutable(true)) {
-            LOGGER.error(String.format(FILE_PERMISSIONS_ERROR, scriptOutput.getName()));
+            LOGGER.severe(String.format(FILE_PERMISSIONS_ERROR, scriptOutput.getName()));
         }
 
         return scriptOutput;
