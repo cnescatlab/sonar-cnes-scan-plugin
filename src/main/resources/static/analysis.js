@@ -227,8 +227,8 @@ function registerScan(options, token) {
         spp = spp.concat("\nsonar.projectVersion=" + version);
         spp = spp.concat("\nsonar.projectDescription=" + description);
 
-        // complete the spp with sonar.token
-        spp = spp.concat("\nsonar.token=" + token);
+        // complete the spp with sonar.login
+        spp = spp.concat("\nsonar.login=" + token);
 
         // complete the spp with sources repository
         spp = spp.concat("\nsonar.sources=" + sources);
