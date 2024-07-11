@@ -218,7 +218,7 @@ function registerScan(options, token) {
      * @param sources
      * @return Modified spp with automatic data
      */
-    let completeSPP = function (spp, key, name, qualityprofile, version, description, token, sources, pylintrcfolder) {
+    let completeSPP = function (spp, key, name, qualityprofiles, version, description, token, sources, pylintrcfolder) {
         // complete the spp with projectKey and projectName
         spp = spp.concat("\nsonar.projectKey=" + key);
         spp = spp.concat("\nsonar.projectName=" + name);
@@ -234,26 +234,29 @@ function registerScan(options, token) {
         spp = spp.concat("\nsonar.sources=" + sources);
 
         // if a python quality profile is set and there are no pylintrc set
-        if (qualityprofile.indexOf("cnes_python") !== -1 && spp.indexOf("sonar.python.pylint_config") === -1) {
-            // sonar pylint configuration property
-            let pylintrcSonar = "\nsonar.python.pylint_config=";
-            // name of the configuration file to use
-            let filename = "pylintrc_RNC_sonar_2017_D";
-            // we append the appropriate one
-            // check if there is a rated A or B profile and add the corresponding file
-            if (qualityprofile.indexOf("cnes_python_a") !== -1 || qualityprofile.indexOf("cnes_python_b") != -1) {
-                filename = "pylintrc_RNC_sonar_2017_A_B";
-                spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-                info("Use of configuration file " + filename + " for Pylint.");
-                // check if there is a rated C profile and add the corresponding file
-            } else if (qualityprofile.indexOf("cnes_python_c") !== -1) {
-                filename = "pylintrc_RNC_sonar_2017_C";
-                spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-                info("Use of configuration file " + filename + " for Pylint.");
-                // otherwise it is a D configuration to use
-            } else {
-                spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-                info("Use of configuration file " + filename + " for Pylint.");
+        for (let i = 0; i < qualityprofiles.length; i++) {
+            const qualityprofile = JSON.parse(qualityprofiles[i]);
+            if (qualityprofile[0].toLowerCase() == "py" && spp.indexOf("sonar.python.pylint.reportPaths") === -1) {
+                // sonar pylint configuration property
+                let pylintrcSonar = "\nsonar.python.pylint.reportPaths=";
+                // name of the configuration file to use
+                let filename = "pylintrc_RNC2015_D";
+                // we append the appropriate one
+                // check if there is a rated A or B profile and add the corresponding file
+                if (qualityprofile[1] == "RNC A" || qualityprofile[1] == "RNC B") {
+                    filename = "pylintrc_RNC2015_A_B";
+                    spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
+                    info("Use of configuration file " + filename + " for Pylint.");
+                    // check if there is a rated C profile and add the corresponding file
+                } else if (qualityprofile[1] == "RNC C") {
+                    filename = "pylintrc_RNC2015_C";
+                    spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
+                    info("Use of configuration file " + filename + " for Pylint.");
+                    // otherwise it is a D configuration to use
+                } else {
+                    spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
+                    info("Use of configuration file " + filename + " for Pylint.");
+                }
             }
         }
 
@@ -283,7 +286,6 @@ function registerScan(options, token) {
             let pylintrcfolder = response.pylintrc;
             // auto complete the sonar-project properties
             spp = completeSPP(spp, key, name, qualityprofile, version, description, token, sources, pylintrcfolder);
-
             // log the finally used spp
             info("Here comes the finally used sonar-project.properties:\n" + spp);
             info("The analysis is running, please wait.");
@@ -369,7 +371,7 @@ function registerScan(options, token) {
      * @param sources 
      * @param callback 
      */
-    let setupProject = function (projectKey, name, folder, qualityGate, qualityProfile, spp, author,
+    let setupProject = function (projectKey, name, folder, qualityGate, qualityProfiles, spp, author,
         version, description, token, sources, callback) {
         // check if the quality gate field is filled out
         qualityGate = qualityGate === "" ? "CNES" : qualityGate;
@@ -377,10 +379,9 @@ function registerScan(options, token) {
         window.SonarRequest.post(
             '/api/qualitygates/select',
             { projectKey: projectKey, gateName: qualityGate }
-        ).then(function (response) {
+        ).then(function () {
             // if success we call the next function (analysis)
             info("Quality gate successfully set.");
-            callback(projectKey, name, folder, qualityProfile, spp, author, version, description, token, sources, produceReport);
         }).catch(function (response) {
             // log error
             error(response);
@@ -389,27 +390,30 @@ function registerScan(options, token) {
         });
 
         // Request to set the quality profile
-        /*console.log("Setting quality profile...")
-        window.SonarRequest.postJSON(
-            '/api/qualityprofiles/add_project',
-            { project: projectKey, qualityProfile: qualityProfile, language: "java" }
-        ).then(function (response) {
-            // if success we call the next function (analysis)
-            console.log(response);
-            if (response.ok) {
-                info("Quality profile successfully set.");
-                callback(projectKey, name, folder, qualityProfile, spp, author, version, description, sources, produceReport);
-            } else {
+        info("Setting quality profile...");
+        let promises = qualityProfiles.map((qualityProfile) => {
+            let qp = JSON.parse(qualityProfile);
+            let language = qp[0].toLowerCase();
+            let profile = qp[1];
+            return window.SonarRequest.post(
+                '/api/qualityprofiles/add_project',
+                { project: projectKey, qualityProfile: profile, language: language }
+            );
+        });
+
+        Promise.all(promises)
+            .then(() => {
+                info("Quality profiles successfully set.");
+                info("Project setup finished.");
+                callback(projectKey, name, folder, qualityProfiles, spp, author, version, description, token, sources, produceReport);
+            })
+            .catch((response) => {
+                // log error
+                error(response);
                 // unlock form
-                error("Quality profile setting failed.")
                 setEnabled(true);
-            }
-        }).catch(function (response) {
-            // log error
-            error(response);
-            // unlock form
-            setEnabled(true);
-        });*/
+            });
+
     }
 
     /**
@@ -422,7 +426,7 @@ function registerScan(options, token) {
     const waitSonarQube = async (key, author, token, callback) => {
         try {
             // Send GET request to the SonarQube web service for task information about the project
-            const response = await window.SonarRequest.getJSON('/api/ce/component', { component: key });
+            const response = await window.SonarRequest.getJSON('/api/ce/component?component=' + key);
 
             // Check if there are no queued tasks, indicating readiness to report
             if (response.queue.length === 0) {
@@ -507,7 +511,7 @@ function registerScan(options, token) {
                     // we create a new option for each quality profile
                     // in the json response
                     let option = $('<option>', {
-                        value: item.key,
+                        value: JSON.stringify([item.language, item.name]),
                         text: j + " - " + item.name
                     });
                     // we add it to the drop down list
@@ -579,7 +583,8 @@ function registerScan(options, token) {
                     let name = document.forms[analyzeFormId]["name"].value;
                     let folder = document.forms[analyzeFormId]["folder"].value;
                     let qgate = document.forms[analyzeFormId]["quality-gate"].value;
-                    let qprofile = optionsToString(document.forms[analyzeFormId]["quality-profile"].selectedOptions);
+                    let qprofile = [];
+                    for (const element of document.forms["analyze-form"]["quality-profile"].selectedOptions) { qprofile.push(element.value) };
                     let author = document.forms[analyzeFormId]["author"].value;
                     let spp = document.forms[analyzeFormId]["spp"].value;
                     let version = document.forms[analyzeFormId]["version"].value;
