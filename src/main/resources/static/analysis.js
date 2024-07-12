@@ -233,32 +233,33 @@ function registerScan(options, token) {
         // complete the spp with sources repository
         spp = spp.concat("\nsonar.sources=" + sources);
 
+        //This part is not usefull anymore, since we need to implement the pylint analysis
         // if a python quality profile is set and there are no pylintrc set
-        for (let i = 0; i < qualityprofiles.length; i++) {
-            const qualityprofile = JSON.parse(qualityprofiles[i]);
-            if (qualityprofile[0].toLowerCase() == "py" && spp.indexOf("sonar.python.pylint.reportPaths") === -1) {
-                // sonar pylint configuration property
-                let pylintrcSonar = "\nsonar.python.pylint.reportPaths=";
-                // name of the configuration file to use
-                let filename = "pylintrc_RNC2015_D";
-                // we append the appropriate one
-                // check if there is a rated A or B profile and add the corresponding file
-                if (qualityprofile[1] == "RNC A" || qualityprofile[1] == "RNC B") {
-                    filename = "pylintrc_RNC2015_A_B";
-                    spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-                    info("Use of configuration file " + filename + " for Pylint.");
-                    // check if there is a rated C profile and add the corresponding file
-                } else if (qualityprofile[1] == "RNC C") {
-                    filename = "pylintrc_RNC2015_C";
-                    spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-                    info("Use of configuration file " + filename + " for Pylint.");
-                    // otherwise it is a D configuration to use
-                } else {
-                    spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-                    info("Use of configuration file " + filename + " for Pylint.");
-                }
-            }
-        }
+        // for (const element of qualityprofiles) {
+        //     const qualityprofile = JSON.parse(element);
+        //     if (qualityprofile[0].toLowerCase() == "py" && spp.indexOf("sonar.python.pylint.reportPaths") === -1) {
+        //         // sonar pylint configuration property
+        //         let pylintrcSonar = "\nsonar.python.pylint.reportPaths=";
+        //         // name of the configuration file to use
+        //         let filename = "pylintrc_RNC2015_D";
+        //         // we append the appropriate one
+        //         // check if there is a rated A or B profile and add the corresponding file
+        //         if (qualityprofile[1] == "RNC A" || qualityprofile[1] == "RNC B") {
+        //             filename = "pylintrc_RNC2015_A_B";
+        //             spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
+        //             info("Use of configuration file " + filename + " for Pylint.");
+        //             // check if there is a rated C profile and add the corresponding file
+        //         } else if (qualityprofile[1] == "RNC C") {
+        //             filename = "pylintrc_RNC2015_C";
+        //             spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
+        //             info("Use of configuration file " + filename + " for Pylint.");
+        //             // otherwise it is a D configuration to use
+        //         } else {
+        //             spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
+        //             info("Use of configuration file " + filename + " for Pylint.");
+        //         }
+        //     }
+        // }
 
 
         return spp;
