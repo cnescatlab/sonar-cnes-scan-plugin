@@ -43,7 +43,7 @@ public class CnesPluginPageDefinitionTest {
     public void definitionPageTest() {
         definition.define(context);
 
-        assertEquals(2, context.getPages().size());
+        assertEquals(1, context.getPages().size());
 
         final Iterator<Page> pagesIterator = context.getPages().iterator();
         final Page page = pagesIterator.next();

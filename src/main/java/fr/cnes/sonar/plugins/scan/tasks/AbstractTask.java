@@ -19,12 +19,11 @@ package fr.cnes.sonar.plugins.scan.tasks;
 
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.server.ws.RequestHandler;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 
 /**
  * Execute the scan of a project
@@ -35,7 +34,7 @@ public abstract class AbstractTask implements RequestHandler {
     /**
      * logger for all tasks
      */
-    protected static final Logger LOGGER = Loggers.get(AbstractTask.class);
+    protected static final Logger LOGGER = Logger.getLogger(AbstractTask.class.getName());
 
     /**
      * contain all the task's logs

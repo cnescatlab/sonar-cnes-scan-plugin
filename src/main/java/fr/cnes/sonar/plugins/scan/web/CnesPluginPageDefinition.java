@@ -22,18 +22,23 @@ import org.sonar.api.web.page.Page;
 import org.sonar.api.web.page.Page.Scope;
 import org.sonar.api.web.page.PageDefinition;
 
+import java.util.logging.Logger;
+
 /**
  * Define web pages of the plugin
  * @author lequal
  */
 public class CnesPluginPageDefinition implements PageDefinition {
 
+    protected static final Logger LOGGER = Logger.getLogger(CnesPluginPageDefinition.class.getName());
     /**
      * Define concretely the pages to add through the plugin
      * @param context Execution context of the plugin
      */
     @Override
     public void define(final Context context) {
+
+        LOGGER.warning("Defining CNES plugin pages");
 
         // create a page
         Page.Builder page = Page.builder(
@@ -43,16 +48,6 @@ public class CnesPluginPageDefinition implements PageDefinition {
         // set its scope (where it is displayed)
         page.setScope(Scope.GLOBAL);
         // add a new page for scan + reporting
-        context.addPage(page.build());
-
-
-        // create a page
-        page = Page.builder(StringManager.string(StringManager.CNES_PAGE_HELP_KEY));
-        // set its name
-        page.setName(StringManager.string(StringManager.CNES_PAGE_HELP_NAME));
-        // set its scope (where it is displayed)
-        page.setScope(Scope.GLOBAL);
-        // add a new page for help
         context.addPage(page.build());
 
     }

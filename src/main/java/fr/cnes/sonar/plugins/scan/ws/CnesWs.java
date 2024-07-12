@@ -23,8 +23,8 @@ import fr.cnes.sonar.plugins.scan.tasks.project.ProjectTask;
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
 import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.WebService;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+
+import java.util.logging.Logger;
 
 /**
  * Expose CNES plugin api
@@ -32,13 +32,13 @@ import org.sonar.api.utils.log.Loggers;
  */
 public class CnesWs implements WebService {
 
-    protected static final Logger LOGGER = Loggers.get(AbstractTask.class);
+    protected static final Logger LOGGER = Logger.getLogger(CnesWs.class.getName());
 
     private final Configuration configuration;
 
     public CnesWs(final Configuration config){
         this.configuration = config;
-        LOGGER.debug(config.toString());
+        LOGGER.info(config.toString());
     }
 
     public Configuration getConfiguration(){
@@ -52,6 +52,7 @@ public class CnesWs implements WebService {
      */
     @Override
     public void define(final Context context) {
+        LOGGER.info("Defining CNES web service");
         // create the new controller for the cnes web service
         final NewController controller = context.createController(
                 StringManager.string(StringManager.CNES_CTRL_KEY));
@@ -72,6 +73,7 @@ public class CnesWs implements WebService {
 
         // important to apply changes
         controller.done();
+        LOGGER.info("CNES web service defined");
     }
     /**
      * Add the action corresponding to the report generation
@@ -124,6 +126,7 @@ public class CnesWs implements WebService {
      * @param controller controller to which add the action
      */
     private void projectAction(final NewController controller) {
+        LOGGER.info("Creating project action");
         final NewAction project = controller.createAction(
                 StringManager.string(StringManager.PROJECT_KEY));
         project.setDescription(StringManager.string(StringManager.PROJECT_DESC));

@@ -348,7 +348,7 @@ public class ProjectTask extends AbstractTask {
             for (final QualityGate q : modelQGList) {
                 // build and add a new quality gate from model
                 qualityGateBuilder = Qualitygates.QualityGate.newBuilder();
-                qualityGateBuilder.setId(Long.parseLong(q.getId()));
+                qualityGateBuilder.setId(String.valueOf(Long.parseLong(q.getId())));
                 qualityGateBuilder.setName(q.getName());
                 qualityGates.add(qualityGateBuilder.build());
             }
@@ -360,7 +360,7 @@ public class ProjectTask extends AbstractTask {
             if(qg != null) {
                 // if we found the quality gate we link it to the project
                 final SelectRequest selectWsRequest = new SelectRequest()
-                        .setGateId(String.valueOf(qg.getId())).setProjectKey(key);
+                        .setGateName(String.valueOf(qg.getId())).setProjectKey(key);
                 wsClient.qualitygates().select(selectWsRequest);
                 // setting is a success
                 status.setSuccess(true);
