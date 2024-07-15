@@ -529,26 +529,6 @@ function registerScan(options, token) {
         });
     };
 
-    /**
-     *  Return a well formatted string for the profile argument of the web service
-     *  @param options
-     */
-    let optionsToString = function (options) {
-        let result = "";
-
-        // we concatenate all profiles' name in a string
-        // separated by ';'
-        for (let i = 0; i < options.length; ++i) {
-            // add a separator when necessary
-            if (i > 0) {
-                result = result + ';';
-            }
-            result = result + options[i].value;
-        }
-
-        return result.replace(new RegExp('\\+', "g"), '%2B');
-    };
-
     // once the request is done, and the page is still displayed (not closed already)
     if (isDisplayedAnalysis) {
 
