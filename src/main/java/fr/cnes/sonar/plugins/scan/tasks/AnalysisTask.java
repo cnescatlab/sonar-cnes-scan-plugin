@@ -17,18 +17,25 @@
 package fr.cnes.sonar.plugins.scan.tasks;
 
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
+
 import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.utils.text.JsonWriter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -76,11 +83,13 @@ public class AnalysisTask extends AbstractTask {
      * @param projectFolder          url of the folder containing the project to
      *                               analyze
      * @param sonarProjectProperties the sonar-project.properties as string
+     * @param qualityProfiles        the quality profiles as string
      * @return logs
      * @throws IOException          when a file writing goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    private String analyze(final String projectName, final String projectFolder, final String sonarProjectProperties)
+    private String analyze(final String projectName, final String projectFolder, final String sonarProjectProperties,
+            final String qualityProfiles)
             throws IOException, InterruptedException {
         // setting a timer based on user's timeout property configuration
         final Integer timeout = Integer.parseInt(config.get(StringManager.string(StringManager.TIMEOUT_PROP_DEF_KEY))
@@ -108,7 +117,7 @@ public class AnalysisTask extends AbstractTask {
                             config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
                                     .orElse(StringManager.string(StringManager.DEFAULT_STRING)),
                             projectFolder);
-                    final File script = createScript(projectFolder, analysisCommand, sonarProjectProperties);
+                    final File script = createScript(projectFolder, analysisCommand, qualityProfiles);
 
                     // string formatted date as string
                     final String date = new SimpleDateFormat(
@@ -136,9 +145,9 @@ public class AnalysisTask extends AbstractTask {
                     writeTextFile(logPath, sonarProjectProperties + NEW_LINE + getLogs());
 
                     // delete temporary script
-                    if (!script.delete()) {
-                        LOGGER.severe(String.format(FILE_DELETION_ERROR, script.getName()));
-                    }
+                    // if (!script.delete()) {
+                    // LOGGER.severe(String.format(FILE_DELETION_ERROR, script.getName()));
+                    // }
 
                 } catch (IOException | InterruptedException e) {
                     // the spp file or the log file could not be written
@@ -206,9 +215,11 @@ public class AnalysisTask extends AbstractTask {
                 StringManager.string(StringManager.ANALYZE_FOLDER_NAME));
         final String sonarProjectProperties = request.mandatoryParam(
                 StringManager.string(StringManager.ANALYZE_SPP_NAME));
+        final String qualityProfiles = request.mandatoryParam(
+                StringManager.string(StringManager.ANALYZE_QUALITY_PROFILES_NAME));
 
         // concrete scan
-        final String result = analyze(projectName, workspace, sonarProjectProperties);
+        final String result = analyze(projectName, workspace, sonarProjectProperties, qualityProfiles);
 
         // write the json response
         try (JsonWriter jsonWriter = response.newJsonWriter()) {
@@ -219,16 +230,52 @@ public class AnalysisTask extends AbstractTask {
         }
     }
 
-    private String setupExternalTools(String sonarProjectProperties) {
-        // Check if the sonar-project.properties file contains the external tools
-        // configuration
-        String setupExternalTools = "";
-        if (sonarProjectProperties.contains("pylint")) {
-            LOGGER.info("Setup pylint");
-            // Nedd to select the correct pylint according to the selected rnc
-            setupExternalTools = "\npylint --rcfile=/opt/python/pylintrc --load-plugins=pylint_sonarjson --output-format=sonarjson --output=./pylint-report.json *.py";
+    private String setupExternalTools(String qualityProfile) {
+        StringBuilder setupExternalTools = new StringBuilder();
+
+        Gson gson = new Gson();
+        Type outerListType = new TypeToken<List<String>>() {
+        }.getType();
+        List<String> outerList = gson.fromJson(qualityProfile, outerListType);
+        List<List<String>> qualityProfiles = new ArrayList<>();
+        for (String innerJson : outerList) {
+            Type innerListType = new TypeToken<List<String>>() {
+            }.getType();
+            List<String> innerList = gson.fromJson(innerJson, innerListType);
+            qualityProfiles.add(innerList);
         }
-        return setupExternalTools;
+
+        for ( List<String> qp : qualityProfiles) {
+            if (qp.get(0).equals("py")) {
+                LOGGER.info("Setup pylint");
+                // Detect and run correct pylintrc according to RNC
+                String pylintrc = "/opt/python/pylintrc_RNC2015_D";
+                switch (qp.get(1)) {
+                    case "RNC A":
+                        pylintrc = "/opt/python/pylintrc_RNC2015_A_B";
+                        break;
+                    case "RNC B":
+                        pylintrc = "/opt/python/pylintrc_RNC2015_A_B";
+                        break;
+                    case "RNC C":
+                        pylintrc = "/opt/python/pylintrc_RNC2015_C";
+                        break;                    
+                    default:
+                        break;
+                }
+                setupExternalTools.append(
+                        "\npylint --rcfile=" + pylintrc
+                                + " --load-plugins=pylint_sonarjson --output-format=sonarjson --output=pylint-report.json *.py");
+            }
+            if (qp.contains("docker")) {
+                LOGGER.info("Setup hadolint");
+                setupExternalTools.append(
+                        "\nhadolint -f sonarqube --no-fail --config=/opt/hadolint/hadolint_RNC_A_B_C_D.yaml Dockerfile > hadolint-report.json");
+                setupExternalTools.append(
+                        "\nhadolint -f sonarqube --no-fail --config=/opt/hadolint/hadolint_RNC_A_B_C_D.yaml Dockerfile > hadolint-report.json");
+            }
+        }
+        return setupExternalTools.toString();
     }
 
     /**
@@ -239,7 +286,7 @@ public class AnalysisTask extends AbstractTask {
      * @param commandLine command line to execute
      * @return The created file
      */
-    private File createScript(final String project, final String commandLine, final String sonarProjectProperties) {
+    private File createScript(final String project, final String commandLine, final String qualityProfiles) {
         // path to the workspace
         final String workspace = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
                 .orElse(StringManager.string(StringManager.DEFAULT_STRING)) +
@@ -247,7 +294,7 @@ public class AnalysisTask extends AbstractTask {
         // create script in a file located in the project's repository
         final File scriptOutput = new File(workspace + CAT_SCAN_SCRIPT);
 
-        String setupExternalTools = setupExternalTools(sonarProjectProperties);
+        String setupExternalTools = setupExternalTools(qualityProfiles);
 
         // Write all command lines in a single temporary script
         try (
@@ -256,7 +303,6 @@ public class AnalysisTask extends AbstractTask {
             script.write("\ncd " + workspace);
             script.write("\n" + setupExternalTools);
             script.write(StringManager.string(StringManager.CNES_LOG_SEPARATOR) + commandLine);
-            LOGGER.info("commandLine : " + commandLine);
         } catch (IOException e) {
             LOGGER.severe(e.getMessage());
         }
@@ -266,7 +312,6 @@ public class AnalysisTask extends AbstractTask {
             LOGGER.severe(String.format(FILE_PERMISSIONS_ERROR, scriptOutput.getName()));
         }
 
-        LOGGER.info("scriptOutput : " + scriptOutput);
         return scriptOutput;
     }
 

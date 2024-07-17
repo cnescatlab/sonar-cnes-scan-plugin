@@ -118,6 +118,10 @@ public class CnesWs implements WebService {
         newParam = analysis.createParam(StringManager.string(StringManager.ANALYZE_SPP_NAME));
         newParam.setDescription(StringManager.string(StringManager.ANALYZE_SPP_DESC));
         newParam.setRequired(true);
+        // quality profiles parameter
+        newParam = analysis.createParam(StringManager.string(StringManager.ANALYZE_QUALITY_PROFILES_NAME));
+        newParam.setDescription(StringManager.string(StringManager.ANALYZE_QUALITY_PROFILES_DESC));
+        newParam.setRequired(true);
     }
 
 
