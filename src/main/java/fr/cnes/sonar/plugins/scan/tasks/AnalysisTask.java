@@ -17,41 +17,48 @@
 package fr.cnes.sonar.plugins.scan.tasks;
 
 import fr.cnes.sonar.plugins.scan.utils.StringManager;
+
 import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.utils.text.JsonWriter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
  * Execute the scan of a project
+ * 
  * @author lequal
  */
 public class AnalysisTask extends AbstractTask {
 
     private final Configuration config;
 
-    public AnalysisTask(Configuration config){
+    public AnalysisTask(Configuration config) {
         this.config = config;
     }
+
     /**
      * Logged message when a file can not be deleted
      */
-    private static final String FILE_DELETION_ERROR =
-            "The following file could not be deleted: %s.";
+    private static final String FILE_DELETION_ERROR = "The following file could not be deleted: %s.";
     /**
      * Logged message when a file can not be set as executable
      */
-    private static final String FILE_PERMISSIONS_ERROR =
-            "Permissions of the following file could not be changed: %s.";
+    private static final String FILE_PERMISSIONS_ERROR = "Permissions of the following file could not be changed: %s.";
     /**
      * Just a slash
      */
@@ -69,40 +76,48 @@ public class AnalysisTask extends AbstractTask {
      */
     private static final String NEW_LINE = "\n";
 
-
-
     /**
      * Execute the scan of a project
-     * @param projectName name of the project to analyze
-     * @param projectFolder url of the folder containing the project to analyze
+     * 
+     * @param projectName            name of the project to analyze
+     * @param projectFolder          url of the folder containing the project to
+     *                               analyze
      * @param sonarProjectProperties the sonar-project.properties as string
+     * @param qualityProfiles        the quality profiles as string
      * @return logs
-     * @throws IOException when a file writing goes wrong
+     * @throws IOException          when a file writing goes wrong
      * @throws InterruptedException when a command is not finished
      */
-    private String analyze(final String projectName, final String projectFolder, final String sonarProjectProperties)
+    private String analyze(final String projectName, final String projectFolder, final String sonarProjectProperties,
+            final String qualityProfiles)
             throws IOException, InterruptedException {
         // setting a timer based on user's timeout property configuration
-        final Integer timeout = Integer.parseInt(config.get(StringManager.string(StringManager.TIMEOUT_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)));
+        final Integer timeout = Integer.parseInt(config.get(StringManager.string(StringManager.TIMEOUT_PROP_DEF_KEY))
+                .orElse(StringManager.string(StringManager.DEFAULT_STRING)));
         final ExecutorService service = Executors.newSingleThreadExecutor();
         try {
             final Runnable task = () -> {
                 try {
                     // path where spp should be written
                     final String sppPath = String.format(StringManager.string(StringManager.CNES_SPP_PATH),
-                            config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)), projectFolder);
+                            config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
+                                    .orElse(StringManager.string(StringManager.DEFAULT_STRING)),
+                            projectFolder);
 
                     // write sonar-project.properties in the project folder
                     writeTextFile(sppPath, sonarProjectProperties);
                     // build the scan command
                     final String analysisCommand = String.format(
                             StringManager.string(StringManager.CNES_COMMAND_SCAN),
-                            config.get(StringManager.string(StringManager.SCANNER_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
-                            config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
+                            config.get(StringManager.string(StringManager.SCANNER_PROP_DEF_KEY))
+                                    .orElse(StringManager.string(StringManager.DEFAULT_STRING)),
+                            config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
+                                    .orElse(StringManager.string(StringManager.DEFAULT_STRING)),
                             projectFolder,
-                            config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)),
+                            config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
+                                    .orElse(StringManager.string(StringManager.DEFAULT_STRING)),
                             projectFolder);
-                            final File script = createScript(projectFolder, analysisCommand);
+                    final File script = createScript(projectFolder, analysisCommand, qualityProfiles);
 
                     // string formatted date as string
                     final String date = new SimpleDateFormat(
@@ -110,14 +125,18 @@ public class AnalysisTask extends AbstractTask {
 
                     // export log file
                     final String logPath = String.format(StringManager.string(StringManager.CNES_LOG_PATH),
-                            config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)), date, projectName);
+                            config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
+                                    .orElse(StringManager.string(StringManager.DEFAULT_STRING)),
+                            date, projectName);
 
                     // scan execution
-                    final String scriptCommand = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)) +
+                    final String scriptCommand = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
+                            .orElse(StringManager.string(StringManager.DEFAULT_STRING)) +
                             SLASH + projectFolder + SLASH + CAT_SCAN_SCRIPT;
                     log(executeCommand(scriptCommand));
                     // log output file
-                    final String path = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING)) +
+                    final String path = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
+                            .orElse(StringManager.string(StringManager.DEFAULT_STRING)) +
                             SLASH + projectFolder + SLASH + CAT_LOG_FILE;
                     for (final String line : Files.readAllLines(Paths.get(path))) {
                         log(line + NEW_LINE);
@@ -137,7 +156,6 @@ public class AnalysisTask extends AbstractTask {
                     LOGGER.severe(e.getMessage());
                 }
 
-
             };
             final Future<?> execution = service.submit(task);
 
@@ -153,13 +171,13 @@ public class AnalysisTask extends AbstractTask {
             service.shutdown();
         }
 
-
         // return the complete logs
         return getLogs();
     }
 
     /**
      * Export the sonar-project.properties in the corresponding folder
+     * 
      * @param path Output folder
      * @param data Data to write
      * @throws IOException when a file writing goes wrong
@@ -170,7 +188,7 @@ public class AnalysisTask extends AbstractTask {
 
         // create the writer
         // true to append; false to overwrite.
-        try(FileWriter fileWriter = new FileWriter(spp, false)) {
+        try (FileWriter fileWriter = new FileWriter(spp, false)) {
             // write the data
             fileWriter.write(data);
         }
@@ -178,9 +196,10 @@ public class AnalysisTask extends AbstractTask {
 
     /**
      * Use the user's request to launch an scan
-     * @param request request coming from the user
+     * 
+     * @param request  request coming from the user
      * @param response response to send to the user
-     * @throws IOException when communicating with the client
+     * @throws IOException          when communicating with the client
      * @throws InterruptedException ...
      */
     @Override
@@ -196,9 +215,11 @@ public class AnalysisTask extends AbstractTask {
                 StringManager.string(StringManager.ANALYZE_FOLDER_NAME));
         final String sonarProjectProperties = request.mandatoryParam(
                 StringManager.string(StringManager.ANALYZE_SPP_NAME));
+        final String qualityProfiles = request.mandatoryParam(
+                StringManager.string(StringManager.ANALYZE_QUALITY_PROFILES_NAME));
 
         // concrete scan
-        final String result = analyze(projectName, workspace, sonarProjectProperties);
+        final String result = analyze(projectName, workspace, sonarProjectProperties, qualityProfiles);
 
         // write the json response
         try (JsonWriter jsonWriter = response.newJsonWriter()) {
@@ -209,33 +230,83 @@ public class AnalysisTask extends AbstractTask {
         }
     }
 
+    private String setupExternalTools(String qualityProfile) {
+        StringBuilder setupExternalTools = new StringBuilder();
+
+        Gson gson = new Gson();
+        Type outerListType = new TypeToken<List<String>>() {
+        }.getType();
+        List<String> outerList = gson.fromJson(qualityProfile, outerListType);
+        List<List<String>> qualityProfiles = new ArrayList<>();
+        for (String innerJson : outerList) {
+            Type innerListType = new TypeToken<List<String>>() {
+            }.getType();
+            List<String> innerList = gson.fromJson(innerJson, innerListType);
+            qualityProfiles.add(innerList);
+        }
+
+        for (List<String> qp : qualityProfiles) {
+            if (qp.get(0).equals("py")) {
+                LOGGER.info("Setup pylint");
+                // Detect and run correct pylintrc according to RNC
+                String pylintrc = "/opt/python/pylintrc_RNC2015_D";
+                switch (qp.get(1)) {
+                    case "RNC A":
+                        pylintrc = "/opt/python/pylintrc_RNC2015_A_B";
+                        break;
+                    case "RNC B":
+                        pylintrc = "/opt/python/pylintrc_RNC2015_A_B";
+                        break;
+                    case "RNC C":
+                        pylintrc = "/opt/python/pylintrc_RNC2015_C";
+                        break;
+                    default:
+                        break;
+                }
+                setupExternalTools.append(
+                        "\npylint --rcfile=" + pylintrc
+                                + " --load-plugins=pylint_sonarjson --output-format=sonarjson --output=pylint-report.json *.py");
+            }
+            if (qp.contains("docker")) {
+                LOGGER.info("Setup hadolint");
+                setupExternalTools.append(
+                        "\nhadolint -f sonarqube --no-fail --config=/opt/hadolint/hadolint_RNC_A_B_C_D.yaml Dockerfile > hadolint-report.json");
+            }
+        }
+        return setupExternalTools.toString();
+    }
+
     /**
-     * Create a temporary script containing dedicated command executing sonar-scanner
-     * @param project repository containing the source code
+     * Create a temporary script containing dedicated command executing
+     * sonar-scanner
+     * 
+     * @param project     repository containing the source code
      * @param commandLine command line to execute
      * @return The created file
      */
-    private File createScript(final String project, final String commandLine) {
+    private File createScript(final String project, final String commandLine, final String qualityProfiles) {
         // path to the workspace
-        final String workspace = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY)).orElse(StringManager.string(StringManager.DEFAULT_STRING))+
-                SLASH +project+ SLASH;
+        final String workspace = config.get(StringManager.string(StringManager.WORKSPACE_PROP_DEF_KEY))
+                .orElse(StringManager.string(StringManager.DEFAULT_STRING)) +
+                SLASH + project + SLASH;
         // create script in a file located in the project's repository
         final File scriptOutput = new File(workspace + CAT_SCAN_SCRIPT);
 
+        String setupExternalTools = setupExternalTools(qualityProfiles);
+
         // Write all command lines in a single temporary script
         try (
-                FileWriter script = new FileWriter(scriptOutput)
-        ){
-            script.write("#!/bin/bash -e");
-            script.write("\ncd "+workspace);
-            script.write(StringManager.string(StringManager.CNES_LOG_SEPARATOR)+commandLine);
-            LOGGER.info("commandLine : " + commandLine);
+                FileWriter script = new FileWriter(scriptOutput)) {
+            script.write("#!/bin/bash");
+            script.write("\ncd " + workspace);
+            script.write("\n" + setupExternalTools);
+            script.write(StringManager.string(StringManager.CNES_LOG_SEPARATOR) + commandLine);
         } catch (IOException e) {
             LOGGER.severe(e.getMessage());
         }
 
         // give execution rights on the script
-        if(!scriptOutput.setExecutable(true)) {
+        if (!scriptOutput.setExecutable(true)) {
             LOGGER.severe(String.format(FILE_PERMISSIONS_ERROR, scriptOutput.getName()));
         }
 

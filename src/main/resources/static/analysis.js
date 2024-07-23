@@ -233,33 +233,31 @@ function registerScan(options, token) {
         // complete the spp with sources repository
         spp = spp.concat("\nsonar.sources=" + sources);
 
-        //This part is not usefull anymore, since we need to implement the pylint analysis
+        const externalReportSonar = "\nsonar.externalIssuesReportPaths=";
+        let toolsPath = ""
+
         // if a python quality profile is set and there are no pylintrc set
-        // for (const element of qualityprofiles) {
-        //     const qualityprofile = JSON.parse(element);
-        //     if (qualityprofile[0].toLowerCase() == "py" && spp.indexOf("sonar.python.pylint.reportPaths") === -1) {
-        //         // sonar pylint configuration property
-        //         let pylintrcSonar = "\nsonar.python.pylint.reportPaths=";
-        //         // name of the configuration file to use
-        //         let filename = "pylintrc_RNC2015_D";
-        //         // we append the appropriate one
-        //         // check if there is a rated A or B profile and add the corresponding file
-        //         if (qualityprofile[1] == "RNC A" || qualityprofile[1] == "RNC B") {
-        //             filename = "pylintrc_RNC2015_A_B";
-        //             spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-        //             info("Use of configuration file " + filename + " for Pylint.");
-        //             // check if there is a rated C profile and add the corresponding file
-        //         } else if (qualityprofile[1] == "RNC C") {
-        //             filename = "pylintrc_RNC2015_C";
-        //             spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-        //             info("Use of configuration file " + filename + " for Pylint.");
-        //             // otherwise it is a D configuration to use
-        //         } else {
-        //             spp = spp.concat(pylintrcSonar + pylintrcfolder + filename);
-        //             info("Use of configuration file " + filename + " for Pylint.");
-        //         }
-        //     }
-        // }
+        for (const element of qualityprofiles) {
+            const qualityprofile = JSON.parse(element);
+            if (qualityprofile[0].toLowerCase() == "py") {
+                if (toolsPath == "") {
+                    toolsPath += "./pylint-report.json"
+                } else {
+                    toolsPath += ",./pylint-report.json"
+                }
+            }
+            if (qualityprofile[0].toLowerCase() == "docker") {
+                if (toolsPath == "") {
+                    toolsPath += "./hadolint-report.json"
+                } else {
+                    toolsPath += ",./hadolint-report.json"
+                }
+            }
+
+        }
+        if (toolsPath != "") {
+            spp = spp.concat(externalReportSonar + toolsPath);
+        }
 
 
         return spp;
@@ -290,13 +288,14 @@ function registerScan(options, token) {
             // log the finally used spp
             info("Here comes the finally used sonar-project.properties:\n" + spp);
             info("The analysis is running, please wait.");
+            //change json to string for qualityProfile
+            const qualityprofiles = JSON.stringify(qualityprofile);
 
             // send post request to the cnes web service
             window.SonarRequest.postJSON(
                 '/api/cnes/analyze',
-                { key: key, name: name, folder: folder, sonarProjectProperties: spp }
+                { key: key, name: name, folder: folder, sonarProjectProperties: spp, qualityProfiles: qualityprofiles }
             ).then(function (response) {
-                // on success
                 // log output
                 info("Project analysis response: \n" + response.logs);
                 // wait that sonarqube has finished to import the report to produce the report
@@ -432,7 +431,9 @@ function registerScan(options, token) {
             // Check if there are no queued tasks, indicating readiness to report
             if (response.queue.length === 0) {
                 // Produce the report
-                callback(key, author, token);
+                console.log('SonarQube done importing the report');
+                setEnabled(true);
+                //callback(key, author, token);
             } else {
                 // Retry after 2 seconds
                 setTimeout(() => waitSonarQube(key, author, token, callback), 2000);
@@ -527,26 +528,6 @@ function registerScan(options, token) {
             // log error
             error(response);
         });
-    };
-
-    /**
-     *  Return a well formatted string for the profile argument of the web service
-     *  @param options
-     */
-    let optionsToString = function (options) {
-        let result = "";
-
-        // we concatenate all profiles' name in a string
-        // separated by ';'
-        for (let i = 0; i < options.length; ++i) {
-            // add a separator when necessary
-            if (i > 0) {
-                result = result + ';';
-            }
-            result = result + options[i].value;
-        }
-
-        return result.replace(new RegExp('\\+', "g"), '%2B');
     };
 
     // once the request is done, and the page is still displayed (not closed already)

@@ -63,6 +63,11 @@ public final class StringManager {
      */
     public static final String ANALYZE_SPP_DESC = "cnes.action.analyze.param.spp.desc";
     /**
+     * Property for action 1 (scan) param 7 description
+     */
+    public static final String ANALYZE_QUALITY_PROFILES_DESC =
+            "cnes.action.analyze.param.profiles.desc";
+    /**
      * Property for quality profiles separator
      */
     public static final String CNES_COMMAND_PROJECT_PROFILES_SEPARATOR =
@@ -191,6 +196,10 @@ public final class StringManager {
      * Define the name of the projects's sonar-project.properties parameter
      */
     public static final String ANALYZE_SPP_NAME = "cnes.action.analyze.param.spp.name";
+    /**
+     * Define the name of the project's quality profiles parameter
+     */
+    public static final String ANALYZE_QUALITY_PROFILES_NAME = "cnes.action.analyze.param.profiles.name";
     /**
      * Define the name of the returned log filed
      */

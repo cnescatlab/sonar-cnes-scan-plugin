@@ -49,8 +49,6 @@ public abstract class AbstractTask implements RequestHandler {
      * @throws InterruptedException when a command is not finished
      */
     protected String executeCommand(final String command) throws IOException, InterruptedException {
-        // log the command to execute
-        LOGGER.info(command);
 
         // prepare a string builder for the output gathering
         final StringBuilder output = new StringBuilder();

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.cnes.sonar.plugins.scan</groupId>
@@ -18,7 +20,7 @@
     <gson.version>2.11.0</gson.version>
     <junit.jupiter.api.version>5.11.0-M2</junit.jupiter.api.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-    <jdk.version>17</jdk.version>  
+    <jdk.version>17</jdk.version>
     <pluginUrl>https://cnes.fr</pluginUrl>
     <pluginOrganizationName>CNES</pluginOrganizationName>
   </properties>
@@ -48,7 +50,7 @@
     </developer>
     <developer>
       <id>Topin2001</id>
-        <name>Topin</name>
+      <name>Topin</name>
     </developer>
   </developers>
 
