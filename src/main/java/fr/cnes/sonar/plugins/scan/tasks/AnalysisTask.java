@@ -145,9 +145,9 @@ public class AnalysisTask extends AbstractTask {
                     writeTextFile(logPath, sonarProjectProperties + NEW_LINE + getLogs());
 
                     // delete temporary script
-                    // if (!script.delete()) {
-                    // LOGGER.severe(String.format(FILE_DELETION_ERROR, script.getName()));
-                    // }
+                    if (!script.delete()) {
+                        LOGGER.severe(String.format(FILE_DELETION_ERROR, script.getName()));
+                    }
 
                 } catch (IOException | InterruptedException e) {
                     // the spp file or the log file could not be written
@@ -245,7 +245,7 @@ public class AnalysisTask extends AbstractTask {
             qualityProfiles.add(innerList);
         }
 
-        for ( List<String> qp : qualityProfiles) {
+        for (List<String> qp : qualityProfiles) {
             if (qp.get(0).equals("py")) {
                 LOGGER.info("Setup pylint");
                 // Detect and run correct pylintrc according to RNC
@@ -259,7 +259,7 @@ public class AnalysisTask extends AbstractTask {
                         break;
                     case "RNC C":
                         pylintrc = "/opt/python/pylintrc_RNC2015_C";
-                        break;                    
+                        break;
                     default:
                         break;
                 }
@@ -269,8 +269,6 @@ public class AnalysisTask extends AbstractTask {
             }
             if (qp.contains("docker")) {
                 LOGGER.info("Setup hadolint");
-                setupExternalTools.append(
-                        "\nhadolint -f sonarqube --no-fail --config=/opt/hadolint/hadolint_RNC_A_B_C_D.yaml Dockerfile > hadolint-report.json");
                 setupExternalTools.append(
                         "\nhadolint -f sonarqube --no-fail --config=/opt/hadolint/hadolint_RNC_A_B_C_D.yaml Dockerfile > hadolint-report.json");
             }
